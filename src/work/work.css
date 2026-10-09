@@ -53,9 +53,9 @@
   padding: 5px 9px;
   border: 1px solid rgba(255, 255, 255, .3);
   border-radius: 999px;
-  color: #caf1e8;
+  color: var(--lvt-muted);
   background: rgba(255, 255, 255, .08);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -70,7 +70,7 @@
 .work-hero p {
   max-width: 650px;
   margin: 0;
-  color: #d5e8ed;
+  color: var(--lvt-muted);
   font-size: 12px;
   line-height: 1.55;
 }
@@ -98,14 +98,14 @@
 }
 
 .work-hero-stamp strong small {
-  color: #9aa6b1;
+  color: var(--lvt-muted);
   font-family: inherit;
   font-size: 15px;
 }
 
 .work-hero-stamp span {
   color: #4a6e7b;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .08em;
 }
@@ -135,8 +135,8 @@
 .work-page-actions > div > span,
 .work-editor-title span,
 .work-card-eyebrow {
-  color: #788da0;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .11em;
   text-transform: uppercase;
@@ -155,10 +155,10 @@
 .work-reject-button {
   min-height: 38px;
   padding: 0 14px;
-  border-radius: 9px;
+  border-radius: 8px;
   font-family: inherit;
-  font-size: 10px;
-  font-weight: 850;
+  font-size: 13px;
+  font-weight: 800;
   transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
 }
 
@@ -182,7 +182,7 @@
 
 .work-outline-button {
   border: 1px solid #b6d1d4;
-  color: #126e66;
+  color: var(--lvt-teal-text);
   background: #edf8f5;
 }
 
@@ -191,8 +191,8 @@
 }
 
 .work-ghost-button {
-  border: 1px solid #d4dfe6;
-  color: #66798b;
+  border: 1px solid var(--lvt-line);
+  color: var(--lvt-muted);
   background: #fff;
 }
 
@@ -233,7 +233,7 @@
 
 .work-editor-index {
   color: #d2a14c !important;
-  font-size: 10px !important;
+  font-size: 12px !important;
   letter-spacing: .04em !important;
 }
 
@@ -272,13 +272,13 @@
   gap: 10px;
   margin-top: 3px;
   color: #526b80;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
 }
 
 .work-field-label small {
-  color: #9aa8b2;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -297,7 +297,7 @@
   color: #2b465e;
   background: #fbfcfc;
   font: inherit;
-  font-size: 11px;
+  font-size: 14px;
   outline: 0;
 }
 
@@ -378,8 +378,8 @@
 }
 
 .work-file-dropzone small {
-  color: #8d9eaa;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-approver-block {
@@ -443,7 +443,7 @@
   border-radius: 10px 10px 10px 3px;
   color: #fff;
   background: linear-gradient(145deg, var(--work-navy), var(--work-teal));
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -464,14 +464,14 @@
 
 .work-approver-list strong,
 .work-assignee-list strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-approver-list small,
 .work-assignee-list small {
   margin-top: 2px;
-  color: #8b9aa5;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-editor-actions {
@@ -505,8 +505,8 @@
 .work-department-assignments > header span {
   display: block;
   margin-bottom: 3px;
-  color: #7b8f9f;
-  font-size: 7px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .1em;
 }
@@ -601,7 +601,7 @@
   background: transparent;
   text-align: left;
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -614,8 +614,8 @@
 .work-person-select-menu p {
   margin: 0;
   padding: 10px 8px;
-  color: #8b9aa5;
-  font-size: 12px;
+  color: var(--lvt-muted);
+  font-size: 14px;
 }
 
 .work-inline-row textarea {
@@ -624,7 +624,7 @@
 }
 
 .work-inline-content small {
-  color: #9aa8b2;
+  color: var(--lvt-muted);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -649,7 +649,7 @@
 }
 
 .duty-workspace .work-department-assignments > header span {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .duty-workspace .work-department-assignments > header h4 {
@@ -683,9 +683,9 @@
 }
 
 .work-assignment-table-head {
-  color: #8796a2;
+  color: var(--lvt-muted);
   background: #edf2f4;
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -695,12 +695,12 @@
   border-top: 1px solid #e6ecef;
   color: #617585;
   background: #fff;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .work-assignment-row strong {
   color: #38556c;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-assignment-row > span {
@@ -735,7 +735,7 @@
   gap: 10px;
   min-height: 80px;
   padding: 14px;
-  color: #8495a1;
+  color: var(--lvt-muted);
   text-align: center;
 }
 
@@ -746,14 +746,14 @@
 
 .work-assignment-empty p {
   margin: 0;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .work-feedback {
   margin-top: 12px;
   padding: 10px 12px;
   border-radius: 9px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -801,7 +801,7 @@
   margin: 0;
   padding-top: 14px;
   border-top: 1px solid var(--work-line);
-  color: #718293;
+  color: var(--lvt-muted);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -822,15 +822,15 @@
 }
 
 .work-document-topline {
-  color: #8293a1;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-document-topline time,
 .work-card-date {
   margin-left: auto;
-  color: #8394a0;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-file-badge {
@@ -842,7 +842,7 @@
   border-radius: 7px;
   color: #fff;
   background: var(--work-navy);
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -862,7 +862,7 @@
   border-radius: 999px;
   color: #7c631e;
   background: #fff1c4;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -927,7 +927,7 @@
   border-radius: 999px;
   background: #eef3f6;
   color: #4a6578;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -940,7 +940,7 @@
 .work-pending-label {
   width: 100%;
   color: #5d7384;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -949,7 +949,7 @@
 .work-member-details {
   margin-top: 10px;
   color: #5d7384;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-member-details summary {
@@ -973,7 +973,7 @@
 
 .work-completion-queue > header span {
   color: #9a6a12;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .1em;
 }
@@ -1029,7 +1029,7 @@
 .work-rejection-banner strong {
   display: block;
   margin-bottom: 4px;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -1053,7 +1053,7 @@
   display: block;
   margin-bottom: 4px;
   color: #267c70;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: .06em;
   text-transform: uppercase;
 }
@@ -1098,8 +1098,8 @@
 }
 
 .work-document-meta span {
-  color: #8b9ba7;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -1110,7 +1110,7 @@
 .work-document-meta .work-file-link-button {
   overflow: hidden;
   color: #496174;
-  font-size: 10px;
+  font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1146,7 +1146,7 @@
 }
 
 .work-document-meta .work-file-actions {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-file-name {
@@ -1206,8 +1206,8 @@
 
 .work-file-busy {
   flex: 0 0 auto;
-  color: #718695;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-file-preview-backdrop {
@@ -1238,7 +1238,7 @@
   min-height: 64px;
   padding: 12px 14px 12px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, .1);
-  color: #f4f8fb;
+  color: var(--lvt-muted);
 }
 
 .work-file-preview-dialog > header strong {
@@ -1259,7 +1259,7 @@
   min-height: 40px;
   padding: 0 13px;
   border-radius: 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1441,7 +1441,7 @@
 
 .work-document-assignments > section > header strong {
   color: #385a6e;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .work-document-assignments p {
@@ -1449,15 +1449,15 @@
   overflow: hidden;
   margin: 8px 0 6px;
   color: #617786;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.45;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
 
 .work-document-assignments small {
-  color: #8e9ca5;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-approval-summary {
@@ -1465,8 +1465,8 @@
 }
 
 .work-approval-summary-head {
-  color: #74899a;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1487,9 +1487,9 @@
   height: 27px;
   border: 2px solid #fff;
   border-radius: 50%;
-  color: #8a9aa5;
+  color: var(--lvt-muted);
   background: #dfe7eb;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
   box-shadow: 0 2px 7px rgba(27, 61, 91, .12);
 }
@@ -1533,8 +1533,8 @@
 }
 
 .work-progress-head {
-  color: #738898;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1560,8 +1560,8 @@
 }
 
 .work-progress small {
-  color: #98a5ad;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-empty,
@@ -1572,7 +1572,7 @@
   padding: 28px;
   border: 1px dashed #cbd9df;
   border-radius: 15px;
-  color: #718695;
+  color: var(--lvt-muted);
   background: rgba(255, 253, 247, .8);
   text-align: center;
 }
@@ -1590,8 +1590,8 @@
 
 .work-empty p {
   margin: 0;
-  color: #96a4ac;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-user-view .work-feedback {
@@ -1621,8 +1621,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 9px 22px;
-  color: #8898a3;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-card-meta strong {
@@ -1632,7 +1632,7 @@
 .work-file-link {
   display: inline-flex;
   margin-top: 13px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1670,14 +1670,14 @@
 .work-task-row strong {
   overflow: hidden;
   color: #425c70;
-  font-size: 10px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .work-task-row small {
-  color: #93a1aa;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-user-card > .work-outline-button {
@@ -1686,8 +1686,8 @@
 
 .personal-card > p {
   margin: -5px 0 14px;
-  color: #718594;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -1699,7 +1699,7 @@
   display: block;
   margin-top: 12px;
   color: #ad5645;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -1737,7 +1737,7 @@
   height: 28px;
   border: 0;
   border-radius: 8px;
-  color: #6d7e8b;
+  color: var(--lvt-muted);
   background: #edf2f3;
   font-size: 18px;
 }
@@ -1756,8 +1756,8 @@
 
 .work-modal-context {
   margin: 0 0 17px;
-  color: #82929d;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .work-modal > .work-field-label {
@@ -1820,8 +1820,8 @@
 .work-muted {
   margin: 0;
   padding: 10px;
-  color: #97a5ae;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   text-align: center;
 }
 
@@ -2049,7 +2049,7 @@
 
 .work-chat-empty {
   margin: 28px 8px;
-  color: #82929d;
+  color: var(--lvt-muted);
   font-size: 13px;
   text-align: center;
 }
@@ -2096,8 +2096,8 @@
 }
 
 .work-chat-bubble-body header time {
-  color: #8a9aa8;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -2142,7 +2142,7 @@
 
 .work-chat-recalled {
   margin: 0;
-  color: #8a9aa8;
+  color: var(--lvt-muted);
   font-size: 13px;
   font-style: italic;
   line-height: 1.45;
@@ -2159,7 +2159,7 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  color: #7b8794;
+  color: var(--lvt-muted);
   background: rgba(255, 255, 255, 0.92);
   font-size: 13px;
   line-height: 1;
@@ -2244,7 +2244,7 @@
 
 .work-chat-editor.is-empty::before {
   content: attr(data-placeholder);
-  color: #90a0ab;
+  color: var(--lvt-muted);
   pointer-events: none;
 }
 

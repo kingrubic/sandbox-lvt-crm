@@ -55,9 +55,9 @@
   padding: 4px 8px;
   border: 1px solid rgba(255, 255, 255, .28);
   border-radius: 999px;
-  color: #c9f4e9;
+  color: var(--lvt-muted);
   background: rgba(255, 255, 255, .08);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -73,7 +73,7 @@
 .boarding-admin-hero p,
 .boarding-report-hero p {
   margin: 0;
-  color: #d6e9ee;
+  color: var(--lvt-muted);
   font-size: 12px;
 }
 
@@ -86,7 +86,7 @@
   border-radius: 12px;
   color: #153a60;
   background: var(--boarding-paper);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 850;
   box-shadow: 6px 7px 0 rgba(8, 41, 64, .2);
   transition: transform .15s ease, box-shadow .15s ease;
@@ -106,7 +106,7 @@
   margin: 14px 0 0;
   padding: 11px 13px;
   border-radius: 9px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -149,8 +149,8 @@
 
 .boarding-editor-heading span,
 .boarding-list-heading span {
-  color: #7990a2;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -188,7 +188,7 @@
 .boarding-participant-heading > span {
   margin-bottom: 7px;
   color: #596b80;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -227,8 +227,8 @@
 }
 
 .boarding-semester-field small {
-  color: #8795a5;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-year-field {
@@ -275,7 +275,7 @@
   border-radius: 8px;
   color: #166f67;
   background: #edf8f5;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 850;
 }
 
@@ -297,7 +297,7 @@
   border-radius: 999px;
   color: #40556d;
   background: #fff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -310,7 +310,7 @@
   border-radius: 50%;
   color: #fff;
   background: linear-gradient(145deg, var(--boarding-blue), var(--boarding-teal));
-  font-size: 9px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 900;
 }
@@ -323,7 +323,7 @@
   padding: 0;
   border: 0;
   border-radius: 50%;
-  color: #8a98a7;
+  color: var(--lvt-muted);
   background: #eef2f4;
 }
 
@@ -334,7 +334,7 @@
   gap: 11px;
   min-height: 90px;
   padding: 14px;
-  color: #8190a1;
+  color: var(--lvt-muted);
 }
 
 .boarding-no-teachers > span {
@@ -346,13 +346,13 @@
 .boarding-no-teachers small {
   display: block;
   margin: 0;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .boarding-no-teachers small {
   margin-top: 3px;
-  color: #a2adb8;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-editor-actions {
@@ -367,7 +367,7 @@
   min-height: 38px;
   padding: 0 14px;
   border-radius: 9px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 850;
 }
 
@@ -438,13 +438,13 @@
   border-radius: 9px;
   color: #fff;
   background: var(--boarding-teal);
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
 }
 
 .boarding-school-year {
-  color: #8b99a8;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .09em;
   text-transform: uppercase;
@@ -470,8 +470,8 @@
 }
 
 .boarding-teacher-count span {
-  color: #75869a;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -490,7 +490,7 @@
   border-radius: 50%;
   color: #fff;
   background: linear-gradient(145deg, #285c8d, #18a088);
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -502,8 +502,8 @@
   min-height: 31px;
   margin: 0 0 13px;
   overflow: hidden;
-  color: #7a899a;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -521,7 +521,7 @@
   border-radius: 7px;
   color: #365a7b;
   background: #fff;
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -538,7 +538,7 @@
   padding: 25px;
   border: 1px dashed #cad7e0;
   border-radius: 16px;
-  color: #697b90;
+  color: var(--lvt-muted);
   background: #fff;
   text-align: center;
 }
@@ -557,8 +557,8 @@
 .boarding-empty-periods p,
 .boarding-report-empty p {
   margin: 5px 0 0;
-  color: #98a4b1;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-modal-backdrop {
@@ -600,8 +600,8 @@
 }
 
 .boarding-teacher-modal > header span {
-  color: #bfe9df;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -634,7 +634,7 @@
   border-radius: 9px;
   color: #30475e;
   font: inherit;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .boarding-picker-tools > div {
@@ -648,7 +648,7 @@
   border-radius: 8px;
   color: #5e7286;
   background: #fff;
-  font-size: 9px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -703,26 +703,26 @@
 }
 
 .boarding-teacher-option strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .boarding-teacher-option small {
   margin-top: 2px;
-  color: #74869a;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-teacher-option em {
   margin-top: 2px;
-  color: #a0aab5;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-style: normal;
 }
 
 .boarding-picker-empty {
   grid-column: 1 / -1;
-  color: #7f8fa1;
-  font-size: 11px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   text-align: center;
 }
 
@@ -732,8 +732,8 @@
 }
 
 .boarding-teacher-modal > footer > span {
-  color: #718297;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-teacher-modal > footer > span strong {
@@ -768,7 +768,7 @@
 
 .boarding-report-score span {
   color: #4b6b7d;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -801,8 +801,8 @@
 
 .boarding-report-people > header span {
   margin-bottom: 3px;
-  color: #7790a0;
-  font-size: 7px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .1em;
 }
@@ -813,8 +813,8 @@
 }
 
 .boarding-report-people > header small {
-  color: #7e8d9d;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-report-departments {
@@ -843,7 +843,7 @@
   padding: 8px 10px;
   color: #496176;
   background: #eaf1f3;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .boarding-report-departments > section > header span {
@@ -854,7 +854,7 @@
   border-radius: 7px;
   color: #176958;
   background: #dcf2ea;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -896,7 +896,7 @@
   border-radius: 10px 10px 10px 4px;
   color: #fff;
   background: linear-gradient(145deg, var(--boarding-blue), var(--boarding-teal));
-  font-size: 9px;
+  font-size: 13px;
   font-style: normal;
   font-weight: 900;
 }
@@ -915,12 +915,12 @@
 
 .boarding-report-departments button strong {
   margin-bottom: 2px;
-  font-size: 9px;
+  font-size: 13px;
 }
 
 .boarding-report-departments button small {
-  color: #8795a3;
-  font-size: 7px;
+  color: var(--lvt-muted);
+  font-size: 13px;
 }
 
 .boarding-report-stats {
@@ -963,15 +963,15 @@
 }
 
 .boarding-report-stats small {
-  color: #7f8fa0;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-report-stats > p {
   justify-self: end;
   margin: 0;
-  color: #8795a5;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-style: italic;
 }
 
@@ -1017,7 +1017,7 @@
   border-radius: 50%;
   color: #fff;
   background: var(--boarding-teal);
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 900;
   box-shadow: 0 0 0 2px #8ccfc2;
 }
@@ -1045,7 +1045,7 @@
   border-radius: 999px;
   color: #6a7788;
   background: #e9eef1;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -1062,15 +1062,15 @@
 }
 
 .boarding-report-card-main > header small {
-  color: #8c99a7;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-report-card-main > div > span {
   display: block;
   margin-bottom: 3px;
-  color: #8996a5;
-  font-size: 7px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .09em;
 }
@@ -1095,8 +1095,8 @@
   gap: 7px;
   padding-top: 10px;
   border-top: 1px solid #e6ebee;
-  color: #687b90;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-report-card-main > footer span {
@@ -1107,7 +1107,7 @@
   border-radius: 50%;
   color: #fff;
   background: var(--boarding-teal);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .boarding-report-empty {
@@ -1134,8 +1134,8 @@
 }
 
 .boarding-report-kicker {
-  color: #6c8291;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .12em;
 }
@@ -1148,8 +1148,8 @@
 
 .boarding-period-picker p {
   margin: 0;
-  color: #8292a1;
-  font-size: 11px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .boarding-period-picker label {
@@ -1157,7 +1157,7 @@
   gap: 6px;
   min-width: min(100%, 285px);
   color: #596b80;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -1169,7 +1169,7 @@
   color: #1a5873;
   background: #f5fbfa;
   font: inherit;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
 }
 
@@ -1198,8 +1198,8 @@
 }
 
 .boarding-report-group > header span {
-  color: #6c8291;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .12em;
 }
@@ -1216,8 +1216,8 @@
 }
 
 .boarding-report-group > header > strong small {
-  color: #728592;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1239,9 +1239,9 @@
 }
 
 .boarding-report-table th {
-  color: #81909c;
+  color: var(--lvt-muted);
   background: #fbfcfc;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -1251,7 +1251,7 @@
 .boarding-report-table td strong,
 .boarding-report-table td small { display: block; }
 .boarding-report-table td strong { color: #244763; }
-.boarding-report-table td small { margin-top: 3px; color: #95a1aa; font-size: 10px; }
+.boarding-report-table td small { margin-top: 3px; color: var(--lvt-muted); font-size: 12px; }
 
 .boarding-row-index {
   display: grid;
@@ -1261,7 +1261,7 @@
   border-radius: 8px;
   color: #1c7c6e;
   background: #e7f6f1;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -1271,7 +1271,7 @@
   border-radius: 999px;
   color: #157760;
   background: #e4f7ef;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
 }
 
@@ -1280,8 +1280,8 @@
   display: grid;
   place-items: center;
   min-height: 420px;
-  color: #718398;
-  font-size: 11px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 @keyframes boarding-rise {

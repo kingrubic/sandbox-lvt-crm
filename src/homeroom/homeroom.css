@@ -65,7 +65,7 @@
 .hr-eyebrow { color: var(--lvt-gold); font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .hr-panel .hr-eyebrow, .hr-setup-panel .hr-eyebrow { color: var(--lvt-teal); }
 .hr-shell-controls { display: flex; align-items: flex-start; gap: 10px; }
-.hr-year-select { display: grid; gap: 5px; color: rgba(255, 255, 255, .75); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.hr-year-select { display: grid; gap: 5px; color: rgba(255, 255, 255, .75); font-size: 14px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .hr-year-select select {
   min-height: 42px;
   min-width: 210px;
@@ -119,7 +119,7 @@
   border-radius: 999px;
   color: #fff;
   background: var(--lvt-coral);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 800;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, .35);
 }
@@ -258,7 +258,7 @@
 /* ---------- Inputs ---------- */
 .hr-field { display: grid; gap: 6px; min-width: 0; color: #4c6377; font-size: 12px; font-weight: 750; }
 .hr-field > span:first-child, .hr-field-label { color: #4c6377; font-size: 12px; font-weight: 750; letter-spacing: .01em; }
-.hr-field small { color: var(--lvt-muted); font-size: 11.5px; font-weight: 500; }
+.hr-field small { color: var(--lvt-muted); font-size: 12px; font-weight: 500; }
 .hr-field--inline { grid-auto-flow: row; }
 .homeroom-view input:not([type=checkbox]):not([type=radio]):not([type=file]),
 .homeroom-view select,
@@ -388,7 +388,7 @@
   gap: 5px;
   padding: 3px 9px;
   border-radius: 7px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 750;
   white-space: nowrap;
 }
@@ -453,7 +453,7 @@
 .hr-kpi-value { color: var(--lvt-navy); font-size: clamp(24px, 2.4vw, 32px); font-weight: 800; line-height: 1.1; letter-spacing: -.03em; }
 .hr-kpi--pending .hr-kpi-value { color: var(--hr-pending); }
 .hr-kpi--absent .hr-kpi-value { color: var(--hr-unexcused); }
-.hr-kpi-hint { color: var(--lvt-muted); font-size: 11.5px; font-weight: 600; line-height: 1.4; }
+.hr-kpi-hint { color: var(--lvt-muted); font-size: 12px; font-weight: 600; line-height: 1.4; }
 .hr-big-count { color: var(--hr-pending); font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -.04em; }
 
 /* ---------- Attendance bar ---------- */
@@ -570,7 +570,7 @@
 .hr-class-code--lg { min-width: 68px; height: 68px; border-radius: 18px; font-size: 20px; }
 .hr-mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
 .hr-mini-stats div { padding: 8px 10px; border-radius: 10px; background: #f5f8fa; }
-.hr-mini-stats dt { color: var(--lvt-muted); font-size: 11px; font-weight: 700; }
+.hr-mini-stats dt { color: var(--lvt-muted); font-size: 12px; font-weight: 700; }
 .hr-mini-stats dd { margin: 0; color: var(--lvt-navy); font-size: 19px; font-weight: 800; }
 .hr-class-card-empty { display: flex; align-items: center; gap: 8px; padding: 12px; border: 1px dashed #d3dee7; border-radius: 10px; color: var(--lvt-muted); font-size: 13px; }
 .hr-class-card-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
@@ -771,7 +771,7 @@
 
 /* ---------- Import ---------- */
 .hr-stepper { display: flex; flex-wrap: wrap; gap: 8px 26px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
-.hr-stepper li { display: inline-flex; align-items: center; gap: 9px; color: #8396a7; font-size: 13px; font-weight: 700; }
+.hr-stepper li { display: inline-flex; align-items: center; gap: 9px; color: var(--lvt-muted); font-size: 13px; font-weight: 700; }
 .hr-stepper-dot { display: inline-grid; place-items: center; width: 26px; height: 26px; border: 2px solid currentColor; border-radius: 50%; font-size: 12px; font-weight: 800; }
 .hr-stepper li.is-current { color: var(--lvt-navy); }
 .hr-stepper li.is-current .hr-stepper-dot { color: #fff; border-color: var(--lvt-navy); background: var(--lvt-navy); }

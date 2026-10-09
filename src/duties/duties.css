@@ -97,7 +97,7 @@
   margin-bottom: 13px;
 }
 
-.duty-schedule-heading p { margin: 0; color: #7a8d9c; font-size: 15px; line-height: 1.5; }
+.duty-schedule-heading p { margin: 0; color: var(--lvt-muted); font-size: 15px; line-height: 1.5; }
 
 .duty-schedule-grid {
   display: grid;
@@ -115,7 +115,7 @@
   font-weight: 850;
 }
 
-.duty-schedule-fieldset > small { display: block; margin-top: 10px; color: #7f909c; font-size: 13px; font-weight: 650; }
+.duty-schedule-fieldset > small { display: block; margin-top: 10px; color: var(--lvt-muted); font-size: 13px; font-weight: 650; }
 
 .duty-modern-editor > label,
 .duty-modern-editor .duty-field {
@@ -129,7 +129,7 @@
 }
 
 .duty-modern-editor > label > small {
-  color: #9aa8b2;
+  color: var(--lvt-muted);
   font-size: 12px;
   font-weight: 700;
   text-align: right;
@@ -166,7 +166,7 @@
 }
 
 .duty-modern-editor input:disabled {
-  color: #96a4ae;
+  color: var(--lvt-muted);
   background: #eef2f3;
 }
 
@@ -216,7 +216,7 @@
 }
 
 .duty-modern-editor .multi-check-summary {
-  color: #8797a3;
+  color: var(--lvt-muted);
   font-size: 13px;
 }
 
@@ -440,7 +440,7 @@
   border-radius: 999px;
   color: #fff;
   background: var(--duty-teal);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   line-height: 1;
 }
@@ -548,7 +548,7 @@
   display: block;
   position: static;
   margin: 0;
-  color: #7a8d9c;
+  color: var(--lvt-muted);
 }
 
 .duty-edit-modal-footer {
@@ -584,7 +584,7 @@
 }
 
 .duty-preview-list dt {
-  color: #8796a2;
+  color: var(--lvt-muted);
   font-size: 12px;
   font-weight: 900;
   letter-spacing: .08em;
@@ -788,7 +788,7 @@
 .personal-reminder-feedback {
   margin: 0;
   color: #b42318;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -804,7 +804,7 @@
 .personal-reminder-locked-note {
   margin: 0;
   color: #b42318;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.4;
 }
@@ -937,7 +937,7 @@
 }
 
 .duty-workspace .meta-label {
-  color: #8796a2;
+  color: var(--lvt-muted);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: .08em;
@@ -1038,7 +1038,7 @@
 
 .duty-workspace .member-list li small {
   margin-top: 2px;
-  color: #8b9aa5;
+  color: var(--lvt-muted);
   font-size: 12px;
 }
 
@@ -1084,7 +1084,7 @@
 }
 
 .duty-workspace .subordinate-heading span {
-  color: #8b9aa5;
+  color: var(--lvt-muted);
   font-size: 12px;
 }
 
@@ -1104,7 +1104,7 @@
 }
 
 .duty-workspace .view-all-participants-toggle small {
-  color: #8797a3;
+  color: var(--lvt-muted);
   font-size: 12px;
 }
 
