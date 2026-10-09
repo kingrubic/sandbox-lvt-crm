@@ -88,7 +88,7 @@
 }
 
 .report-hero-mark span {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 38px;
   font-weight: 800;
   line-height: .9;
@@ -434,7 +434,7 @@
 
 .report-summary-row strong {
   color: var(--report-navy);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 21px;
 }
 
@@ -508,7 +508,7 @@
   height: 31px;
   border-radius: 11px;
   color: var(--report-navy);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 16px;
 }
 
@@ -691,7 +691,7 @@
   margin: 0 0 5px auto;
   border-radius: 9px;
   color: #66768b;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 12px;
   font-weight: 800;
 }
@@ -742,7 +742,7 @@
 .report-mini-month h4 {
   margin: 0 0 10px;
   color: var(--report-navy);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 15px;
 }
 
@@ -925,7 +925,7 @@
 .report-event-detail h3 {
   margin: 0 28px 17px 0;
   color: var(--report-navy);
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 21px;
   line-height: 1.25;
 }

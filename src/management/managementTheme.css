@@ -74,7 +74,7 @@
   border: 1px solid rgba(255, 255, 255, .28);
   color: #c9f4e9;
   background: rgba(255, 255, 255, .08);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: .1em;
 }
 
@@ -88,7 +88,7 @@
 .modern-management .section-intro p {
   max-width: 790px;
   color: #d6e9ee;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
 }
 
@@ -98,7 +98,7 @@
   padding: 11px 13px;
   border: 1px solid transparent;
   border-radius: 10px;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 750;
 }
 
@@ -179,8 +179,8 @@
 
 .modern-management .admin-form label {
   gap: 7px;
-  color: #596b80;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 13px;
   font-weight: 850;
 }
 
@@ -194,7 +194,7 @@
   color: #30475e;
   background: #fbfcfd;
   font: inherit;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 550;
   transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
@@ -215,13 +215,13 @@
 
 .modern-management .admin-form input:disabled,
 .modern-management .admin-form select:disabled {
-  color: #8c98a6;
+  color: var(--lvt-muted);
   background: #edf1f4;
 }
 
 .modern-management .admin-form small {
-  color: #8b98a7;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -241,8 +241,8 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #596b80;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 13px;
   font-weight: 850;
 }
 
@@ -259,7 +259,7 @@
   padding: 0;
   border: 1px solid #8495a7;
   border-radius: 50%;
-  color: #687b8f;
+  color: var(--lvt-muted);
   background: transparent;
   font: 850 10px/1 inherit;
   cursor: help;
@@ -293,7 +293,7 @@
   min-height: 40px;
   border-radius: 10px;
   background: var(--mgmt-blue);
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .modern-management .admin-form > .primary-button:hover {
@@ -313,7 +313,7 @@
   color: #365a7b;
   background: #fff;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   transition: transform .14s ease, background .14s ease, border-color .14s ease;
 }
@@ -344,12 +344,12 @@
   border-radius: 11px;
   color: #705b25;
   background: var(--mgmt-paper);
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .modern-management .notice.approval-note strong {
   color: #5d4a1c;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .modern-management > .card-list {
@@ -399,14 +399,14 @@
   border-radius: 7px;
   color: #17695f;
   background: #e5f5ef;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: .08em;
 }
 
 .modern-management .muted,
 .modern-management .muted-block {
-  color: #8593a2;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -429,7 +429,7 @@
   color: #40546b;
   background: #fbfcfd;
   font-family: inherit;
-  font-size: 9px;
+  font-size: 14px;
 }
 
 .modern-management .assign-row .primary-button {
@@ -437,19 +437,19 @@
   border-radius: 8px;
   background: var(--mgmt-teal);
   font-family: inherit;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .modern-management .member-list li {
   border: 1px solid #e4eaee;
   border-radius: 9px;
   background: #f7fafb;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .modern-management .member-list li strong {
   color: #3d526a;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .modern-management .perm-matrix {
@@ -459,15 +459,15 @@
 }
 
 .modern-management .perm-matrix-head {
-  color: #71849a;
+  color: var(--lvt-muted);
   background: #eaf0f4;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .modern-management .perm-matrix-row {
   color: #40546b;
   background: #fff;
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .modern-management .perm-matrix-row input {
@@ -482,7 +482,7 @@
 .modern-management .access-chip {
   padding: 5px 7px;
   border-radius: 7px;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .modern-management .access-chip.view {
@@ -501,7 +501,7 @@
 }
 
 .modern-management .access-chip.hidden {
-  color: #8793a0;
+  color: var(--lvt-muted);
   background: #edf0f2;
 }
 
@@ -519,7 +519,7 @@
   padding-bottom: 13px;
   color: #dbeaf0;
   background: linear-gradient(110deg, #183e6b, #176f78);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .users-management .user-row {
@@ -527,7 +527,7 @@
   padding-top: 13px;
   padding-bottom: 13px;
   color: #40536b;
-  font-size: 10px;
+  font-size: 13px;
   transition: background .14s ease;
 }
 
@@ -537,13 +537,13 @@
 
 .users-management .user-row > div:first-child strong {
   color: var(--mgmt-blue);
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .users-management .user-row div span,
 .users-management .meta-stack span {
-  color: #8391a1;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .users-management .role-tag,
@@ -551,7 +551,7 @@
 .users-management .pending-tag {
   padding: 5px 8px;
   border-radius: 8px;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 800;
 }
 

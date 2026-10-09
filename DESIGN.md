@@ -15,12 +15,14 @@
 | `--lvt-ink` | `#16243e` | Chữ chính |
 | `--lvt-navy` | `#14355f` | Tiêu đề, nút chính, trạng thái đang chọn |
 | `--lvt-blue` | `#28639a` | Liên kết, thông tin |
-| `--lvt-teal` | `#138f7b` | Nhấn tích cực, hoàn thành, viền mục đang chọn |
+| `--lvt-teal` | `#138f7b` | Nhấn tích cực, hoàn thành, viền mục đang chọn (nền, viền, icon) |
+| `--lvt-teal-text` | `#0e7363` | **Chữ** màu teal (link, nhãn tích cực). `--lvt-teal` làm chữ chỉ đạt khoảng 3.7–4.0:1 |
 | `--lvt-coral` | `#e36d55` | Lỗi, quá hạn, hành động nguy hiểm |
+| `--lvt-coral-strong` | `#c0472f` | Nền đặc có chữ trắng (badge số đếm…), đạt 5.0:1 |
 | `--lvt-gold` | `#e9ad43` | Cảnh báo, chờ xử lý |
 | `--lvt-paper` | `#fffdf7` | Nền thẻ ấm |
 | `--lvt-line` | `#dce5eb` | Viền, đường kẻ |
-| `--lvt-muted` | `#6b7c8d` | Chữ phụ, chú thích |
+| `--lvt-muted` | `#5a6b7c` | Chữ phụ, chú thích (≥ 5:1 trên mọi nền sáng của app) |
 | `--lvt-page` | `#f4f7f8` | Nền trang |
 | `--lvt-hero` | gradient navy → teal | Banner đầu trang |
 
@@ -42,6 +44,8 @@ Quy tắc:
 ## 2. Chữ
 
 - Font: **Montserrat Variable** (`@fontsource-variable/montserrat`), fallback `ui-sans-serif, system-ui, sans-serif`. Không thêm font khác.
+- **Ngoại lệ duy nhất:** bảng lịch chính thức của **Lịch công tác** (`src/duties/sharedDutySchedule.css`, class `lct-*`: quốc hiệu, tiêu đề, bảng lịch, bản in/PDF) dùng **Times New Roman**, để giống mẫu Word mà thầy cô đã quen. Không dùng Times New Roman ở chỗ nào khác.
+- Không dùng Georgia hay font serif cho số liệu hoặc tiêu đề trang trí. Báo cáo đã chuyển sang Montserrat; vài chỗ cũ (Bán trú, Công việc, Đánh giá nhân sự, banner Quản trị) sẽ chuyển dần khi sửa tới.
 - Cỡ chữ cho UI mới:
 
 | Vai trò | Cỡ | Đậm |
