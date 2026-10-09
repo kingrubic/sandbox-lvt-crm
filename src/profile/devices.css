@@ -191,8 +191,8 @@
   padding: 0 15px;
   border-radius: 10px;
   background: var(--mgmt-blue, #194d7d);
-  font-size: 10px;
-  font-weight: 750;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .lockout-settings label {
@@ -203,14 +203,28 @@
 }
 
 .lockout-settings input {
-  height: 40px;
+  height: 42px;
   padding: 0 12px;
-  border: 1px solid #dde4ec;
+  border: 1px solid var(--lvt-line);
   border-radius: 8px;
   font: inherit;
+  font-size: 14px;
 }
 
 .admin-sessions-drawer {
   margin-top: 10px;
   grid-column: 1 / -1;
+}
+
+@media (max-width: 680px) {
+  .lockout-settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lockout-settings .primary-button {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
 }
