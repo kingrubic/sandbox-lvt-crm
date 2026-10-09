@@ -1,0 +1,16 @@
+---
+description: UI design standard — read DESIGN.md before changing any web or native UI
+globs: src/**/*.css,src/**/*.jsx,android-app/app/src/main/**/*.kt,android-app/app/src/main/res/**,ios-uikit-lvt/LvtCrmUIKit/**/*.swift
+alwaysApply: false
+---
+
+# UI design standard
+
+Before changing any screen, style, or component, read `DESIGN.md` and follow it for the code you touch.
+
+- Colors only from tokens (`--lvt-*` in `src/styles.css`; module aliases must point to them; homeroom status uses `--hr-*`). No new hex values in page CSS.
+- Montserrat only; user-readable text ≥ 12px, body/inputs 14px.
+- One primary action per area; destructive actions need confirmation.
+- Labels above inputs, errors next to the field, never placeholder-as-label.
+- Every screen has loading, empty, and error states; check 360px and 1280px widths.
+- Changing the standard itself means editing `DESIGN.md` in the same PR.
