@@ -10,6 +10,7 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
     private let workRepository: WorkRepository
     private let chatRepository: ChatRepository
     private let avatarRepository: AvatarRepository
+    private let homeroomRepository: HomeroomRepository
     private let notificationsViewModel: NotificationsViewModel
     private var tabControllers: [AppTab: UINavigationController] = [:]
     private var headerClusters: [AccountHeaderClusterView] = []
@@ -31,7 +32,8 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         dutiesRepository: DutiesRepository,
         workRepository: WorkRepository,
         chatRepository: ChatRepository,
-        avatarRepository: AvatarRepository
+        avatarRepository: AvatarRepository,
+        homeroomRepository: HomeroomRepository
     ) {
         self.session = session
         self.authRepository = authRepository
@@ -41,6 +43,7 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         self.workRepository = workRepository
         self.chatRepository = chatRepository
         self.avatarRepository = avatarRepository
+        self.homeroomRepository = homeroomRepository
         self.notificationsViewModel = NotificationsViewModel(repository: notificationsRepository)
         super.init(nibName: nil, bundle: nil)
     }
@@ -138,6 +141,13 @@ final class RootTabBarController: UITabBarController, UITabBarControllerDelegate
         self.workViewController = workViewController
         self.chatHubViewController = chatHubViewController
         viewControllers = [overview, chat, duties, work]
+        if session.canSeeHomeroom {
+            let homeroom = navigationController(
+                title: "Lớp chủ nhiệm", systemImage: "person.3",
+                viewController: HomeroomViewController(repository: homeroomRepository, session: session)
+            )
+            viewControllers = [overview, homeroom, chat, duties, work]
+        }
         startUnreadPolling()
         pushObserver = NotificationCenter.default.addObserver(
             forName: .pushReceived,

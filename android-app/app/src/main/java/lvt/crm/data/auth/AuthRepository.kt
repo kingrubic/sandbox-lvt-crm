@@ -272,21 +272,7 @@ class AuthRepository(
 
     private suspend fun fetchSession(): UserSession? {
         val result = convex.query("users:sessionContext")
-        val user = result.optJSONObject("user") ?: return null
-        if (user.length() == 0) return null
-        return UserSession(
-            userId = user.optString("_id"),
-            email = user.optString("email"),
-            name = user.optString("name").ifBlank { user.optString("email") },
-            role = user.optString("role", "user"),
-            status = user.optString("status", "active"),
-            mustChangePassword = user.optBoolean("mustChangePassword", false),
-            departmentName = result.optJSONObject("department")?.optString("name"),
-            positionName = result.optJSONObject("position")?.optString("name"),
-            positionLevel = result.optJSONObject("position")?.optInt("level"),
-            hasAvatar = user.optBoolean("hasAvatar", false),
-            avatarVersion = user.optString("avatarVersion").takeIf { it.isNotBlank() },
-        )
+        return decodeUserSession(result)
     }
 
     private fun ConvexException.invalidatesCredentials(): Boolean =

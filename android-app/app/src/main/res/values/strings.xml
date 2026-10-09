@@ -10,6 +10,7 @@
     <string name="nav_notifications">Thông báo</string>
     <string name="nav_duties">Lịch CT</string>
     <string name="nav_work">Công việc</string>
+    <string name="nav_homeroom">Lớp CN</string>
     <string name="nav_profile">Cá nhân</string>
     <string name="open_document">Mở tệp</string>
     <string name="appearance">Chế độ hiển thị</string>

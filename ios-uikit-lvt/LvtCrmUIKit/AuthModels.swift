@@ -1,5 +1,18 @@
 import Foundation
 
+enum MenuAccess: String, Equatable, Sendable {
+    case hidden
+    case view
+    case viewAll = "view_all"
+    case supervisor
+
+    static func decode(_ value: Any?) -> MenuAccess {
+        guard let raw = value as? String else { return .hidden }
+        if raw == "edit" { return .view }
+        return MenuAccess(rawValue: raw) ?? .hidden
+    }
+}
+
 struct UserSession: Equatable, Sendable {
     let userId: String
     let email: String
@@ -12,10 +25,17 @@ struct UserSession: Equatable, Sendable {
     let positionLevel: Int?
     let hasAvatar: Bool
     let avatarVersion: String?
+    let menuAccess: [String: MenuAccess]
 
     var isOperationalManager: Bool {
         role == "admin" || role == "moderator"
     }
+
+    var homeroomAccess: MenuAccess { menuAccess["homeroom"] ?? .hidden }
+    var canSeeHomeroom: Bool {
+        status == "active" && !mustChangePassword && (isOperationalManager || homeroomAccess != .hidden)
+    }
+    var isHomeroomSupervisor: Bool { !isOperationalManager && homeroomAccess == .supervisor }
 
     var roleLabel: String {
         switch role {
@@ -32,6 +52,10 @@ extension UserSession {
         let department = result["department"] as? [String: Any]
         let position = result["position"] as? [String: Any]
         let email = (user["email"] as? String) ?? ""
+        let rawMenuAccess = result["menuAccess"] as? [String: Any] ?? [:]
+        let menuAccess = rawMenuAccess.reduce(into: [String: MenuAccess]()) { result, entry in
+            result[entry.key] = MenuAccess.decode(entry.value)
+        }
         let rawName = (user["name"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         self.init(
             userId: (user["_id"] as? String) ?? "",
@@ -44,7 +68,8 @@ extension UserSession {
             positionName: position?["name"] as? String,
             positionLevel: position?["level"] as? Int,
             hasAvatar: (user["hasAvatar"] as? Bool) ?? false,
-            avatarVersion: user["avatarVersion"] as? String
+            avatarVersion: user["avatarVersion"] as? String,
+            menuAccess: menuAccess
         )
     }
 }

@@ -46,14 +46,15 @@ test('iOS changelog still records the 1.9.0 header cluster', () => {
   assert.match(iosChangelog, /Đổi ảnh đại diện/);
 });
 
-test('Android bottom bar is Tổng quan, Trao đổi, Lịch CT and Công việc', () => {
+test('Android bottom bar is Tổng quan, (Lớp chủ nhiệm), Trao đổi, Lịch CT and Công việc', () => {
   assert.match(androidRoot, /Routes\.Overview, R\.string\.nav_overview/);
+  assert.match(androidRoot, /if \(canSeeHomeroom\) add\(Triple\(Routes\.Homeroom, R\.string\.nav_homeroom/);
   assert.match(androidRoot, /Routes\.Chat, R\.string\.nav_chat/);
   assert.match(androidRoot, /Routes\.Duties, R\.string\.nav_duties/);
   assert.match(androidRoot, /Routes\.Work, R\.string\.nav_work/);
   assert.doesNotMatch(androidRoot, /Routes\.Notifications, R\.string\.nav_notifications/);
   assert.doesNotMatch(androidRoot, /Routes\.Profile, R\.string\.nav_profile/);
-  assert.match(androidRoot, /mainTabRoutes = setOf\(Routes\.Overview, Routes\.Chat, Routes\.Duties, Routes\.Work\)/);
+  assert.match(androidRoot, /mainTabRoutes = tabs\.mapTo\(mutableSetOf\(\)\) \{ it\.first \}/);
 });
 
 test('Android header cluster sits in the top app bar and reuses unread count', () => {

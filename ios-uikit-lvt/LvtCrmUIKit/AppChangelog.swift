@@ -8,6 +8,13 @@ struct AppChangelogEntry: Equatable {
 enum AppChangelog {
     static let entries: [AppChangelogEntry] = [
         AppChangelogEntry(
+            version: "1.14.1",
+            highlights: [
+                "Mục Lớp chủ nhiệm (theo nhóm quyền): tổng quan lớp theo ngày, vắng chờ xử lý, danh sách lớp và hồ sơ học sinh.",
+                "Sửa lỗi danh sách lớp trống khi chưa nhập tìm kiếm; lớp chưa có GVCN hiện “Chưa phân công”.",
+            ]
+        ),
+        AppChangelogEntry(
             version: "1.13.0",
             highlights: [
                 "Mục Trao đổi: mọi cuộc trò chuyện Công tác, Công việc và nhóm, theo hoạt động mới nhất.",

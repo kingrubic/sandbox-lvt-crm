@@ -17,13 +17,15 @@ actor ConvexHttpClient {
     private let refreshCredentialsProvider: @Sendable () -> CredentialSnapshot?
     private let onTokensRefreshed: @Sendable (CredentialSnapshot, String, String) -> Bool
     private let session: URLSession
+    private let importSession: URLSession
     private var inFlightRefresh: Task<String?, Never>?
 
     init(
         baseURL: String,
         tokenProvider: @escaping @Sendable () -> String?,
         refreshCredentialsProvider: @escaping @Sendable () -> CredentialSnapshot?,
-        onTokensRefreshed: @escaping @Sendable (CredentialSnapshot, String, String) -> Bool
+        onTokensRefreshed: @escaping @Sendable (CredentialSnapshot, String, String) -> Bool,
+        sessionOverride: URLSession? = nil
     ) {
         self.baseURL = baseURL.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         self.tokenProvider = tokenProvider
@@ -33,7 +35,8 @@ actor ConvexHttpClient {
         configuration.timeoutIntervalForRequest = 45
         configuration.timeoutIntervalForResource = 60
         configuration.waitsForConnectivity = false
-        session = URLSession(configuration: configuration)
+        session = sessionOverride ?? URLSession(configuration: configuration)
+        importSession = sessionOverride ?? URLSession(configuration: configuration, delegate: CameraUploadRedirectGuard(), delegateQueue: nil)
     }
 
     func query(_ path: String, args: [String: Any] = [:], authenticated: Bool = true) async throws -> [String: Any] {
@@ -42,6 +45,17 @@ actor ConvexHttpClient {
 
     func mutation(_ path: String, args: [String: Any] = [:], authenticated: Bool = true) async throws -> [String: Any] {
         try await call(kind: "mutation", path: path, args: args, authenticated: authenticated)
+    }
+    func importCall(_ kind: String, path: String, args: [String: Any]) async throws -> [String: Any] {
+        try await call(kind: kind, path: path, args: args, authenticated: true, noRetry: true)
+    }
+    static func validateHomeroomAcknowledgment(_ path: String, envelope: [String: Any], statusCode: Int) throws {
+        guard (200..<300).contains(statusCode), envelope["status"] as? String == "success", let value = envelope["value"] else { throw ConvexException(code: "INVALID_MUTATION_ACK") }
+        if ["students:updateContacts", "students:removeGuardian"].contains(path) {
+            guard value is NSNull else { throw ConvexException(code: "INVALID_MUTATION_ACK") }
+        } else if path == "students:upsertGuardian" {
+            guard let id = value as? String, !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw ConvexException(code: "INVALID_MUTATION_ACK") }
+        } else { guard value is [String: Any] else { throw ConvexException(code: "INVALID_MUTATION_ACK") } }
     }
 
     func action(_ path: String, args: [String: Any] = [:], authenticated: Bool = true) async throws -> [String: Any] {
@@ -62,7 +76,8 @@ actor ConvexHttpClient {
         args: [String: Any],
         authenticated: Bool,
         retried: Bool = false,
-        accessTokenOverride: String? = nil
+        accessTokenOverride: String? = nil,
+        noRetry: Bool = false
     ) async throws -> [String: Any] {
         guard let url = URL(string: "\(baseURL)/api/\(kind)") else {
             throw ConvexException(code: "INVALID_URL")
@@ -81,9 +96,9 @@ actor ConvexHttpClient {
             request.setValue("Bearer \(requestToken)", forHTTPHeaderField: "Authorization")
         }
 
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await (noRetry ? importSession : session).data(for: request)
         let statusCode = (response as? HTTPURLResponse)?.statusCode ?? 0
-        if authenticated, accessTokenOverride == nil, statusCode == 401, !retried,
+        if !noRetry, authenticated, accessTokenOverride == nil, statusCode == 401, !retried,
            let refreshed = await tryRefresh(failedAccessToken: requestToken) {
             return try await call(
                 kind: kind, path: path, args: args, authenticated: true,
@@ -93,6 +108,10 @@ actor ConvexHttpClient {
 
         let json = try parseJSONObject(data)
         if (json["status"] as? String) == "success" {
+            if noRetry { try Self.validateImportEnvelope(path, envelope: json, statusCode: statusCode) }
+            if kind == "mutation", ["students:updateContacts", "students:removeGuardian", "students:upsertGuardian", "studentAttendance:setDisposition", "studentAttendance:setDispositionMany"].contains(path) {
+                try Self.validateHomeroomAcknowledgment(path, envelope: json, statusCode: statusCode)
+            }
             return unwrapValue(json["value"])
         }
         let errorMessage = (json["errorData"] as? String)?.nilIfBlank
@@ -102,14 +121,14 @@ actor ConvexHttpClient {
         let unauthorized = statusCode == 401
             || errorMessage.localizedCaseInsensitiveContains("Unauthenticated")
             || errorMessage.localizedCaseInsensitiveContains("Authentication")
-        if authenticated, accessTokenOverride == nil, unauthorized, !retried,
+        if !noRetry, authenticated, accessTokenOverride == nil, unauthorized, !retried,
            let refreshed = await tryRefresh(failedAccessToken: requestToken) {
             return try await call(
                 kind: kind, path: path, args: args, authenticated: true,
                 retried: true, accessTokenOverride: refreshed
             )
         }
-        throw ConvexException(code: Self.extractCode(errorMessage), message: Self.humanize(errorMessage))
+        throw ConvexException(code: noRetry ? Self.extractImportCode(errorMessage) : Self.extractCode(errorMessage), message: noRetry ? Self.humanizeImport(errorMessage) : Self.humanize(errorMessage))
     }
 
     private func tryRefresh(failedAccessToken: String?) async -> String? {
@@ -121,6 +140,12 @@ actor ConvexHttpClient {
         let result = await task.value
         inFlightRefresh = nil
         return result
+    }
+    static func validateImportEnvelope(_ path: String, envelope: [String: Any], statusCode: Int) throws {
+        let stringPaths = ["attendanceImport:generateUploadUrl", "studentRosterImport:generateUploadUrl", "homeroomClasses:create", "homeroomClasses:assignUser", "homeroomClasses:transferStudent", "students:create"]
+        let nullPaths = ["homeroomClasses:update", "homeroomClasses:archive", "homeroomClasses:restore", "homeroomClasses:withdrawStudent"]
+        let correct = stringPaths.contains(path) ? envelope["value"] is String : nullPaths.contains(path) ? envelope["value"] is NSNull : envelope["value"] is [String: Any]
+        guard (200..<300).contains(statusCode), envelope["status"] as? String == "success", correct else { throw ConvexException(code: "IMPORT_UNCERTAIN") }
     }
 
     private func performRefresh(failedAccessToken: String?) async -> String? {
@@ -171,8 +196,31 @@ actor ConvexHttpClient {
         return object
     }
 
+    static func extractImportCode(_ message: String) -> String {
+        let management = ["CLASS_CODE_TAKEN", "INVALID_CLASS_CODE", "INVALID_GRADE_LEVEL", "SCHOOL_YEAR_LOCKED", "STUDENT_CODE_EXISTS", "INVALID_STUDENT_CODE", "ENROLLMENT_NOT_FOUND", "ENROLLMENT_NOT_ACTIVE", "ENROLLMENT_YEAR_MISMATCH", "DUPLICATE_ACTIVE_ENROLLMENT", "TRANSFER_BEFORE_START", "WITHDRAW_BEFORE_START", "INVALID_TRANSFER", "INVALID_REASON", "HOMEROOM_TEACHER_OVERLAP", "HOMEROOM_TEACHER_ALREADY_ASSIGNED", "ASSIGNMENT_BEFORE_START", "INVALID_ASSIGNMENT_TYPE", "INVALID_ASSIGNMENT_SCOPE", "USER_NOT_FOUND", "IMPORT_VALIDATION_FAILED", "IMPORT_UPLOAD_ALREADY_COMMITTED", "IMPORT_UPLOAD_IN_PROGRESS", "STUDENT_ENROLLED_OTHER_CLASS"]
+        if let code = management.first(where: { message.contains($0) }) { return code }
+        let known = ["ATTENDANCE_REPLACE_MODE_REQUIRED", "ATTENDANCE_DATE_OUTSIDE_YEAR", "ATTENDANCE_DATE_IN_FUTURE", "ATTENDANCE_TEMPLATE_HEADER_NOT_FOUND", "ATTENDANCE_TEMPLATE_COLUMNS_MISSING", "INVALID_IMPORT_FILE", "IMPORT_FILE_TOO_LARGE", "IMPORT_FILE_EMPTY", "IMPORT_TOO_MANY_ROWS", "IMPORT_UPLOAD_EXPIRED", "IMPORT_UPLOAD_NOT_FOUND", "IMPORT_ROWS_UNRESOLVED", "INVALID_REPLACE_MODE", "SCHOOL_YEAR_NOT_FOUND", "INVALID_DATE", "SUPERVISOR_REQUIRED", "HOMEROOM_MENU_HIDDEN", "HOMEROOM_SCOPE_FORBIDDEN"]
+        return known.first { message.contains($0) } ?? extractCode(message)
+    }
+    static func humanizeImport(_ message: String) -> String {
+        let code = extractImportCode(message)
+        switch code {
+        case "INVALID_IMPORT_FILE", "IMPORT_FILE_EMPTY", "IMPORT_FILE_TOO_LARGE": return "File Excel không hợp lệ, rỗng hoặc quá 4 MiB. Kiểm tra file .xlsx camera toàn trường."
+        case "ATTENDANCE_TEMPLATE_HEADER_NOT_FOUND", "ATTENDANCE_TEMPLATE_COLUMNS_MISSING": return "Không tìm thấy mẫu/cột camera: Lớp học, Tên học sinh, Ngày sinh, Trạng thái điểm danh."
+        case "IMPORT_TOO_MANY_ROWS": return "File vượt quá 3.000 dòng; chuẩn bị file nhỏ hơn."
+        case "IMPORT_UPLOAD_EXPIRED": return "Bản đăng ký quá hạn 2 giờ; không thể công bố. File không được ứng dụng tự xóa."
+        case "IMPORT_UPLOAD_NOT_FOUND": return "Không tìm thấy bản đăng ký; không tự đăng ký/gửi lại file."
+        case "IMPORT_ROWS_UNRESOLVED": return "Không còn lớp có thể công bố; kiểm tra lại bản xem trước."
+        case "ATTENDANCE_REPLACE_MODE_REQUIRED": return "Dữ liệu ngày này đã thay đổi; kiểm tra lại bản xem trước và chọn lại chế độ trước khi xác nhận."
+        case "ATTENDANCE_DATE_OUTSIDE_YEAR", "ATTENDANCE_DATE_IN_FUTURE", "SCHOOL_YEAR_NOT_FOUND", "INVALID_DATE": return "Năm/ngày học không hợp lệ hoặc ngày ở tương lai; chọn lại ngữ cảnh."
+        case "SUPERVISOR_REQUIRED", "HOMEROOM_MENU_HIDDEN": return "Chỉ Giám thị hoặc quản trị viên được nhập camera."
+        case "INVALID_REPLACE_MODE": return "Chế độ xử lý dữ liệu trùng không hợp lệ; chọn lại trong ba chế độ."
+        default: return humanize(message)
+        }
+    }
     static func extractCode(_ message: String) -> String {
         let known = [
+            "INVALID_PHONE", "INVALID_NAME", "INVALID_TEXT", "INVALID_DISPOSITION_NOTE", "INVALID_DISPOSITION", "CORRECTION_REASON_REQUIRED", "GUARDIAN_LIMIT", "ATTENDANCE_DAY_NOT_FOUND", "CLASS_NOT_FOUND", "STUDENT_NOT_FOUND", "GUARDIAN_NOT_FOUND", "CLASS_ARCHIVED", "DISPOSITION_NOT_ABSENT",
             "INVALID_CREDENTIALS", "InvalidAccountId", "InvalidSecret", "Invalid credentials", "USER_NOT_ACTIVE",
             "ACCOUNT_LOCKED", "PASSWORD_TOO_SHORT", "PASSWORD_CHANGE_FAILED", "PASSWORD_CHANGED_SYNC_PENDING",
             "PASSWORD_CHANGE_REQUIRED", "PASSWORD_RESET_FAILED", "PASSWORD_RESET_EMAIL_FAILED",
@@ -194,6 +242,12 @@ actor ConvexHttpClient {
     static func humanize(_ message: String) -> String {
         let code = extractCode(message)
         switch true {
+        case code == "INVALID_PHONE": return "Số điện thoại không hợp lệ (6–20 ký tự)."
+        case code == "INVALID_NAME": return "Họ tên phải có 1–120 ký tự."
+        case code == "INVALID_TEXT": return "Ghi chú liên hệ tối đa 300 ký tự."
+        case code == "INVALID_DISPOSITION_NOTE": return "Ghi chú phân loại tối đa 500 ký tự."
+        case code == "CORRECTION_REASON_REQUIRED": return "Cần lý do hoặc ghi chú."
+        case code == "GUARDIAN_LIMIT": return "Tối đa 6 người giám hộ đang hoạt động."
         case code == "INVALID_AVATAR_FILE":
             return "Ảnh đại diện phải là PNG, JPG hoặc WEBP."
         case code == "AVATAR_FILE_TOO_LARGE":

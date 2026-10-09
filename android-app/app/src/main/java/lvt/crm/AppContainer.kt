@@ -9,6 +9,7 @@ import lvt.crm.data.auth.TokenStore
 import lvt.crm.data.convex.ConvexConfig
 import lvt.crm.data.convex.ConvexHttpClient
 import lvt.crm.data.duties.DutiesRepository
+import lvt.crm.data.homeroom.HomeroomRepository
 import lvt.crm.data.notifications.NotificationsRepository
 import lvt.crm.data.work.WorkRepository
 import lvt.crm.push.NotificationScheduler
@@ -42,6 +43,7 @@ class AppContainer(context: Context) {
         cacheDir = appContext.cacheDir,
     )
     val notificationsRepository = NotificationsRepository(convex)
+    val homeroomRepository = HomeroomRepository(convex, java.io.File(appContext.noBackupFilesDir, "homeroom-pending"))
     val chatRepository = ChatRepository(convex)
     val workRepository = WorkRepository(
         convex,

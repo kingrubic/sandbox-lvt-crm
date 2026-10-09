@@ -34,6 +34,10 @@ class ConvexHttpClient(
         .readTimeout(45, TimeUnit.SECONDS)
         .writeTimeout(45, TimeUnit.SECONDS)
         .build()
+    private val importHttp = http.newBuilder().retryOnConnectionFailure(false).followRedirects(false).followSslRedirects(false).build()
+
+    suspend fun importCall(kind: String, path: String, args: JSONObject): JSONObject =
+        call(kind, path, args, authenticated = true, noRetry = true)
 
     override suspend fun query(path: String, args: JSONObject, authenticated: Boolean): JSONObject =
         call("query", path, args, authenticated)
@@ -57,6 +61,7 @@ class ConvexHttpClient(
         authenticated: Boolean,
         retried: Boolean = false,
         accessTokenOverride: String? = null,
+        noRetry: Boolean = false,
     ): JSONObject = withContext(Dispatchers.IO) {
         val body = JSONObject()
             .put("path", path)
@@ -78,9 +83,9 @@ class ConvexHttpClient(
             }
         }
 
-        http.newCall(builder.build()).execute().use { response ->
+        (if (noRetry) importHttp else http).newCall(builder.build()).execute().use { response ->
             val raw = response.body?.string().orEmpty()
-            if (authenticated && accessTokenOverride == null && response.code == 401 && !retried) {
+            if (!noRetry && authenticated && accessTokenOverride == null && response.code == 401 && !retried) {
                 val refreshedToken = tryRefresh(requestToken)
                 if (refreshedToken != null) {
                     return@withContext call(
@@ -98,6 +103,10 @@ class ConvexHttpClient(
             }
 
             if (json.optString("status") == "success") {
+                if (noRetry) validateImportEnvelope(path, json, response.isSuccessful)
+                if (kind == "mutation" && path in setOf("students:updateContacts", "students:removeGuardian", "students:upsertGuardian", "studentAttendance:setDisposition", "studentAttendance:setDispositionMany")) {
+                    validateHomeroomAcknowledgment(path, json, response.isSuccessful)
+                }
                 val value = json.opt("value")
                 return@withContext when (value) {
                     null, JSONObject.NULL -> JSONObject()
@@ -109,14 +118,14 @@ class ConvexHttpClient(
                 }
             }
 
-            val errorMessage = json.optString("errorMessage").ifBlank {
+            val errorMessage = (if (noRetry) json.opt("errorData") as? String else null)?.takeIf { it.isNotBlank() } ?: json.optString("errorMessage").ifBlank {
                 json.optString("error").ifBlank { "CONVEX_ERROR" }
             }
             val unauthorized = response.code == 401 ||
                 errorMessage.contains("Unauthenticated", ignoreCase = true) ||
                 errorMessage.contains("Authentication", ignoreCase = true)
 
-            if (authenticated && accessTokenOverride == null && unauthorized && !retried) {
+            if (!noRetry && authenticated && accessTokenOverride == null && unauthorized && !retried) {
                 val refreshedToken = tryRefresh(requestToken)
                 if (refreshedToken != null) {
                     return@withContext call(
@@ -130,7 +139,7 @@ class ConvexHttpClient(
                 }
             }
 
-            throw ConvexException(extractCode(errorMessage), humanize(errorMessage))
+            throw ConvexException(if (noRetry) extractImportCode(errorMessage) else extractCode(errorMessage), if (noRetry) humanizeImport(errorMessage) else humanize(errorMessage))
         }
     }
 
@@ -171,8 +180,46 @@ class ConvexHttpClient(
     }
 
     companion object {
+        fun validateImportEnvelope(path: String, envelope: JSONObject, successful: Boolean) {
+            val strings = setOf("attendanceImport:generateUploadUrl", "studentRosterImport:generateUploadUrl", "homeroomClasses:create", "homeroomClasses:assignUser", "homeroomClasses:transferStudent", "students:create")
+            val nulls = setOf("homeroomClasses:update", "homeroomClasses:archive", "homeroomClasses:restore", "homeroomClasses:withdrawStudent")
+            val correct = when (path) {
+                in strings -> envelope.opt("value") is String
+                in nulls -> envelope.has("value") && envelope.opt("value") === JSONObject.NULL
+                else -> envelope.opt("value") is JSONObject
+            }
+            if (!successful || envelope.opt("status") != "success" || !correct) throw ConvexException("IMPORT_UNCERTAIN")
+        }
+        internal fun validateHomeroomAcknowledgment(path: String, envelope: JSONObject, successfulHttp: Boolean) {
+            require(successfulHttp && envelope.opt("status") == "success" && envelope.has("value")) { "INVALID_MUTATION_ACK" }
+            when (path) {
+                "students:updateContacts", "students:removeGuardian" -> require(envelope.get("value") == JSONObject.NULL) { "INVALID_MUTATION_ACK" }
+                "students:upsertGuardian" -> require(envelope.get("value") is String && envelope.getString("value").isNotBlank()) { "INVALID_MUTATION_ACK" }
+                else -> require(envelope.get("value") is JSONObject) { "INVALID_MUTATION_ACK" }
+            }
+        }
+        fun extractImportCode(message: String): String {
+            val management = listOf("CLASS_CODE_TAKEN", "INVALID_CLASS_CODE", "INVALID_GRADE_LEVEL", "SCHOOL_YEAR_LOCKED", "STUDENT_CODE_EXISTS", "INVALID_STUDENT_CODE", "ENROLLMENT_NOT_FOUND", "ENROLLMENT_NOT_ACTIVE", "ENROLLMENT_YEAR_MISMATCH", "DUPLICATE_ACTIVE_ENROLLMENT", "TRANSFER_BEFORE_START", "WITHDRAW_BEFORE_START", "INVALID_TRANSFER", "INVALID_REASON", "HOMEROOM_TEACHER_OVERLAP", "HOMEROOM_TEACHER_ALREADY_ASSIGNED", "ASSIGNMENT_BEFORE_START", "INVALID_ASSIGNMENT_TYPE", "INVALID_ASSIGNMENT_SCOPE", "USER_NOT_FOUND", "IMPORT_VALIDATION_FAILED", "IMPORT_UPLOAD_ALREADY_COMMITTED", "IMPORT_UPLOAD_IN_PROGRESS", "STUDENT_ENROLLED_OTHER_CLASS")
+            management.firstOrNull { message.contains(it) }?.let { return it }
+            val known = listOf("ATTENDANCE_REPLACE_MODE_REQUIRED", "ATTENDANCE_DATE_OUTSIDE_YEAR", "ATTENDANCE_DATE_IN_FUTURE", "ATTENDANCE_TEMPLATE_HEADER_NOT_FOUND", "ATTENDANCE_TEMPLATE_COLUMNS_MISSING", "INVALID_IMPORT_FILE", "IMPORT_FILE_TOO_LARGE", "IMPORT_FILE_EMPTY", "IMPORT_TOO_MANY_ROWS", "IMPORT_UPLOAD_EXPIRED", "IMPORT_UPLOAD_NOT_FOUND", "IMPORT_ROWS_UNRESOLVED", "INVALID_REPLACE_MODE", "SCHOOL_YEAR_NOT_FOUND", "INVALID_DATE", "SUPERVISOR_REQUIRED", "HOMEROOM_MENU_HIDDEN", "HOMEROOM_SCOPE_FORBIDDEN")
+            return known.firstOrNull { message.contains(it) } ?: extractCode(message)
+        }
+        fun humanizeImport(message: String): String = when (extractImportCode(message)) {
+            "INVALID_IMPORT_FILE", "IMPORT_FILE_EMPTY", "IMPORT_FILE_TOO_LARGE" -> "File Excel không hợp lệ, rỗng hoặc quá 4 MiB. Kiểm tra file .xlsx camera toàn trường."
+            "ATTENDANCE_TEMPLATE_HEADER_NOT_FOUND", "ATTENDANCE_TEMPLATE_COLUMNS_MISSING" -> "Không tìm thấy mẫu/cột camera: Lớp học, Tên học sinh, Ngày sinh, Trạng thái điểm danh."
+            "IMPORT_TOO_MANY_ROWS" -> "File vượt quá 3.000 dòng; chuẩn bị file nhỏ hơn."
+            "IMPORT_UPLOAD_EXPIRED" -> "Bản đăng ký quá hạn 2 giờ; không thể công bố. File không được ứng dụng tự xóa."
+            "IMPORT_UPLOAD_NOT_FOUND" -> "Không tìm thấy bản đăng ký; không tự đăng ký/gửi lại file."
+            "IMPORT_ROWS_UNRESOLVED" -> "Không còn lớp có thể công bố; kiểm tra lại bản xem trước."
+            "ATTENDANCE_REPLACE_MODE_REQUIRED" -> "Dữ liệu ngày này đã thay đổi; kiểm tra lại bản xem trước và chọn lại chế độ trước khi xác nhận."
+            "ATTENDANCE_DATE_OUTSIDE_YEAR", "ATTENDANCE_DATE_IN_FUTURE", "SCHOOL_YEAR_NOT_FOUND", "INVALID_DATE" -> "Năm/ngày học không hợp lệ hoặc ngày ở tương lai; chọn lại ngữ cảnh."
+            "SUPERVISOR_REQUIRED", "HOMEROOM_MENU_HIDDEN" -> "Chỉ Giám thị hoặc quản trị viên được nhập camera."
+            "INVALID_REPLACE_MODE" -> "Chế độ xử lý dữ liệu trùng không hợp lệ; chọn lại trong ba chế độ."
+            else -> humanize(message)
+        }
         fun extractCode(message: String): String {
             val known = listOf(
+                "INVALID_PHONE", "INVALID_NAME", "INVALID_TEXT", "INVALID_DISPOSITION_NOTE", "INVALID_DISPOSITION", "CORRECTION_REASON_REQUIRED", "GUARDIAN_LIMIT", "ATTENDANCE_DAY_NOT_FOUND", "CLASS_NOT_FOUND", "STUDENT_NOT_FOUND", "GUARDIAN_NOT_FOUND", "CLASS_ARCHIVED", "DISPOSITION_NOT_ABSENT",
                 "InvalidAccountId",
                 "InvalidSecret",
                 "Invalid credentials",
@@ -218,6 +265,12 @@ class ConvexHttpClient(
         fun humanize(message: String): String {
             val code = extractCode(message)
             return when {
+                code == "INVALID_PHONE" -> "Số điện thoại không hợp lệ (6–20 ký tự)."
+                code == "INVALID_NAME" -> "Họ tên phải có 1–120 ký tự."
+                code == "INVALID_TEXT" -> "Ghi chú liên hệ tối đa 300 ký tự."
+                code == "INVALID_DISPOSITION_NOTE" -> "Ghi chú phân loại tối đa 500 ký tự."
+                code == "CORRECTION_REASON_REQUIRED" -> "Cần lý do hoặc ghi chú."
+                code == "GUARDIAN_LIMIT" -> "Tối đa 6 người giám hộ đang hoạt động."
                 code == "INVALID_AVATAR_FILE" -> "Ảnh đại diện phải là PNG, JPG hoặc WEBP."
                 code == "AVATAR_FILE_TOO_LARGE" -> "Ảnh đại diện không được vượt quá 2MB."
                 code == "AVATAR_UPLOAD_NOT_FOUND" -> "Không tìm thấy ảnh vừa tải lên. Vui lòng chọn lại."

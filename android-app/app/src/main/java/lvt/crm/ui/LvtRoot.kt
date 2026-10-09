@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material.icons.outlined.WorkOutline
 import androidx.compose.material3.AlertDialog
@@ -70,6 +71,8 @@ import lvt.crm.ui.duties.DutyListTab
 import lvt.crm.ui.home.DashboardScreen
 import lvt.crm.ui.home.DashboardViewModel
 import lvt.crm.ui.home.PlaceholderScreen
+import lvt.crm.ui.homeroom.HomeroomScreen
+import lvt.crm.ui.homeroom.HomeroomViewModel
 import lvt.crm.ui.notifications.NotificationsScreen
 import lvt.crm.ui.notifications.NotificationsViewModel
 import lvt.crm.ui.profile.ProfileScreen
@@ -89,6 +92,7 @@ private object Routes {
     const val Chat = "chat"
     const val Duties = "duties"
     const val Work = "work"
+    const val Homeroom = "homeroom"
     const val Profile = "profile"
 }
 
@@ -116,7 +120,7 @@ fun LvtRoot(
                 onDone = {},
             )
         }
-            is AuthState.SignedIn -> {
+        is AuthState.SignedIn -> {
             NotificationPermissionAndSync(container)
             MainShell(
                 container = container,
@@ -128,6 +132,8 @@ fun LvtRoot(
                 positionName = state.session.positionName,
                 hasAvatar = state.session.hasAvatar,
                 avatarVersion = state.session.avatarVersion,
+                canSeeHomeroom = state.session.canSeeHomeroom,
+                homeroomSupervisor = state.session.isHomeroomSupervisor,
                 notificationDestination = notificationDestination,
                 onNotificationDestinationHandled = onNotificationDestinationHandled,
                 onSignOut = {
@@ -151,6 +157,8 @@ private fun MainShell(
     positionName: String?,
     hasAvatar: Boolean,
     avatarVersion: String?,
+    canSeeHomeroom: Boolean,
+    homeroomSupervisor: Boolean,
     notificationDestination: NotificationDestination?,
     onNotificationDestinationHandled: () -> Unit,
     onSignOut: () -> Unit,
@@ -193,13 +201,14 @@ private fun MainShell(
         container.avatarRepository.sync(sessionUserId, hasAvatar, avatarVersion)
     }
 
-    val tabs = listOf(
-        Triple(Routes.Overview, R.string.nav_overview, Icons.Outlined.Dashboard),
-        Triple(Routes.Chat, R.string.nav_chat, Icons.Outlined.Forum),
-        Triple(Routes.Duties, R.string.nav_duties, Icons.Outlined.WorkOutline),
-        Triple(Routes.Work, R.string.nav_work, Icons.Outlined.TaskAlt),
-    )
-    val mainTabRoutes = setOf(Routes.Overview, Routes.Chat, Routes.Duties, Routes.Work)
+    val tabs = buildList {
+        add(Triple(Routes.Overview, R.string.nav_overview, Icons.Outlined.Dashboard))
+        if (canSeeHomeroom) add(Triple(Routes.Homeroom, R.string.nav_homeroom, Icons.Outlined.Groups))
+        add(Triple(Routes.Chat, R.string.nav_chat, Icons.Outlined.Forum))
+        add(Triple(Routes.Duties, R.string.nav_duties, Icons.Outlined.WorkOutline))
+        add(Triple(Routes.Work, R.string.nav_work, Icons.Outlined.TaskAlt))
+    }
+    val mainTabRoutes = tabs.mapTo(mutableSetOf()) { it.first }
     val highlightedTab = if (current in mainTabRoutes) current else selectedTab
 
     LaunchedEffect(current) {
@@ -397,6 +406,18 @@ private fun MainShell(
                     tabOpenToken = tabOpenToken,
                     onBack = { navController.popBackStack() },
                 )
+            }
+            if (canSeeHomeroom) {
+                composable(Routes.Homeroom) {
+                    val vm: HomeroomViewModel = viewModel(
+                        key = "homeroom-$sessionUserId-$homeroomSupervisor-$role",
+                        factory = HomeroomViewModel.factory(
+                            container.homeroomRepository,
+                            homeroomSupervisor,
+                        ),
+                    )
+                    HomeroomScreen(vm, canImport = role == "admin" || role == "moderator" || homeroomSupervisor, canManage = role == "admin" || role == "moderator")
+                }
             }
             composable(Routes.Chat) {
                 val chatFocus = focusTarget?.takeIf { it.opensChat }

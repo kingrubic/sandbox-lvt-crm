@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+        200000000000000000000040 = {isa = PBXBuildFile; fileRef = 300000000000000000000040; };
+        20000000000000000000003E = {isa = PBXBuildFile; fileRef = 30000000000000000000003E; };
+        20000000000000000000003F = {isa = PBXBuildFile; fileRef = 30000000000000000000003F; };
+        20000000000000000000003C = {isa = PBXBuildFile; fileRef = 30000000000000000000003C; };
+        20000000000000000000003D = {isa = PBXBuildFile; fileRef = 30000000000000000000003D; };
+        200000000000000000000038 = {isa = PBXBuildFile; fileRef = 300000000000000000000038; };
+        200000000000000000000039 = {isa = PBXBuildFile; fileRef = 300000000000000000000039; };
+        20000000000000000000003A = {isa = PBXBuildFile; fileRef = 30000000000000000000003A; };
+        20000000000000000000003B = {isa = PBXBuildFile; fileRef = 30000000000000000000003B; };
+        200000000000000000000036 /* HomeroomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300000000000000000000036; };
+        200000000000000000000037 /* HomeroomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300000000000000000000037; };
 		200000000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300000000000000000000001 /* AppDelegate.swift */; };
 		200000000000000000000002 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300000000000000000000002 /* SceneDelegate.swift */; };
 		200000000000000000000003 /* RootTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300000000000000000000003 /* RootTabBarController.swift */; };
@@ -59,6 +70,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+        300000000000000000000040 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomPendingJournal.swift; sourceTree = "<group>"; };
+        30000000000000000000003E = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomManagement.swift; sourceTree = "<group>"; };
+        30000000000000000000003F = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomManagementViewController.swift; sourceTree = "<group>"; };
+        30000000000000000000003C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomCameraImport.swift; sourceTree = "<group>"; };
+        30000000000000000000003D = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomCameraImportViewController.swift; sourceTree = "<group>"; };
+        300000000000000000000038 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomDetail.swift; sourceTree = "<group>"; };
+        300000000000000000000039 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomDetailViewController.swift; sourceTree = "<group>"; };
+        30000000000000000000003A = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomWrites.swift; sourceTree = "<group>"; };
+        30000000000000000000003B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomWriteFormViewController.swift; sourceTree = "<group>"; };
+        300000000000000000000036 /* HomeroomRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomRepository.swift; sourceTree = "<group>"; };
+        300000000000000000000037 /* HomeroomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeroomViewController.swift; sourceTree = "<group>"; };
 		300000000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		300000000000000000000002 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		300000000000000000000003 /* RootTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarController.swift; sourceTree = "<group>"; };
@@ -136,6 +158,17 @@
 		500000000000000000000002 /* LvtCrmUIKit */ = {
 			isa = PBXGroup;
 			children = (
+                300000000000000000000036 /* HomeroomRepository.swift */,
+                300000000000000000000040,
+                300000000000000000000038,
+                300000000000000000000039,
+                30000000000000000000003A,
+                30000000000000000000003B,
+                30000000000000000000003C,
+                30000000000000000000003E,
+                30000000000000000000003F,
+                30000000000000000000003D,
+                300000000000000000000037 /* HomeroomViewController.swift */,
 				300000000000000000000001 /* AppDelegate.swift */,
 				300000000000000000000002 /* SceneDelegate.swift */,
 				30000000000000000000000C /* AppContainer.swift */,
@@ -265,6 +298,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+                200000000000000000000036 /* HomeroomRepository.swift in Sources */,
+                200000000000000000000040,
+                200000000000000000000038,
+                200000000000000000000039,
+                20000000000000000000003A,
+                20000000000000000000003B,
+                20000000000000000000003C,
+                20000000000000000000003E,
+                20000000000000000000003F,
+                20000000000000000000003D,
+                200000000000000000000037 /* HomeroomViewController.swift in Sources */,
 				200000000000000000000001 /* AppDelegate.swift in Sources */,
 				200000000000000000000002 /* SceneDelegate.swift in Sources */,
 				200000000000000000000003 /* RootTabBarController.swift in Sources */,
@@ -362,7 +406,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = LvtCrmUIKit/LvtCrmUIKit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = 42ZDDJ2B8M;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = LvtCrmUIKit/Info.plist;
@@ -370,7 +414,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.1;
 				PRODUCT_BUNDLE_IDENTIFIER = vn.lvt.crm.uikit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -387,7 +431,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = LvtCrmUIKit/LvtCrmUIKitRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 32;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_TEAM = 42ZDDJ2B8M;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = LvtCrmUIKit/Info.plist;
@@ -395,7 +439,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.1;
 				PRODUCT_BUNDLE_IDENTIFIER = vn.lvt.crm.uikit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
