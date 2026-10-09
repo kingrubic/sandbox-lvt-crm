@@ -14,6 +14,7 @@ import { WorkUserView } from './work/WorkViews';
 import DocumentTypeSettings from './settings/DocumentTypeSettings';
 import SchoolYearSettings from './settings/SchoolYearSettings';
 import DisplaySettings from './settings/DisplaySettings';
+import DesignLibraryView from './settings/DesignLibraryView';
 import UserBulkImport from './settings/UserBulkImport';
 import './settings/userBulkImport.css';
 import NotificationsView from './notifications/NotificationsView';
@@ -82,6 +83,7 @@ const SUPREME_SETTINGS = [
   ['document-types', 'Thiết lập loại văn bản'],
   ['school-years', 'Thiết lập năm học'],
   ['display-settings', 'Thiết lập hiển thị'],
+  ['design-library', 'Thư viện giao diện'],
 ];
 const ROLE_LABELS = { admin: 'Administrator', moderator: 'Moderator', user: 'User' };
 const ACCESS_LABELS = {
@@ -496,6 +498,8 @@ function AppShell({ session }) {
           <SchoolYearSettings />
         ) : active === 'display-settings' && isAdmin ? (
           <DisplaySettings />
+        ) : active === 'design-library' && isAdmin ? (
+          <DesignLibraryView />
         ) : active === 'notifications' ? (
           <NotificationsView data={notificationFeed} onOpenItem={openFromNotification} />
         ) : active === 'duties' ? (

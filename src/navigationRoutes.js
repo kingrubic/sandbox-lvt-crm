@@ -23,6 +23,7 @@ const MENU_PATHS = Object.freeze({
   'document-types': '/thiet-lap-loai-van-ban',
   'school-years': '/thiet-lap-nam-hoc',
   'display-settings': '/thiet-lap-hien-thi',
+  'design-library': '/thu-vien-giao-dien',
 });
 
 const REPORT_PATHS = Object.freeze({

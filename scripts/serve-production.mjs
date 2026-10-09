@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { copyFile, mkdtemp, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
@@ -30,6 +30,8 @@ import { authorizeUpload, uploadApiForPurpose } from './lib/upload-authorization
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const distRoot = path.join(projectRoot, 'dist');
+// Kept outside dist/ so it is never served as a public static file.
+const designLibraryFile = path.join(projectRoot, 'design', 'component-library', 'index.html');
 const host = process.env.HOST || '127.0.0.1';
 const port = Number(process.env.PORT || 3007);
 const convexUrl = process.env.CONVEX_URL
@@ -492,6 +494,27 @@ async function downloadSharedDutySchedulePdf(request, response) {
   response.end(bytes);
 }
 
+async function serveDesignLibrary(request, response) {
+  const client = await authorizedClient(request);
+  try {
+    await client.query(anyApi.designLibrary.authorizeView, {});
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/ACCOUNT_LOCKED|USER_NOT_ACTIVE|PASSWORD_CHANGE_REQUIRED/.test(message)) {
+      throw new FileHttpError(403, 'FILE_ACCESS_DENIED', error);
+    }
+    throw error;
+  }
+  const html = await readFile(designLibraryFile);
+  response.setHeader('Cache-Control', 'private, no-store');
+  response.setHeader('Content-Security-Policy', "default-src 'none'; sandbox");
+  response.setHeader('Content-Type', 'text/html; charset=utf-8');
+  response.setHeader('Content-Length', html.length);
+  response.setHeader('Vary', 'Authorization');
+  response.writeHead(200);
+  response.end(html);
+}
+
 async function existingFile(candidate) {
   try {
     const metadata = await stat(candidate);
@@ -554,6 +577,11 @@ const server = createServer(async (request, response) => {
     const privateDownload = privatePath.match(/^\/api\/files\/([^/]+)$/);
     if (privateDownload) {
       await downloadFromDrive(request, response, privateDownload[1]);
+      return;
+    }
+
+    if (request.method === 'GET' && privatePath === '/api/design-library') {
+      await serveDesignLibrary(request, response);
       return;
     }
 
