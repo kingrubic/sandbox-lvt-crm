@@ -117,7 +117,8 @@ Quy tắc:
 ## 8. Bố cục và responsive
 
 - Khung: sidebar trái 256px (thu gọn được) + header + vùng nội dung.
-- Breakpoint: **900px** (sidebar 218px), **680px** (mobile: sidebar thành ngăn trượt, form một cột, padding hai bên 16px). Dùng hai mốc này. Tránh tạo thêm mốc mới như 560, 620, 720, 820px nếu không cần.
+- **Menu sidebar** (tỉ lệ theo prototype Thư viện giao diện, màu/font của app): mục chính 14px / đậm 600, mục con trong nhóm 13px, cao 42px, cách nhau 5px, chữ `--lvt-ink-soft`; hover/đang chọn chữ `--lvt-navy` trên nền `--lvt-success-bg`, mục đang chọn có thanh nhấn teal 3px bên trái và đậm 800. Tiêu đề nhóm viết hoa 11px `--lvt-muted`. Logo 52px. Ở ≤ 900px sidebar 244px để tên mục không xuống dòng.
+- Breakpoint: **900px** (sidebar 244px), **680px** (mobile: sidebar thành ngăn trượt, form một cột, padding hai bên 16px). Dùng hai mốc này. Tránh tạo thêm mốc mới như 560, 620, 720, 820px nếu không cần.
 - Không để trang cuộn ngang ở chiều rộng 360px. Nội dung rộng (bảng, lịch) thì cuộn ngang bên trong khung của nó.
 - Tôn trọng `prefers-reduced-motion` với hiệu ứng lớn. Hiệu ứng chuyển tiếp chỉ khoảng 0.18–0.24s.
 
