@@ -9,7 +9,8 @@ export class FileHttpError extends Error {
 export function classifyFileError(error) {
   if (error instanceof FileHttpError) return error;
   const message = error instanceof Error ? error.message : String(error || 'UNKNOWN');
-  if (message === 'UNAUTHORIZED' || /Unauthenticated|Authentication/i.test(message)) {
+  // InvalidAuthHeader / OIDC errors come from Convex when the bearer token is malformed or expired.
+  if (message === 'UNAUTHORIZED' || /Unauthenticated|Authentication|InvalidAuthHeader|Could not (parse JWT|verify OIDC token)/i.test(message)) {
     return new FileHttpError(401, 'UNAUTHORIZED', error);
   }
   if (/FORBIDDEN|ACCESS_DENIED/i.test(message)) {
