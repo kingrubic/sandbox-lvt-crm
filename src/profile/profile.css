@@ -565,13 +565,13 @@
   padding: 18px 18px 16px;
   border-radius: 12px;
   background: #242526;
-  color: var(--lvt-muted);
+  color: #e4e6eb;
   box-shadow: 0 18px 48px rgba(0, 0, 0, .45);
 }
 
 .avatar-crop-dialog h2 {
   margin: 0 0 14px;
-  color: var(--lvt-muted);
+  color: #f5f6f7;
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -.02em;
@@ -658,7 +658,7 @@
   height: 28px;
   padding: 0;
   border: 0;
-  color: var(--lvt-muted);
+  color: #e4e6eb;
   background: transparent;
   font-size: 22px;
   line-height: 1;

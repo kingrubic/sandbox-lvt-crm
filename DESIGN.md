@@ -25,6 +25,20 @@
 | `--lvt-muted` | `#5a6b7c` | Chữ phụ, chú thích (≥ 5:1 trên mọi nền sáng của app) |
 | `--lvt-page` | `#f4f7f8` | Nền trang |
 | `--lvt-hero` | gradient navy → teal | Banner đầu trang |
+| `--lvt-ink-soft` | `#2b465e` | Chữ phụ đậm (giá trị trong form, mô tả quan trọng) |
+| `--lvt-surface` | `#fbfcfc` | Nền ô nhập, khối phụ trên card trắng |
+| `--lvt-surface-muted` | `#eef2f5` | Nền hover, nền trung tính nhạt |
+
+### Token trạng thái (cặp chữ / nền)
+
+| Trạng thái | Chữ | Nền | Viền |
+|---|---|---|---|
+| Thành công / hoàn thành | `--lvt-success-text` `#14604e` | `--lvt-success-bg` `#edf8f5` | `--lvt-line` |
+| Lỗi / quá hạn / từ chối | `--lvt-danger-text` `#9b4539` | `--lvt-danger-bg` `#ffebe7` | `--lvt-danger-line` `#efc7bf` |
+| Cảnh báo / chờ xử lý | `--lvt-warning-text` `#7a4b07` | `--lvt-warning-bg` `#fff3c8` | – |
+| Thông tin | `--lvt-blue` | `--lvt-info-bg` `#e4eef8` | – |
+
+Mọi cặp chữ/nền ở trên đạt ≥ 5.3:1.
 
 Quy tắc:
 
@@ -121,9 +135,13 @@ Quy tắc:
 - Hỗ trợ dark mode bằng màu theo hệ thống. Không hard-code màu chữ trắng / đen trên nền động.
 - Mọi thay đổi native phải tăng version và build number (`.cursor/rules/native-app-version.mdc`).
 
+## Chống tăng nợ giao diện
+
+`tests/design-ratchet.test.mjs` đếm theo từng file CSS trong `src/`: số mã màu viết thẳng (không tính dòng khai báo token) và số cỡ chữ dưới thang chuẩn (dưới 12px, hoặc dưới 11px với nhãn viết hoa). Con số không được vượt mốc trong `tests/design-baseline.json`; file CSS mới có mốc bằng 0. Khi dọn một file thì **hạ** mốc trong JSON. Không bao giờ nâng mốc để PR pass.
+
 ## Checklist trước khi gửi PR có đổi giao diện
 
-- [ ] Không có mã màu mới ngoài token, hoặc đã thêm token và cập nhật file này
+- [ ] Không có mã màu mới ngoài token, hoặc đã thêm token và cập nhật file này (`npm test` có test chặn tăng)
 - [ ] Chữ người dùng đọc từ 12px trở lên, nội dung chính 14px
 - [ ] Một nút chính mỗi vùng, hành động nguy hiểm có xác nhận
 - [ ] Nhãn nằm trên ô nhập, lỗi hiện sát ô, không dùng placeholder thay nhãn
