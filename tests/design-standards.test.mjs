@@ -37,3 +37,11 @@ test('Báo cáo uses the app font; Times New Roman stays only on the official L�
   const design = await read('DESIGN.md');
   assert.match(design, /Ngoại lệ duy nhất:\*\* bảng lịch chính thức của \*\*Lịch công tác\*\*/);
 });
+
+test('sidebar menu keeps the readable proportions chosen from the prototype', async () => {
+  const styles = await read('src/styles.css');
+  assert.match(styles, /\.shell-nav-button \{[^}]*min-height: 42px;[^}]*color: var\(--lvt-ink-soft\);[^}]*font-size: 14px;/);
+  assert.match(styles, /\.shell-nav-button\.nested \{ padding-left: 20px; font-size: 13px; \}/);
+  assert.match(styles, /\.shell-nav-button:hover, \.shell-nav-button\.active \{ color: var\(--lvt-navy\);/);
+  assert.match(styles, /@media \(max-width: 900px\) \{ \.shell \{ grid-template-columns: 244px minmax\(0, 1fr\); \}/);
+});
