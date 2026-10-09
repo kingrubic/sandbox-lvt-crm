@@ -14,7 +14,7 @@
   overflow: hidden;
   padding: 29px 32px;
   border-radius: 20px;
-  color: var(--lvt-muted);
+  color: #f8fbff;
   background:
     radial-gradient(circle at 80% 0%, rgba(230, 167, 66, .31), transparent 27%),
     linear-gradient(120deg, #102a51 0%, #165273 57%, #127c79 120%);
@@ -40,7 +40,7 @@
   padding: 7px 12px;
   border: 1px solid rgba(198, 245, 234, .55);
   border-radius: 999px;
-  color: var(--lvt-muted);
+  color: #c9f4e9;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: .12em;

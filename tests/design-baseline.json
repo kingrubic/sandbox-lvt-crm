@@ -1,0 +1,78 @@
+{
+  "src/boarding/boarding.css": {
+    "hex": 54,
+    "smallText": 0
+  },
+  "src/chat/chatHub.css": {
+    "hex": 35,
+    "smallText": 0
+  },
+  "src/duties/duties.css": {
+    "hex": 112,
+    "smallText": 0
+  },
+  "src/duties/sharedDutySchedule.css": {
+    "hex": 23,
+    "smallText": 0
+  },
+  "src/homeroom/homeroom.css": {
+    "hex": 121,
+    "smallText": 0
+  },
+  "src/management/managementTheme.css": {
+    "hex": 73,
+    "smallText": 0
+  },
+  "src/notifications/notifications.css": {
+    "hex": 81,
+    "smallText": 0
+  },
+  "src/peopleReview/peopleReview.css": {
+    "hex": 50,
+    "smallText": 0
+  },
+  "src/privacy/privacy.css": {
+    "hex": 1,
+    "smallText": 0
+  },
+  "src/profile/accountMenu.css": {
+    "hex": 17,
+    "smallText": 0
+  },
+  "src/profile/devices.css": {
+    "hex": 17,
+    "smallText": 0
+  },
+  "src/profile/profile.css": {
+    "hex": 58,
+    "smallText": 0
+  },
+  "src/reports/dutyCalendar.css": {
+    "hex": 88,
+    "smallText": 1
+  },
+  "src/settings/designLibrary.css": {
+    "hex": 2,
+    "smallText": 0
+  },
+  "src/settings/displaySettings.css": {
+    "hex": 48,
+    "smallText": 0
+  },
+  "src/settings/schoolYearSettings.css": {
+    "hex": 98,
+    "smallText": 0
+  },
+  "src/settings/userBulkImport.css": {
+    "hex": 10,
+    "smallText": 0
+  },
+  "src/styles.css": {
+    "hex": 127,
+    "smallText": 0
+  },
+  "src/work/work.css": {
+    "hex": 88,
+    "smallText": 0
+  }
+}

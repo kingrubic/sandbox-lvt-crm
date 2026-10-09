@@ -53,7 +53,7 @@
   padding: 5px 9px;
   border: 1px solid rgba(255, 255, 255, .3);
   border-radius: 999px;
-  color: var(--lvt-muted);
+  color: #caf1e8;
   background: rgba(255, 255, 255, .08);
   font-size: 11px;
   font-weight: 900;
@@ -70,7 +70,7 @@
 .work-hero p {
   max-width: 650px;
   margin: 0;
-  color: var(--lvt-muted);
+  color: #d5e8ed;
   font-size: 12px;
   line-height: 1.55;
 }
@@ -175,7 +175,7 @@
 }
 
 .work-primary-button span {
-  color: #f2b54d;
+  color: var(--lvt-gold);
   font-size: 17px;
   vertical-align: -1px;
 }
@@ -183,11 +183,11 @@
 .work-outline-button {
   border: 1px solid #b6d1d4;
   color: var(--lvt-teal-text);
-  background: #edf8f5;
+  background: var(--lvt-success-bg);
 }
 
 .work-outline-button:hover {
-  background: #dff2ed;
+  background: var(--lvt-success-bg);
 }
 
 .work-ghost-button {
@@ -197,15 +197,15 @@
 }
 
 .work-reject-button {
-  border: 1px solid #efc7bf;
-  color: #9b4539;
-  background: #ffebe7;
+  border: 1px solid var(--lvt-danger-line);
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
   box-shadow: 4px 5px 0 rgba(155, 69, 57, .1);
 }
 
 .work-reject-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  background: #ffdfd9;
+  background: var(--lvt-danger-bg);
   box-shadow: 4px 6px 0 rgba(155, 69, 57, .1);
 }
 
@@ -219,7 +219,7 @@
 .work-editor {
   margin-bottom: 18px;
   padding: 21px;
-  border: 1px solid #d8e3e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 17px;
   background: #fff;
   box-shadow: 0 15px 37px rgba(27, 61, 91, .08);
@@ -228,7 +228,7 @@
 
 .work-editor-title {
   padding-bottom: 14px;
-  border-bottom: 1px solid #e4ebee;
+  border-bottom: 1px solid var(--lvt-line);
 }
 
 .work-editor-index {
@@ -258,9 +258,9 @@
   width: 100%;
   min-height: 42px;
   padding: 0 12px;
-  border: 1px solid #d5e0e4;
+  border: 1px solid var(--lvt-line);
   border-radius: 10px;
-  color: #163447;
+  color: var(--lvt-ink);
   background: #fff;
   font: inherit;
 }
@@ -271,7 +271,7 @@
   justify-content: space-between;
   gap: 10px;
   margin-top: 3px;
-  color: #526b80;
+  color: var(--lvt-muted);
   font-size: 12px;
   font-weight: 850;
 }
@@ -292,10 +292,10 @@
   width: 100%;
   min-height: 42px;
   padding: 0 11px;
-  border: 1px solid #d9e3e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 9px;
-  color: #2b465e;
-  background: #fbfcfc;
+  color: var(--lvt-ink-soft);
+  background: var(--lvt-surface);
   font: inherit;
   font-size: 14px;
   outline: 0;
@@ -333,8 +333,8 @@
   padding: 16px;
   border: 1px dashed #9fc3c6;
   border-radius: 13px;
-  color: #527080;
-  background: linear-gradient(140deg, #f0f8f6, #fbfcfa);
+  color: var(--lvt-muted);
+  background: linear-gradient(140deg, var(--lvt-success-bg), var(--lvt-surface));
   text-align: center;
   cursor: pointer;
   transition: border .16s ease, background .16s ease, transform .16s ease;
@@ -343,7 +343,7 @@
 .work-file-dropzone:hover,
 .work-file-dropzone.is-dragging {
   border-color: var(--work-teal);
-  background: #e7f5f1;
+  background: var(--lvt-success-bg);
   transform: translateY(-1px);
 }
 
@@ -385,9 +385,9 @@
 .work-approver-block {
   overflow: hidden;
   margin-top: 5px;
-  border: 1px solid #dce5ea;
+  border: 1px solid var(--lvt-line);
   border-radius: 11px;
-  background: #f8fafb;
+  background: var(--lvt-surface);
 }
 
 .work-approver-block > .work-field-label {
@@ -414,7 +414,7 @@
   padding: 7px 8px;
   border: 1px solid transparent;
   border-radius: 8px;
-  color: #536a7c;
+  color: var(--lvt-muted);
   background: transparent;
   cursor: pointer;
 }
@@ -425,7 +425,7 @@
 .work-assignee-list label.is-selected {
   border-color: #b7dcd5;
   color: #155f56;
-  background: #eaf7f3;
+  background: var(--lvt-success-bg);
 }
 
 .work-approver-list input,
@@ -480,15 +480,15 @@
   gap: 8px;
   margin-top: 16px;
   padding-top: 14px;
-  border-top: 1px solid #e4ebee;
+  border-top: 1px solid var(--lvt-line);
 }
 
 .work-department-assignments {
   overflow: visible;
   margin-top: 17px;
-  border: 1px solid #dce5e9;
+  border: 1px solid var(--lvt-line);
   border-radius: 12px;
-  background: #f8fafb;
+  background: var(--lvt-surface);
 }
 
 .work-department-assignments > header {
@@ -497,7 +497,7 @@
   justify-content: space-between;
   gap: 14px;
   padding: 12px 13px;
-  border-bottom: 1px solid #e2e9ed;
+  border-bottom: 1px solid var(--lvt-line);
   border-radius: 12px 12px 0 0;
   background: #fff;
 }
@@ -529,7 +529,7 @@
   gap: 10px;
   align-items: start;
   padding: 12px;
-  border: 1px solid #e1e8eb;
+  border: 1px solid var(--lvt-line);
   border-radius: 11px;
   background: #fff;
 }
@@ -538,7 +538,7 @@
   display: grid;
   gap: 6px;
   min-width: 0;
-  color: #526b80;
+  color: var(--lvt-muted);
   font-size: 15px;
   font-weight: 850;
 }
@@ -550,10 +550,10 @@
   width: 100%;
   min-height: 42px;
   padding: 8px 11px;
-  border: 1px solid #d9e3e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 9px;
-  color: #2b465e;
-  background: #fbfcfc;
+  color: var(--lvt-ink-soft);
+  background: var(--lvt-surface);
   font: inherit;
   font-size: 14px;
 }
@@ -585,7 +585,7 @@
   max-height: 220px;
   overflow: auto;
   padding: 6px;
-  border: 1px solid #d9e3e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 9px;
   background: #fff;
   box-shadow: 0 10px 24px rgba(18, 53, 87, .12);
@@ -597,7 +597,7 @@
   padding: 7px 10px;
   border: 0;
   border-radius: 7px;
-  color: #2b465e;
+  color: var(--lvt-ink-soft);
   background: transparent;
   text-align: left;
   font: inherit;
@@ -608,7 +608,7 @@
 .work-person-select-menu button:hover,
 .work-person-select-menu button.is-selected {
   color: #155f56;
-  background: #eaf7f3;
+  background: var(--lvt-success-bg);
 }
 
 .work-person-select-menu p {
@@ -635,10 +635,10 @@
   margin-top: 22px;
   width: 36px;
   height: 36px;
-  border: 1px solid #efc7bf;
+  border: 1px solid var(--lvt-danger-line);
   border-radius: 9px;
-  color: #9b4539;
-  background: #ffebe7;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
@@ -684,7 +684,7 @@
 
 .work-assignment-table-head {
   color: var(--lvt-muted);
-  background: #edf2f4;
+  background: var(--lvt-surface-muted);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: .08em;
@@ -692,8 +692,8 @@
 }
 
 .work-assignment-row {
-  border-top: 1px solid #e6ecef;
-  color: #617585;
+  border-top: 1px solid var(--lvt-surface-muted);
+  color: var(--lvt-muted);
   background: #fff;
   font-size: 12px;
 }
@@ -723,8 +723,8 @@
   padding: 0;
   border: 0;
   border-radius: 8px;
-  color: #a24e3f;
-  background: #ffede9;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
   font-size: 16px;
 }
 
@@ -758,13 +758,13 @@
 }
 
 .work-feedback.success {
-  color: #166152;
-  background: #e4f6ef;
+  color: var(--lvt-success-text);
+  background: var(--lvt-success-bg);
 }
 
 .work-feedback.error {
-  color: #9b493d;
-  background: #ffebe6;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
 }
 
 .work-document-grid,
@@ -861,7 +861,7 @@
   padding: 3px 8px;
   border-radius: 999px;
   color: #7c631e;
-  background: #fff1c4;
+  background: var(--lvt-warning-bg);
   font-size: 11px;
   font-weight: 900;
   letter-spacing: .04em;
@@ -870,41 +870,41 @@
 
 .work-status.approved,
 .work-status.completed {
-  color: #146553;
+  color: var(--lvt-success-text);
   background: #def4eb;
 }
 
 .work-status.completed_late {
-  color: #9a6a12;
-  background: #fff0c9;
+  color: var(--lvt-warning-text);
+  background: var(--lvt-warning-bg);
 }
 
 .work-status.pending_completion {
-  color: #9a6a12;
-  background: #fff3c8;
+  color: var(--lvt-warning-text);
+  background: var(--lvt-warning-bg);
 }
 
 .work-status.rejected_completion {
-  color: #9b4539;
-  background: #ffdfd9;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
 }
 
 .work-status.rejected {
-  color: #9b4539;
-  background: #ffdfd9;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
 }
 
 .work-status.in_progress,
 .work-status.pending_task {
-  color: #2c5d91;
-  background: #e6f0fb;
+  color: var(--lvt-blue);
+  background: var(--lvt-info-bg);
 }
 
 .work-status.unassigned,
 .work-status.not_completed,
 .work-status.overdue {
-  color: #a24e3f;
-  background: #ffe9e4;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
 }
 
 .work-assignment-actions {
@@ -925,21 +925,21 @@
   align-items: center;
   padding: 4px 8px;
   border-radius: 999px;
-  background: #eef3f6;
-  color: #4a6578;
+  background: var(--lvt-surface-muted);
+  color: var(--lvt-muted);
   font-size: 12px;
   font-weight: 700;
 }
 
-.work-member-chip.status-completed { color: #146553; background: #def4eb; }
-.work-member-chip.status-completed_late { color: #9a6a12; background: #fff0c9; }
+.work-member-chip.status-completed { color: var(--lvt-success-text); background: #def4eb; }
+.work-member-chip.status-completed_late { color: var(--lvt-warning-text); background: var(--lvt-warning-bg); }
 .work-member-chip.status-pending,
 .work-member-chip.status-pending_task,
-.work-member-chip.status-overdue { color: #a24e3f; background: #ffe9e4; }
+.work-member-chip.status-overdue { color: var(--lvt-danger-text); background: var(--lvt-danger-bg); }
 
 .work-pending-label {
   width: 100%;
-  color: #5d7384;
+  color: var(--lvt-muted);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: .04em;
@@ -948,7 +948,7 @@
 
 .work-member-details {
   margin-top: 10px;
-  color: #5d7384;
+  color: var(--lvt-muted);
   font-size: 12px;
 }
 
@@ -959,7 +959,7 @@
 
 .work-section-title {
   margin: 8px 0 0;
-  color: #1e405e;
+  color: var(--lvt-ink-soft);
   font-size: 14px;
 }
 
@@ -968,11 +968,11 @@
   padding: 18px;
   border: 1px solid #f0d58a;
   border-radius: 18px;
-  background: linear-gradient(180deg, #fff9e8, #fffef8);
+  background: linear-gradient(180deg, #fff9e8, var(--lvt-paper));
 }
 
 .work-completion-queue > header span {
-  color: #9a6a12;
+  color: var(--lvt-warning-text);
   font-size: 12px;
   font-weight: 900;
   letter-spacing: .1em;
@@ -980,7 +980,7 @@
 
 .work-completion-queue > header h3 {
   margin: 6px 0 14px;
-  color: #1e405e;
+  color: var(--lvt-ink-soft);
   font-size: 18px;
 }
 
@@ -991,7 +991,7 @@
   gap: 24px 32px;
   padding: 24px !important;
   border-color: #f0d58a !important;
-  background: #fffdf5 !important;
+  background: var(--lvt-paper) !important;
 }
 
 .work-completion-card-content {
@@ -1022,8 +1022,8 @@
   padding: 12px 14px;
   border: 1px solid #f0b4aa;
   border-radius: 12px;
-  background: #fff1ee;
-  color: #8d3d32;
+  background: var(--lvt-danger-bg);
+  color: var(--lvt-danger-text);
 }
 
 .work-rejection-banner strong {
@@ -1045,7 +1045,7 @@
   padding: 12px 14px;
   border: 1px solid #b8ded6;
   border-radius: 12px;
-  background: #e8f6f2;
+  background: var(--lvt-success-bg);
   color: var(--work-navy);
 }
 
@@ -1066,18 +1066,18 @@
 }
 
 .work-late-flag {
-  color: #9a6a12;
+  color: var(--lvt-warning-text);
   font-weight: 800;
 }
 
 .work-outline-button.is-active {
-  color: #146553;
-  border-color: #146553;
-  background: #e7f6ef;
+  color: var(--lvt-success-text);
+  border-color: var(--lvt-success-text);
+  background: var(--lvt-success-bg);
 }
 
-.work-member-chip.status-pending_completion { color: #9a6a12; background: #fff3c8; }
-.work-member-chip.status-rejected_completion { color: #9b4539; background: #ffdfd9; }
+.work-member-chip.status-pending_completion { color: var(--lvt-warning-text); background: var(--lvt-warning-bg); }
+.work-member-chip.status-rejected_completion { color: var(--lvt-danger-text); background: var(--lvt-danger-bg); }
 
 
 .work-document-card h3,
@@ -1094,7 +1094,7 @@
   gap: 7px 12px;
   padding: 11px 12px;
   border-radius: 10px;
-  background: #f5f8f8;
+  background: var(--lvt-page);
 }
 
 .work-document-meta span {
@@ -1117,14 +1117,14 @@
 
 .work-document-meta a,
 .work-file-link {
-  color: #16786b;
+  color: var(--lvt-teal-text);
   text-decoration: none;
 }
 
 .work-file-link-button {
   padding: 0;
   border: 0;
-  color: #16786b;
+  color: var(--lvt-teal-text);
   background: transparent;
   cursor: pointer;
   font: inherit;
@@ -1163,7 +1163,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(22, 120, 107, .25);
-  color: #16786b;
+  color: var(--lvt-teal-text);
   background: #fff;
   cursor: pointer;
 }
@@ -1181,8 +1181,8 @@
 .work-file-preview-action:focus-visible,
 .work-file-preview-close:hover,
 .work-file-preview-close:focus-visible {
-  border-color: #16786b;
-  background: #eaf7f4;
+  border-color: var(--lvt-teal-text);
+  background: var(--lvt-success-bg);
   outline: 3px solid rgba(22, 120, 107, .14);
   outline-offset: 2px;
 }
@@ -1238,7 +1238,7 @@
   min-height: 64px;
   padding: 12px 14px 12px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, .1);
-  color: var(--lvt-muted);
+  color: #f4f8fb;
 }
 
 .work-file-preview-dialog > header strong {
@@ -1292,7 +1292,7 @@
 }
 
 .work-file-preview-content.is-office {
-  background: #e8eef2;
+  background: var(--lvt-surface-muted);
   grid-template-rows: minmax(0, 1fr);
   height: 100%;
   overflow: hidden;
@@ -1339,14 +1339,14 @@
   border: 1px solid #c5d3dc;
   border-radius: 999px;
   background: #fff;
-  color: #163447;
+  color: var(--lvt-ink);
   font-weight: 700;
   cursor: pointer;
 }
 
 .work-sheet-tab.is-active {
-  background: #163447;
-  border-color: #163447;
+  background: var(--lvt-ink);
+  border-color: var(--lvt-ink);
   color: #fff;
 }
 
@@ -1354,7 +1354,7 @@
   overflow: auto;
   min-height: 0;
   background: #fff;
-  border: 1px solid #d3dee6;
+  border: 1px solid var(--lvt-line);
   border-radius: 10px;
 }
 
@@ -1367,7 +1367,7 @@
 }
 
 .work-sheet-table td {
-  border: 1px solid #dce6ec;
+  border: 1px solid var(--lvt-line);
   padding: 6px 8px;
   white-space: pre-wrap;
   vertical-align: top;
@@ -1377,7 +1377,7 @@
   overflow: auto;
   min-height: 0;
   background: #fff;
-  border: 1px solid #d3dee6;
+  border: 1px solid var(--lvt-line);
   border-radius: 10px;
   color: #12202b;
 }
@@ -1427,9 +1427,9 @@
 
 .work-document-assignments > section {
   padding: 10px 11px;
-  border: 1px solid #dfe8eb;
+  border: 1px solid var(--lvt-line);
   border-radius: 10px;
-  background: #f8faf9;
+  background: var(--lvt-surface);
 }
 
 .work-document-assignments > section > header {
@@ -1448,7 +1448,7 @@
   display: -webkit-box;
   overflow: hidden;
   margin: 8px 0 6px;
-  color: #617786;
+  color: var(--lvt-muted);
   font-size: 12px;
   line-height: 1.45;
   -webkit-box-orient: vertical;
@@ -1488,7 +1488,7 @@
   border: 2px solid #fff;
   border-radius: 50%;
   color: var(--lvt-muted);
-  background: #dfe7eb;
+  background: var(--lvt-line);
   font-size: 12px;
   font-weight: 900;
   box-shadow: 0 2px 7px rgba(27, 61, 91, .12);
@@ -1512,7 +1512,7 @@
   gap: 10px;
   margin-top: 16px;
   padding-top: 15px;
-  border-top: 1px solid #e6ecee;
+  border-top: 1px solid var(--lvt-surface-muted);
 }
 
 .work-approval-actions > button {
@@ -1529,7 +1529,7 @@
 .work-progress {
   margin-top: 14px;
   padding-top: 13px;
-  border-top: 1px solid #e6ecee;
+  border-top: 1px solid var(--lvt-surface-muted);
 }
 
 .work-progress-head {
@@ -1543,7 +1543,7 @@
   margin: 9px 0 5px;
   overflow: hidden;
   border-radius: 999px;
-  background: #e7edef;
+  background: var(--lvt-surface-muted);
 }
 
 .work-progress-track span {
@@ -1570,7 +1570,7 @@
   place-items: center;
   min-height: 260px;
   padding: 28px;
-  border: 1px dashed #cbd9df;
+  border: 1px dashed var(--lvt-line);
   border-radius: 15px;
   color: var(--lvt-muted);
   background: rgba(255, 253, 247, .8);
@@ -1626,7 +1626,7 @@
 }
 
 .work-card-meta strong {
-  color: #496375;
+  color: var(--lvt-muted);
 }
 
 .work-file-link {
@@ -1656,9 +1656,9 @@
   justify-content: space-between;
   gap: 12px;
   padding: 9px 10px;
-  border: 1px solid #e1e8eb;
+  border: 1px solid var(--lvt-line);
   border-radius: 9px;
-  background: #fbfcfc;
+  background: var(--lvt-surface);
 }
 
 .work-task-row > span {
@@ -1738,14 +1738,14 @@
   border: 0;
   border-radius: 8px;
   color: var(--lvt-muted);
-  background: #edf2f3;
+  background: var(--lvt-surface-muted);
   font-size: 18px;
 }
 
 .work-modal .work-kicker {
   color: #267c70;
   border-color: #b8ded6;
-  background: #e8f6f2;
+  background: var(--lvt-success-bg);
 }
 
 .work-modal h3 {
@@ -1776,9 +1776,9 @@
   width: 100%;
   min-height: 38px;
   padding: 0 11px;
-  border: 1px solid #dce5e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 9px;
-  color: #2b465e;
+  color: var(--lvt-ink-soft);
   background: #fff;
   font: inherit;
   font-size: 13px;
@@ -1787,9 +1787,9 @@
 .work-assignee-list {
   max-height: 190px;
   margin-top: 5px;
-  border: 1px solid #dce5e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 10px;
-  background: #f7faf9;
+  background: var(--lvt-surface);
 }
 
 .work-modal-actions {
@@ -1798,7 +1798,7 @@
   gap: 8px;
   margin-top: 17px;
   padding-top: 14px;
-  border-top: 1px solid #e4ebed;
+  border-top: 1px solid var(--lvt-surface-muted);
 }
 
 .work-confirm-modal {
@@ -1944,10 +1944,10 @@
   height: 34px;
   min-height: 34px;
   padding: 0;
-  border: 1px solid #dce6e9;
+  border: 1px solid var(--lvt-line);
   border-radius: 9px;
   color: #3d5a73;
-  background: #f8faf9;
+  background: var(--lvt-surface);
   box-shadow: none;
   cursor: pointer;
 }
@@ -1960,7 +1960,7 @@
 
 .work-icon-button:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: #eef6f4;
+  background: var(--lvt-success-bg);
 }
 
 .work-icon-button:disabled {
@@ -1971,31 +1971,31 @@
 .work-edit-button {
   color: #126e66;
   border-color: #b6d1d4;
-  background: #edf8f5;
+  background: var(--lvt-success-bg);
 }
 
 .work-edit-button:hover:not(:disabled) {
-  background: #dff2ed;
+  background: var(--lvt-success-bg);
 }
 
 .work-delete-button {
-  color: #9b4539;
-  border-color: #efc7bf;
-  background: #ffebe7;
+  color: var(--lvt-danger-text);
+  border-color: var(--lvt-danger-line);
+  background: var(--lvt-danger-bg);
 }
 
 .work-delete-button:hover:not(:disabled) {
-  background: #ffdfd9;
+  background: var(--lvt-danger-bg);
 }
 
 .work-chat-button {
   color: #1d4f7a;
   border-color: #c5d7e8;
-  background: #eef5fb;
+  background: var(--lvt-surface-muted);
 }
 
 .work-chat-button:hover:not(:disabled) {
-  background: #e2eef8;
+  background: var(--lvt-info-bg);
 }
 
 .work-modal-backdrop.work-chat-backdrop {
@@ -2014,7 +2014,7 @@
   flex-direction: column;
   max-height: min(760px, calc(100vh - 32px));
   overflow: hidden;
-  border: 1px solid #d8e3e8;
+  border: 1px solid var(--lvt-line);
   background: #fff;
   color: var(--lvt-ink, #16243e);
   box-shadow: 0 27px 80px rgba(8, 29, 53, 0.3);
@@ -2042,9 +2042,9 @@
   max-height: min(380px, 46vh);
   overflow: auto;
   padding: 10px 6px 12px;
-  border: 1px solid #e4ecee;
+  border: 1px solid var(--lvt-surface-muted);
   border-radius: 12px;
-  background: #f7faf9;
+  background: var(--lvt-surface);
 }
 
 .work-chat-empty {
@@ -2070,7 +2070,7 @@
 }
 
 .work-chat-bubble.is-self .work-chat-bubble-body {
-  background: #e7f3ee;
+  background: var(--lvt-success-bg);
   border-color: #c9e3da;
 }
 
@@ -2078,7 +2078,7 @@
   position: relative;
   min-width: 0;
   padding: 8px 10px 9px;
-  border: 1px solid #e2e9ec;
+  border: 1px solid var(--lvt-line);
   border-radius: 12px;
   background: #fff;
 }
@@ -2103,7 +2103,7 @@
 }
 
 .work-chat-html {
-  color: #2b465e;
+  color: var(--lvt-ink-soft);
   font-size: 13px;
   line-height: 1.45;
   overflow-wrap: anywhere;
@@ -2175,15 +2175,15 @@
 
 .work-chat-recall:hover,
 .work-chat-recall:focus-visible {
-  color: #9b4539;
-  background: #ffebe7;
+  color: var(--lvt-danger-text);
+  background: var(--lvt-danger-bg);
 }
 
 .work-chat-composer {
   flex: 0 0 auto;
   margin-top: 12px;
   padding: 8px;
-  border: 1px solid #dce5e8;
+  border: 1px solid var(--lvt-line);
   border-radius: 12px;
   background: #fff;
 }
@@ -2199,17 +2199,17 @@
   min-width: 32px;
   min-height: 30px;
   padding: 0 8px;
-  border: 1px solid #d7e2e6;
+  border: 1px solid var(--lvt-line);
   border-radius: 8px;
-  color: #355068;
-  background: #f6faf9;
+  color: var(--lvt-ink-soft);
+  background: var(--lvt-page);
   font-family: inherit;
   font-size: 12px;
   font-weight: 850;
 }
 
 .work-chat-tool:hover:not(:disabled) {
-  background: #e8f3ef;
+  background: var(--lvt-success-bg);
 }
 
 .work-chat-tool:disabled {
@@ -2221,10 +2221,10 @@
   max-height: 160px;
   overflow: auto;
   padding: 8px 10px;
-  border: 1px solid #e4ecee;
+  border: 1px solid var(--lvt-surface-muted);
   border-radius: 9px;
-  color: #2b465e;
-  background: #fbfdfc;
+  color: var(--lvt-ink-soft);
+  background: var(--lvt-surface);
   font-size: 13px;
   line-height: 1.45;
   font-synthesis: weight style;
