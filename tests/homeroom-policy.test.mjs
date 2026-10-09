@@ -168,7 +168,7 @@ test('supervisor can import for any class without an assignment; teachers cannot
   assert.equal(canCorrectDisposition(supervisor, [], 'class-6a2', date), false);
   assert.throws(
     () => assertCanCorrectDisposition(supervisor, [], 'class-6a2', date),
-    new RegExp(SUPERVISOR_REQUIRED),
+    /DISPOSITION_FORBIDDEN/,
   );
   assert.equal(canImportAttendanceWithoutClassAssignment(supervisor), true);
   assert.doesNotThrow(() => assertCanSupervisorImport(supervisor, [], 'class-6a2', date));
@@ -183,6 +183,18 @@ test('supervisor can import for any class without an assignment; teachers cannot
   assert.equal(canUploadCamera(supervisor, [ended], 'class-6a1', date), true);
 });
 
+test('homeroom teacher classifies absences only for own class on that date; admin anywhere', () => {
+  const date = '2026-09-01';
+  assert.equal(canCorrectDisposition(teacher, [teacherAssignment], 'class-6a1', date), true);
+  assert.doesNotThrow(() => assertCanCorrectDisposition(teacher, [teacherAssignment], 'class-6a1', date));
+  assert.equal(canCorrectDisposition(teacher, [teacherAssignment], 'class-6a2', date), false);
+  assert.throws(
+    () => assertCanCorrectDisposition(teacher, [teacherAssignment], 'class-6a2', date),
+    /DISPOSITION_FORBIDDEN/,
+  );
+  assert.equal(canCorrectDisposition(admin, [], 'class-6a2', date), true);
+});
+
 test('view_all cannot run supervisor-only camera or disposition actions', () => {
   const date = '2026-09-01';
   assert.equal(canReadClass(viewAll, [], 'class-6a1', date), true);
@@ -190,7 +202,7 @@ test('view_all cannot run supervisor-only camera or disposition actions', () => 
   assert.equal(canCorrectDisposition(viewAll, [], 'class-6a1', date), false);
   assert.throws(
     () => assertCanCorrectDisposition(viewAll, [], 'class-6a1', date),
-    new RegExp(SUPERVISOR_REQUIRED),
+    /DISPOSITION_FORBIDDEN/,
   );
 });
 
@@ -630,15 +642,25 @@ test('missing-upload alert uses configured Vietnam calendar and published import
   assert.equal(published.shouldAlert, false);
   assert.equal(published.resolvedByPublication, true);
 
-  const unconfigured = evaluateMissingUploadAlert({
+  const defaultWeekday = evaluateMissingUploadAlert({
     date: '2026-09-01',
     nowMs: now,
     cutoffTime: '08:30',
     calendarDay: null,
     publishedImportId: null,
   });
-  assert.equal(unconfigured.shouldAlert, false);
-  assert.equal(unconfigured.calendarStatus, 'unconfigured');
+  assert.equal(defaultWeekday.shouldAlert, true);
+  assert.equal(defaultWeekday.calendarStatus, 'default_school_day');
+
+  const defaultSunday = evaluateMissingUploadAlert({
+    date: '2026-09-06',
+    nowMs: vietnamWallTimeToUtcMs('2026-09-06', '09:00'),
+    cutoffTime: '08:30',
+    calendarDay: null,
+    publishedImportId: null,
+  });
+  assert.equal(defaultSunday.shouldAlert, false);
+  assert.equal(defaultSunday.calendarStatus, 'default_weekend');
 });
 
 test('missing-upload alerts are computed per visible class and do not leak school-wide publication', () => {

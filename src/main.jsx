@@ -12,6 +12,7 @@ import SharedDutyScheduleView from './duties/SharedDutyScheduleView';
 import DutyWorkspaceTabs from './duties/DutyWorkspaceTabs';
 import { WorkUserView } from './work/WorkViews';
 import DocumentTypeSettings from './settings/DocumentTypeSettings';
+import SchoolYearSettings from './settings/SchoolYearSettings';
 import DisplaySettings from './settings/DisplaySettings';
 import UserBulkImport from './settings/UserBulkImport';
 import './settings/userBulkImport.css';
@@ -79,6 +80,7 @@ const SUPREME_SETTINGS = [
   ['roles', 'Thiết lập nhóm quyền'],
   ['positions', 'Thiết lập chức vụ'],
   ['document-types', 'Thiết lập loại văn bản'],
+  ['school-years', 'Thiết lập năm học'],
   ['display-settings', 'Thiết lập hiển thị'],
 ];
 const ROLE_LABELS = { admin: 'Administrator', moderator: 'Moderator', user: 'User' };
@@ -151,6 +153,7 @@ function AppShell({ session }) {
     if (canManageOperations) return PRIMARY_MENUS;
     return PRIMARY_MENUS.filter(([id]) => id === 'chat' || (menuAccess?.[id] && menuAccess[id] !== 'hidden'));
   }, [canManageOperations, menuAccess]);
+  const canUseChat = visiblePrimaryMenus.some(([id]) => id === 'chat');
   const sidebarPrimaryMenus = useMemo(
     () => visiblePrimaryMenus.filter(([id]) => isSidebarPrimaryMenu(id)),
     [visiblePrimaryMenus],
@@ -277,6 +280,7 @@ function AppShell({ session }) {
     const pathname = pathnameForMenu(id);
     if (window.location.pathname !== pathname) {
       window.history[replace ? 'replaceState' : 'pushState']({}, '', pathname);
+      window.dispatchEvent(new Event('lvt:locationchange'));
     }
     setMobileOpen(false);
   };
@@ -459,6 +463,13 @@ function AppShell({ session }) {
             <h1>{title}</h1>
           </div>
           <div className="header-user">
+            {canUseChat ? (
+              <ChatHeaderButton
+                active={active === 'chat'}
+                unreadCount={chatUnread?.count || 0}
+                onClick={() => choose('chat')}
+              />
+            ) : null}
             {canUseNotifications ? (
               <NotificationBell
                 data={notificationFeed}
@@ -481,6 +492,8 @@ function AppShell({ session }) {
           <PositionManagement />
         ) : active === 'document-types' && isAdmin ? (
           <DocumentTypeSettings />
+        ) : active === 'school-years' && isAdmin ? (
+          <SchoolYearSettings />
         ) : active === 'display-settings' && isAdmin ? (
           <DisplaySettings />
         ) : active === 'notifications' ? (
@@ -536,6 +549,22 @@ function AppShell({ session }) {
     </div>
     </ChatAutoOpenProvider>
     </OwnAvatarProvider>
+  );
+}
+
+function ChatHeaderButton({ active = false, unreadCount = 0, onClick }) {
+  return (
+    <button
+      type="button"
+      className={`header-chat-button${active ? ' is-active' : ''}${unreadCount > 0 ? ' has-unread' : ''}`}
+      onClick={onClick}
+      aria-label={`Trao đổi${unreadCount ? `, ${unreadCount} chưa đọc` : ''}`}
+      aria-current={active ? 'page' : undefined}
+      title="Trao đổi"
+    >
+      {navIconFor('chat')}
+      {unreadCount > 0 ? <span className="header-chat-badge">{unreadCount > 99 ? '99+' : unreadCount}</span> : null}
+    </button>
   );
 }
 

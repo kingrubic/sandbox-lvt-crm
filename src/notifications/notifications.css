@@ -207,6 +207,45 @@
 .notification-category-empty p { margin: 10px 0 0; font-size: 11px; }
 .notifications-loading { display: grid; place-items: center; min-height: 360px; color: #718493; }
 
+/* Header Trao đổi (chat hub) — mirrors notification bell */
+.header-chat-button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid #dbe5eb;
+  border-radius: 12px;
+  color: #27567a;
+  background: #f8fbfc;
+  cursor: pointer;
+}
+.header-chat-button svg { width: 18px; height: 18px; }
+.header-chat-button.is-active {
+  color: #1a5f8a;
+  border-color: #9ec4de;
+  background: #e8f3fa;
+  box-shadow: inset 0 0 0 1px rgba(39, 86, 122, .12);
+}
+.header-chat-badge {
+  position: absolute;
+  top: -6px;
+  right: -7px;
+  display: grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 4px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  color: #fff;
+  background: #df4747;
+  font-size: 8px;
+  font-weight: 900;
+  line-height: 1;
+}
+
 /* Header notification bell */
 .notification-bell-wrap { position: relative; }
 .notification-bell-button { position: relative; display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid #dbe5eb; border-radius: 12px; color: #27567a; background: #f8fbfc; }

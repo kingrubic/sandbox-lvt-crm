@@ -12,6 +12,7 @@ import {
 } from '../src/navigationRoutes.js';
 import { vietnamTodayYmd } from '../src/homeroom/homeroomTime.js';
 import { BACK_TO_OVERVIEW } from '../src/homeroom/classCatalog.js';
+import { homeroomRoles, parseHomeroomPath } from '../src/homeroom/homeroomRoutes.js';
 import {
   HomeroomStudentQueryErrorBoundary,
   HomeroomStudentQueryErrorFallback,
@@ -29,14 +30,52 @@ test('homeroom keeps /lop-chu-nhiem and supports deep subroutes for back/forward
   });
   assert.equal(homeroomPathname({ classId: 'c1', tab: 'diem-danh' }), '/lop-chu-nhiem/lop/c1/diem-danh');
   assert.equal(homeroomPathname({ manageClasses: true }), '/lop-chu-nhiem/quan-ly-lop');
-  assert.equal(homeroomPathname({ importAttendance: true }), '/lop-chu-nhiem/import-diem-danh');
-  assert.equal(homeroomPathname({ importAttendance: true, classId: 'c1' }), '/lop-chu-nhiem/import-diem-danh/c1');
+  assert.equal(homeroomPathname({ importAttendance: true }), '/lop-chu-nhiem/nhap-diem-danh');
+  assert.equal(homeroomPathname({ pendingAbsences: true }), '/lop-chu-nhiem/vang-cho-xu-ly');
   const nested = routeForPathname('/lop-chu-nhiem/lop/c1/bao-cao');
   assert.equal(nested?.menu, 'homeroom');
   assert.equal(nested?.homeroomPath, '/lop-chu-nhiem/lop/c1/bao-cao');
   assert.equal(routeForPathname('/lop-chu-nhiem/hoc-sinh/st1')?.menu, 'homeroom');
   assert.equal(routeForPathname('/lop-chu-nhiem/quan-ly-lop')?.menu, 'homeroom');
-  assert.equal(routeForPathname('/lop-chu-nhiem/import-diem-danh/c1')?.menu, 'homeroom');
+  assert.equal(routeForPathname('/lop-chu-nhiem/nhap-diem-danh')?.menu, 'homeroom');
+
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem'), { view: 'overview' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/vang-cho-xu-ly'), { view: 'pending' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/nhap-diem-danh'), { view: 'import' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/import-diem-danh/c1'), { view: 'import' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/quan-ly-lop'), { view: 'manage' });
+  // Lịch học đã chuyển sang Thiết lập tối cao › Thiết lập năm học; link cũ rơi về tổng quan.
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/lich-hoc'), { view: 'overview' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/lop/c1'), { view: 'class', classId: 'c1', tab: 'hoc-sinh' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/lop/c1/bao-cao'), { view: 'class', classId: 'c1', tab: 'bao-cao' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/lop/c1/khong-ton-tai'), { view: 'class', classId: 'c1', tab: 'hoc-sinh' });
+  assert.deepEqual(parseHomeroomPath('/lop-chu-nhiem/hoc-sinh/st%201'), { view: 'student', studentId: 'st 1' });
+  for (const tab of ['hoc-sinh', 'diem-danh', 'bao-cao', 'quan-ly']) {
+    assert.equal(parseHomeroomPath(homeroomPathname({ classId: 'c9', tab })).tab, tab);
+  }
+});
+
+test('homeroom roles: managers see everything, supervisors only import, view_all sees classes', () => {
+  assert.deepEqual(homeroomRoles({ isOperationalManager: true, menuAccess: { homeroom: 'view' } }), {
+    isManager: true,
+    isSupervisor: false,
+    isViewAll: false,
+    canImport: true,
+    seesClasses: true,
+  });
+  const supervisor = homeroomRoles({ menuAccess: { homeroom: 'supervisor' } });
+  assert.equal(supervisor.isSupervisor, true);
+  assert.equal(supervisor.canImport, true);
+  assert.equal(supervisor.seesClasses, false);
+  const viewAll = homeroomRoles({ menuAccess: { homeroom: 'view_all' } });
+  assert.equal(viewAll.isViewAll, true);
+  assert.equal(viewAll.canImport, false);
+  assert.equal(viewAll.seesClasses, true);
+  const teacher = homeroomRoles({ menuAccess: { homeroom: 'view' } });
+  assert.equal(teacher.isManager, false);
+  assert.equal(teacher.canImport, false);
+  assert.equal(teacher.seesClasses, true);
+  assert.equal(homeroomRoles(null).isManager, false);
 });
 
 test('homeroom frontend date defaults use Vietnam calendar, including UTC 18:00', () => {
@@ -51,21 +90,23 @@ test('homeroom frontend date defaults use Vietnam calendar, including UTC 18:00'
 test('empty school-year state is actionable and never renders an infinite overview loader', () => {
   const source = readFileSync(new URL('../src/homeroom/HomeroomRouter.jsx', import.meta.url), 'utf8');
   assert.match(source, /Chưa cấu hình năm học/);
-  assert.match(source, /Thiết lập năm học đầu tiên/);
-  assert.match(source, /createSchoolYear/);
+  // Tạo năm học nay nằm ở Thiết lập tối cao › Thiết lập năm học (chỉ Admin).
+  assert.match(source, /Mở Thiết lập năm học/);
+  assert.match(source, /pathnameForMenu\('school-years'\)/);
+  assert.doesNotMatch(source, /createSchoolYear/);
   assert.match(source, /disabled=\{!years\?\.length\}/);
   assert.match(source, /!selectedYearId \? \(/);
-  assert.match(source, /selectedYearId && \(session\?\.isOperationalManager/);
-  assert.match(source, /quan-ly-lop/);
-  assert.match(source, /view: 'manage'/);
+  assert.match(source, /<EmptySchoolYearState isAdmin=\{Boolean\(session\?\.isAdmin\)\} \/>/);
+  assert.match(source, /if \(years === undefined\)/);
+  assert.match(source, /manageClasses: true/);
 });
 
 test('student detail recovers from query errors without blanking the CRM', () => {
   const source = readFileSync(new URL('../src/homeroom/HomeroomRouter.jsx', import.meta.url), 'utf8');
   const boundarySource = readFileSync(new URL('../src/homeroom/studentQueryErrorBoundary.js', import.meta.url), 'utf8');
-  const studentView = source.slice(source.indexOf("route.view === 'student'"), source.indexOf("route.view === 'import'"));
+  const studentView = source.slice(source.indexOf("route.view === 'student' ? ("), source.indexOf('</HomeroomViewErrorBoundary>'));
   assert.match(studentView, /HomeroomStudentQueryErrorBoundary/);
-  assert.match(studentView, /<StudentDetail studentId=\{route\.studentId\} \/>/);
+  assert.match(studentView, /<HomeroomStudentDetail key=\{route\.studentId\} studentId=\{route\.studentId\}/);
   assert.match(boundarySource, /getDerivedStateFromError/);
   assert.match(boundarySource, /studentQueryErrorBoundaryState/);
   assert.doesNotMatch(studentView, /if\s*\(\s*!history\s*\)/);

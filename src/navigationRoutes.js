@@ -21,6 +21,7 @@ const MENU_PATHS = Object.freeze({
   roles: '/thiet-lap-nhom-quyen',
   positions: '/thiet-lap-chuc-vu',
   'document-types': '/thiet-lap-loai-van-ban',
+  'school-years': '/thiet-lap-nam-hoc',
   'display-settings': '/thiet-lap-hien-thi',
 });
 
@@ -30,7 +31,7 @@ const REPORT_PATHS = Object.freeze({
 });
 
 /** Primary menus kept off the left sidebar; still reachable (e.g. header bell). */
-const SIDEBAR_HIDDEN_MENUS = Object.freeze(['notifications']);
+const SIDEBAR_HIDDEN_MENUS = Object.freeze(['notifications', 'chat']);
 
 /** Account pages live in the header avatar menu, not the left sidebar. */
 const ACCOUNT_MENU_IDS = Object.freeze(['profile', 'change-password', 'devices']);
@@ -83,10 +84,8 @@ function normalizePathname(pathname) {
 export function homeroomPathname(args = {}) {
   if (args.studentId) return `/lop-chu-nhiem/hoc-sinh/${encodeURIComponent(args.studentId)}`;
   if (args.manageClasses) return '/lop-chu-nhiem/quan-ly-lop';
-  if (args.importAttendance && args.classId) {
-    return `/lop-chu-nhiem/import-diem-danh/${encodeURIComponent(args.classId)}`;
-  }
-  if (args.importAttendance) return '/lop-chu-nhiem/import-diem-danh';
+  if (args.pendingAbsences) return '/lop-chu-nhiem/vang-cho-xu-ly';
+  if (args.importAttendance) return '/lop-chu-nhiem/nhap-diem-danh';
   if (args.classId && args.tab) {
     return `/lop-chu-nhiem/lop/${encodeURIComponent(args.classId)}/${args.tab}`;
   }

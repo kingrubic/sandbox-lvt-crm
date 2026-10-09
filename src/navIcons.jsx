@@ -93,6 +93,13 @@ const NAV_ICONS = {
       <path d="M13.2 11.2h5M13.2 14.4h3.6" />
     </NavGlyph>
   ),
+  'school-years': () => (
+    <NavGlyph>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2" />
+      <path d="M8 3.5v3M16 3.5v3M3.5 10h17" />
+      <path d="m12 12.4.9 1.8 2 .3-1.45 1.4.35 2-1.8-.95-1.8.95.35-2-1.45-1.4 2-.3z" />
+    </NavGlyph>
+  ),
   'display-settings': () => (
     <NavGlyph>
       <path d="M4 8h16M4 16h16" />

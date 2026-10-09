@@ -10,6 +10,9 @@ import {
 export const SCHOOL_YEAR_NAME_TAKEN = "SCHOOL_YEAR_NAME_TAKEN";
 export const SCHOOL_YEAR_OVERLAP = "SCHOOL_YEAR_OVERLAP";
 export const SCHOOL_YEAR_LOCKED = "SCHOOL_YEAR_LOCKED";
+export const SCHOOL_YEAR_DELETE_DEFAULT = "SCHOOL_YEAR_DELETE_DEFAULT";
+export const SCHOOL_YEAR_DELETE_LOCKED = "SCHOOL_YEAR_DELETE_LOCKED";
+export const SCHOOL_YEAR_DELETE_IN_USE = "SCHOOL_YEAR_DELETE_IN_USE";
 export const CLASS_CODE_TAKEN = "CLASS_CODE_TAKEN";
 export const INVALID_GRADE_LEVEL = "INVALID_GRADE_LEVEL";
 export const INVALID_CLASS_CODE = "INVALID_CLASS_CODE";
@@ -96,6 +99,34 @@ export function findOverlappingActiveYear(
 
 export function assertSchoolYearEditable(year: { lockedAt?: number }) {
   if (year.lockedAt) throw new Error(SCHOOL_YEAR_LOCKED);
+}
+
+/**
+ * Các bảng tham chiếu `schoolYearId`. Năm học chỉ xoá được khi KHÔNG bảng nào còn dòng của năm đó
+ * (lịch nghỉ `schoolCalendarDays` là dữ liệu riêng của năm, được xoá cùng năm học).
+ */
+export const SCHOOL_YEAR_USAGE_TABLES = [
+  "homeroomClasses",
+  "classEnrollments",
+  "homeroomAssignments",
+  "studentAttendanceDays",
+  "attendanceImportUploads",
+  "studentRosterImportUploads",
+] as const;
+
+/**
+ * Lý do không được xoá năm học (mã lỗi) hoặc `null` nếu xoá được.
+ * Thứ tự: năm mặc định → năm đã khóa → còn dữ liệu (kèm danh sách bảng, vd. `SCHOOL_YEAR_DELETE_IN_USE:homeroomClasses`).
+ */
+export function schoolYearRemovalBlocker(
+  year: { active?: boolean; lockedAt?: number },
+  usedBy: readonly string[] = [],
+): string | null {
+  if (year.active) return SCHOOL_YEAR_DELETE_DEFAULT;
+  if (year.lockedAt) return SCHOOL_YEAR_DELETE_LOCKED;
+  const tables = SCHOOL_YEAR_USAGE_TABLES.filter((table) => usedBy.includes(table));
+  if (tables.length) return `${SCHOOL_YEAR_DELETE_IN_USE}:${tables.join(",")}`;
+  return null;
 }
 
 export function validateClassInput(args: { code: string; name: string; gradeLevel: number }) {

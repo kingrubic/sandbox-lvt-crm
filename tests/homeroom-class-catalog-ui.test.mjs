@@ -43,12 +43,16 @@ const usersSource = readFileSync(new URL('../convex/users.ts', import.meta.url),
 const cssSource = readFileSync(new URL('../src/homeroom/homeroom.css', import.meta.url), 'utf8');
 const reportsSource = readFileSync(new URL('../convex/homeroomReports.ts', import.meta.url), 'utf8');
 const contextSource = readFileSync(new URL('../convex/homeroomContext.ts', import.meta.url), 'utf8');
+const detailSource = readFileSync(new URL('../src/homeroom/HomeroomClassDetail.jsx', import.meta.url), 'utf8');
+const overviewSource = readFileSync(new URL('../src/homeroom/HomeroomOverview.jsx', import.meta.url), 'utf8');
+const rosterSource = readFileSync(new URL('../src/homeroom/HomeroomRoster.jsx', import.meta.url), 'utf8');
+const importSource = readFileSync(new URL('../src/homeroom/HomeroomAttendanceImport.jsx', import.meta.url), 'utf8');
 
 test('catalog and assignment controls are manager-only and ordinary users never see them', () => {
   assert.match(catalogUiSource, /Tạo lớp đầu tiên/);
   assert.match(catalogUiSource, /Quản lý lớp/);
   assert.match(routerSource, /ClassCatalogPanel/);
-  assert.match(routerSource, /ClassManagePanel/);
+  assert.match(detailSource, /ClassManagePanel/);
   assert.match(routerSource, /manageClasses:\s*true/);
   assert.match(catalogUiSource, /session\?\.isOperationalManager/);
   assert.match(catalogUiSource, /canManage/);
@@ -59,17 +63,20 @@ test('catalog and assignment controls are manager-only and ordinary users never 
     routerSource.indexOf('<ClassCatalogPanel') + 280,
   );
   assert.match(catalogCall, /session=/);
-  const manageCall = routerSource.slice(
-    routerSource.indexOf('<ClassManagePanel'),
-    routerSource.indexOf('<ClassManagePanel') + 280,
+  const manageRoute = routerSource.slice(
+    routerSource.indexOf("route.view === 'manage'"),
+    routerSource.indexOf('<ClassCatalogPanel'),
   );
-  assert.match(manageCall, /isOperationalManager/);
-  const overview = routerSource.slice(
-    routerSource.indexOf('function HomeroomOverview'),
-    routerSource.indexOf('function AttendanceImportClassPicker'),
+  assert.match(manageRoute, /roles\.isManager/);
+  assert.match(readFileSync(new URL('../src/homeroom/homeroomRoutes.js', import.meta.url), 'utf8'), /isManager = Boolean\(session\?\.isOperationalManager\)/);
+  const manageCall = detailSource.slice(
+    detailSource.indexOf('<ClassManagePanel'),
+    detailSource.indexOf('<ClassManagePanel') + 200,
   );
-  assert.match(overview, /TEACHER_OVERVIEW_TITLE/);
-  assert.doesNotMatch(overview, /ClassCatalogPanel/);
+  assert.match(manageCall, /canManage=\{detail\.permissions\.canManage\}/);
+  assert.match(detailSource, /managerOnly: true/);
+  assert.match(classesSource, /canManage: canWriteHomeroomCatalog\(actor\)/);
+  assert.doesNotMatch(overviewSource, /ClassCatalogPanel/);
   assert.equal(FIRST_CLASS_CTA, 'Tạo lớp đầu tiên');
   assert.equal(CLASS_CATALOG_TITLE, 'Quản lý lớp');
   assert.equal(TEACHER_OVERVIEW_TITLE, 'Lớp đang chủ nhiệm');
@@ -169,10 +176,10 @@ test('create-class form offers two years before and after the selected current y
   );
   assert.deepEqual(schoolYearWindow(years, 'missing'), []);
   assert.match(catalogUiSource, /schoolYears=\{createSchoolYears\}/);
-  assert.match(catalogUiSource, /defaultSchoolYearId=\{yearId\}/);
+  assert.match(catalogUiSource, /schoolYearWindow\(schoolYears, yearId\)/);
   assert.match(catalogUiSource, /schoolYears\.map\(\(year\) =>/);
   assert.match(catalogUiSource, /<option key=\{year\._id\} value=\{year\._id\}>\{year\.name\}<\/option>/);
-  assert.match(catalogUiSource, /onSubmit\(\{ schoolYearId, code, name, gradeLevel, notes \}\)/);
+  assert.match(catalogUiSource, /\(\{ schoolYearId, code, name, gradeLevel, notes \}\)/);
   assert.match(routerSource, /schoolYears=\{years\}/);
 });
 
@@ -244,28 +251,23 @@ test('isCurrentAssignment is date-effective both directions and future rows are 
   );
 });
 
-test('class cards expose code, name, grade, status, roster count, and a single open action', () => {
-  const cards = catalogUiSource.slice(
-    catalogUiSource.indexOf('export function ClassCards'),
+test('class catalog table exposes code, name, grade, status, roster count, and opens the class', () => {
+  const panel = catalogUiSource.slice(
+    catalogUiSource.indexOf('export function ClassCatalogPanel'),
     catalogUiSource.indexOf('function AssignmentGroup'),
   );
-  assert.match(catalogUiSource, /item\.code/);
-  assert.match(catalogUiSource, /item\.name/);
-  assert.match(catalogUiSource, /item\.gradeLevel/);
-  assert.match(catalogUiSource, /classStatusLabel\(item\.status\)/);
-  assert.match(catalogUiSource, /item\.rosterCount/);
-  assert.match(cards, /OPEN_CLASS_ACTION/);
-  assert.doesNotMatch(cards, />Quản lý</);
+  assert.match(panel, /item\.code/);
+  assert.match(panel, /item\.name/);
+  assert.match(panel, /item\.gradeLevel/);
+  assert.match(panel, /classStatusLabel\(item\.status\)/);
+  assert.match(panel, /item\.rosterCount/);
+  assert.match(panel, /onOpenClass\(item\._id\)/);
+  assert.match(panel, /aria-label=\{`Sửa lớp/);
   assert.equal(OPEN_CLASS_ACTION, 'Mở lớp');
   assert.match(classesSource, /rosterCount/);
-  assert.match(routerSource, /onOpenClass/);
-  const detail = routerSource.slice(
-    routerSource.indexOf('function ClassDetail'),
-    routerSource.indexOf('function StudentRoster'),
-  );
-  assert.match(detail, /<details/);
-  assert.match(detail, /<summary>\s*Quản lý lớp\s*<\/summary>/);
-  assert.ok(detail.indexOf('homeroom-tabs') < detail.indexOf('ClassManagePanel'));
+  assert.match(routerSource, /onOpenClass=/);
+  assert.match(detailSource, /\{ key: 'quan-ly', label: 'Quản lý lớp'/);
+  assert.ok(detailSource.indexOf('hr-tabs') < detailSource.indexOf('<ClassManagePanel'));
 });
 
 test('homeroom class catalog CSS stays one-column on mobile with visible focus and 44px targets', () => {
@@ -276,28 +278,21 @@ test('homeroom class catalog CSS stays one-column on mobile with visible focus a
   const mobile = cssSource.slice(cssSource.lastIndexOf('@media (max-width: 720px)'));
   assert.match(mobile, /flex-direction:\s*column/);
   assert.match(mobile, /grid-template-columns:\s*1fr/);
-  assert.match(cssSource, /\.homeroom-class-cards/);
-  assert.match(cssSource, /\.homeroom-manage-class-list/);
-  assert.match(cssSource, /\.homeroom-quick-assign/);
-  assert.match(cssSource, /\.homeroom-manage-disclosure\s*>\s*summary\s*\{[^}]*min-height:\s*44px/);
+  assert.match(cssSource, /\.hr-table-wrap\s*\{[^}]*overflow-x:\s*auto/);
+  assert.match(cssSource, /\.hr-table\s*\{/);
 });
 
 test('class workspace navigation exposes the current route and usable mobile overflow', () => {
-  const detail = routerSource.slice(
-    routerSource.indexOf('function ClassDetail'),
-    routerSource.indexOf('function StudentRoster'),
-  );
-  assert.match(detail, /className="homeroom-overview-button"/);
-  assert.match(detail, /className="homeroom-tabs"\s+aria-label="Điều hướng lớp"/);
-  assert.doesNotMatch(detail, /role="tab"/);
-  assert.match(detail, /aria-current=\{rosterTab \? 'page' : undefined\}/);
-  assert.match(detail, /aria-current=\{tab === 'diem-danh' \? 'page' : undefined\}/);
-  assert.doesNotMatch(detail, /role="tabpanel"/);
-  assert.match(cssSource, /@media\s*\(max-width:\s*720px\)[\s\S]*\.homeroom-tabs\s*\{[^}]*overflow-x:\s*auto/);
-  assert.match(cssSource, /@media\s*\(max-width:\s*720px\)[\s\S]*\.homeroom-tabs button\s*\{[^}]*width:\s*auto/);
+  assert.match(detailSource, /className="hr-back"/);
+  assert.match(detailSource, /className="hr-tabs"\s+aria-label="Điều hướng lớp"/);
+  assert.doesNotMatch(detailSource, /role="tab"/);
+  assert.match(detailSource, /aria-current=\{current === item\.key \? 'page' : undefined\}/);
+  assert.doesNotMatch(detailSource, /role="tabpanel"/);
+  assert.match(cssSource, /@media\s*\(max-width:\s*720px\)[\s\S]*\.hr-tabs\s*\{[^}]*overflow-x:\s*auto/);
+  assert.match(cssSource, /@media\s*\(max-width:\s*720px\)[\s\S]*\.hr-tabs button\s*\{[^}]*width:\s*auto/);
 });
 
-test('listScoped is teacher overview; catalog and attendance import use separate queries', () => {
+test('listScoped is teacher overview; catalog uses its own manager-only query', () => {
   const query = classesSource.slice(
     classesSource.indexOf('export const listScoped'),
     classesSource.indexOf('export const listCatalog'),
@@ -316,17 +311,10 @@ test('listScoped is teacher overview; catalog and attendance import use separate
   assert.match(catalogQuery, /currentHomeroomTeacher/);
   assert.match(catalogUiSource, /listCatalog/);
   assert.match(catalogUiSource, /includeArchived:\s*true/);
-  assert.match(catalogUiSource, /QuickHomeroomTeacherAssign/);
-  assert.match(reportsSource, /row\.status !== ["']active["']/);
-  const importView = routerSource.slice(
-    routerSource.indexOf('function AttendanceImportView'),
-    routerSource.indexOf('function AttendanceImportPreview'),
-  );
-  assert.match(importView, /listForAttendanceImport/);
-  assert.doesNotMatch(importView, /listScoped/);
-  assert.doesNotMatch(importView, /includeArchived:\s*true/);
-  assert.match(importView, /filterActiveClasses/);
-  assert.match(importView, /DOWNLOAD_ATTENDANCE_TEMPLATE_ACTION/);
+  assert.match(catalogUiSource, /AssignTeacherModal/);
+  assert.match(reportsSource, /status === ["']active["']/);
+  assert.doesNotMatch(importSource, /listScoped/);
+  assert.doesNotMatch(importSource, /includeArchived:\s*true/);
   assert.deepEqual(
     filterActiveClasses([
       { _id: 'a', status: 'active', code: '6A1' },
@@ -337,19 +325,16 @@ test('listScoped is teacher overview; catalog and attendance import use separate
 });
 
 test('archived class detail names the status, disables writes, and returns to overview', () => {
-  const detail = routerSource.slice(
-    routerSource.indexOf('function ClassDetail'),
-    routerSource.indexOf('function StudentRoster'),
-  );
-  assert.match(detail, /classStatusLabel\(['"]archived['"]\)/);
-  assert.match(detail, /BACK_TO_OVERVIEW/);
-  assert.match(detail, /archived=\{archived\}/);
+  assert.match(detailSource, /classStatusLabel\(['"]archived['"]\)/);
+  assert.match(detailSource, /Lớp đã lưu trữ — chỉ xem\./);
+  assert.match(detailSource, /onClick=\{nav\.back\}/);
   assert.equal(BACK_TO_OVERVIEW, 'Về tổng quan');
   assert.match(catalogUiSource, /không thể thêm phân công/);
-  assert.match(routerSource, /canImportRoster = !archived && Boolean\(session\?\.isOperationalManager\)/);
-  assert.match(routerSource, /canImport = !archived && Boolean\(session\?\.isOperationalManager\)/);
-  assert.match(detail, /IMPORT_ATTENDANCE_ACTION/);
-  assert.doesNotMatch(detail, /menuAccess\?\.homeroom === ['"]view['"]/);
+  assert.match(rosterSource, /canManage = Boolean\(detail\.permissions\?\.canManage\) && detail\.class\.status !== 'archived'/);
+  assert.match(classesSource, /canImportAttendance: !archived &&/);
+  assert.match(classesSource, /canCorrect: !archived &&/);
+  assert.match(classesSource, /canEditContacts: !archived &&/);
+  assert.doesNotMatch(detailSource, /menuAccess\?\.homeroom === ['"]view['"]/);
   assert.match(classesSource, /assertClassNotArchived/);
   assert.match(contextSource, /assertClassNotArchived/);
   assert.match(contextSource, /assertCanBulkImportRoster/);

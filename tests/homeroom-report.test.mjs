@@ -221,7 +221,7 @@ test('attendance summary authorizes every row by class and attendanceDate, not o
   assert.doesNotMatch(source, /assertClassReadable/);
   assert.doesNotMatch(source, /evaluateMissingUploadAlert\(/);
   assert.match(source, /evaluateScopedMissingUploadAlerts/);
-  assert.match(source, /resolveTeacherOverviewScope/);
+  assert.match(source, /resolveOverviewScope/);
 });
 
 const INTERNAL_STUDENT_ID = 'qn7abcinternalstudent01';

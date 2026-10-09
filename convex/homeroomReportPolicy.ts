@@ -156,6 +156,69 @@ export function summarizeAttendanceDays(
   };
 }
 
+export type StudentAttendanceTotals = {
+  studentId: string;
+  studentCode: string;
+  fullName: string;
+  present: number;
+  late: number;
+  absent_excused: number;
+  absent_unexcused: number;
+  absent_pending: number;
+  no_data: number;
+  exempt: number;
+  ratedRows: number;
+  attendanceRate: number;
+};
+
+/** One row per student, sorted by most absences first, then roster label. */
+export function summarizeByStudent(
+  days: Array<AttendanceDayRow & Partial<PublicStudentIdentity>>,
+): StudentAttendanceTotals[] {
+  const byStudent = new Map<string, StudentAttendanceTotals>();
+  for (const row of days) {
+    const key = String(row.studentId);
+    let entry = byStudent.get(key);
+    if (!entry) {
+      entry = {
+        studentId: key,
+        studentCode: row.studentCode || UNKNOWN_STUDENT_CODE,
+        fullName: row.fullName || UNKNOWN_STUDENT_NAME,
+        present: 0,
+        late: 0,
+        absent_excused: 0,
+        absent_unexcused: 0,
+        absent_pending: 0,
+        no_data: 0,
+        exempt: 0,
+        ratedRows: 0,
+        attendanceRate: 0,
+      };
+      byStudent.set(key, entry);
+    }
+    const status = row.effectiveStatus as keyof StudentAttendanceTotals;
+    if (status in entry && typeof entry[status] === "number" && status !== "ratedRows" && status !== "attendanceRate") {
+      (entry[status] as number) += 1;
+    }
+  }
+  const rows = [...byStudent.values()].map((entry) => {
+    const rated = entry.present + entry.late + entry.absent_excused + entry.absent_unexcused + entry.absent_pending;
+    return {
+      ...entry,
+      ratedRows: rated,
+      attendanceRate: rated ? (entry.present + entry.late) / rated : 0,
+    };
+  });
+  const absences = (row: StudentAttendanceTotals) => row.absent_excused + row.absent_unexcused + row.absent_pending;
+  return rows.sort(
+    (a, b) =>
+      absences(b) - absences(a)
+      || b.late - a.late
+      || a.fullName.localeCompare(b.fullName, "vi")
+      || a.studentCode.localeCompare(b.studentCode, "vi"),
+  );
+}
+
 export function buildAttendanceExportPayload(args: {
   summary: ReturnType<typeof summarizeAttendanceDays>;
   schoolName?: string;
@@ -166,6 +229,7 @@ export function buildAttendanceExportPayload(args: {
   generatedAt: number;
   generatedByUserId: string;
   generatedByName?: string;
+  studentTotals?: StudentAttendanceTotals[];
 }) {
   return {
     title: "Báo cáo điểm danh lớp chủ nhiệm",
@@ -180,6 +244,16 @@ export function buildAttendanceExportPayload(args: {
     totals: args.summary.counts,
     attendanceRate: args.summary.attendanceRate,
     ratedRows: args.summary.ratedRows,
+    studentTotals: (args.studentTotals || []).map((row) => ({
+      studentCode: row.studentCode,
+      fullName: row.fullName,
+      present: row.present,
+      late: row.late,
+      absent_excused: row.absent_excused,
+      absent_unexcused: row.absent_unexcused,
+      absent_pending: row.absent_pending,
+      attendanceRate: row.attendanceRate,
+    })),
     rows: args.summary.days.map((row) => ({
       classId: row.classId,
       studentId: row.studentId,

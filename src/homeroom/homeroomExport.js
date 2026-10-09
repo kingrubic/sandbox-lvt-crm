@@ -62,6 +62,18 @@ export function buildAttendanceReportVisibleMatrix(days) {
   ];
 }
 
+const RAW_OBSERVATION_LABELS = {
+  present: 'Đúng giờ',
+  late: 'Đi trễ',
+  absent: 'Chưa điểm danh',
+  unknown: 'Không rõ',
+};
+
+export function rawObservationLabel(raw) {
+  if (!raw) return '';
+  return RAW_OBSERVATION_LABELS[raw] || raw;
+}
+
 export function buildAttendanceXlsxMatrix(payload) {
   const header = [
     payload.title,
@@ -79,7 +91,24 @@ export function buildAttendanceXlsxMatrix(payload) {
       row.studentCode,
       row.fullName,
       attendanceStatusLabel(row.effectiveStatus),
-      row.rawObservation,
+      rawObservationLabel(row.rawObservation),
+    ]),
+  ];
+}
+
+export function buildStudentTotalsMatrix(payload) {
+  return [
+    ['Mã HS', 'Học sinh', 'Có mặt', 'Đi trễ', 'Vắng có phép', 'Vắng không phép', 'Vắng chờ xử lý', 'Tổng vắng', 'Chuyên cần'],
+    ...(payload.studentTotals || []).map((row) => [
+      row.studentCode,
+      row.fullName,
+      row.present || 0,
+      row.late || 0,
+      row.absent_excused || 0,
+      row.absent_unexcused || 0,
+      row.absent_pending || 0,
+      (row.absent_excused || 0) + (row.absent_unexcused || 0) + (row.absent_pending || 0),
+      `${((row.attendanceRate || 0) * 100).toFixed(1)}%`,
     ]),
   ];
 }
@@ -98,9 +127,11 @@ export function buildAttendancePdfLines(payload) {
 }
 
 export function downloadAttendanceXlsx(payload) {
-  const sheet = XLSX.utils.aoa_to_sheet(buildAttendanceXlsxMatrix(payload));
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, sheet, 'diem_danh');
+  if (payload.studentTotals?.length) {
+    XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(buildStudentTotalsMatrix(payload)), 'tong_hop_hoc_sinh');
+  }
+  XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(buildAttendanceXlsxMatrix(payload)), 'diem_danh');
   XLSX.writeFile(workbook, `bao_cao_diem_danh_${payload.from}_${payload.to}.xlsx`);
 }
 

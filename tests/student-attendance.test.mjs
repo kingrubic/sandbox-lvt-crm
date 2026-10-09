@@ -120,7 +120,7 @@ test('getStudentHistory authorizes the student from enrollments before filtering
     source.indexOf('export const getStudentHistory'),
     source.indexOf('export const getClassSummary'),
   );
-  assert.match(query, /classEnrollments/);
+  assert.match(query, /enrollmentsForStudent/);
   assert.match(query, /enrollments/);
   assert.match(query, /filterStudentAttendanceHistory/);
   assert.match(query, /enrollments,/);

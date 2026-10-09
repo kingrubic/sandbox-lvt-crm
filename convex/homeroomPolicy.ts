@@ -340,15 +340,61 @@ export function canUploadCamera(
   return canImportAttendanceWithoutClassAssignment(actor);
 }
 
+/**
+ * Absence classification (Có phép / Không phép): the GVCN effective on that
+ * attendance date, or an operational manager. Giám thị only imports files and
+ * view_all only reads.
+ */
 export function canCorrectDisposition(
   actor: HomeroomActor,
-  _assignments: HomeroomAssignment[],
-  _classId: string,
-  _date: string,
+  assignments: HomeroomAssignment[],
+  classId: string,
+  date: string,
 ): boolean {
-  // Whole-school access requested for Giám thị is limited to file import.
-  // Disposition changes remain an operational-manager action.
-  return isHomeroomOperationalManager(actor);
+  if (!hasHomeroomMenu(actor)) return false;
+  if (isHomeroomOperationalManager(actor)) return true;
+  if (isHomeroomSupervisorUser(actor) || isHomeroomViewAllUser(actor)) return false;
+  return teacherClassAssignmentsOnDate(actor, assignments, { date, classId }).length > 0;
+}
+
+/** Only camera "Vắng" rows can be classified; Có mặt / Trễ stay as observed. */
+export const CORRECTABLE_RAW_OBSERVATION = "absent";
+export const DISPOSITION_NOT_ABSENT = "DISPOSITION_NOT_ABSENT";
+export const DISPOSITION_FORBIDDEN = "DISPOSITION_FORBIDDEN";
+export const TEACHER_DISPOSITIONS = ["pending", "excused", "unexcused"] as const;
+
+export function assertDispositionTarget(day: { rawObservation: string }, nextDisposition: string) {
+  if (day.rawObservation !== CORRECTABLE_RAW_OBSERVATION) throw new Error(DISPOSITION_NOT_ABSENT);
+  if (!(TEACHER_DISPOSITIONS as readonly string[]).includes(nextDisposition)) {
+    throw new Error("INVALID_DISPOSITION");
+  }
+}
+
+/** Admin/Mod and "Xem tối cao" see every class of the year. */
+export function canViewWholeSchool(actor: HomeroomActor): boolean {
+  return isHomeroomOperationalManager(actor) || isHomeroomViewAllUser(actor);
+}
+
+export function resolveOverviewScope(
+  actor: HomeroomActor,
+  assignments: HomeroomAssignment[],
+  args: { date: string; schoolYearId?: string },
+): HomeroomClassScope & { mode: "school" | "teacher" } {
+  if (hasHomeroomMenu(actor) && canViewWholeSchool(actor)) return { kind: "all", mode: "school" };
+  return { ...resolveTeacherOverviewScope(actor, assignments, args), mode: "teacher" };
+}
+
+/** GVCN may edit student phone + guardians of the class they currently lead. */
+export function canEditStudentContacts(
+  actor: HomeroomActor,
+  assignments: HomeroomAssignment[],
+  classIds: string[],
+  date: string,
+): boolean {
+  if (!hasHomeroomMenu(actor)) return false;
+  if (isHomeroomOperationalManager(actor)) return true;
+  if (isHomeroomSupervisorUser(actor) || isHomeroomViewAllUser(actor)) return false;
+  return classIds.some((classId) => teacherClassAssignmentsOnDate(actor, assignments, { date, classId }).length > 0);
 }
 
 export function canSeeSensitiveContacts(
@@ -398,7 +444,7 @@ export function assertCanCorrectDisposition(
 ) {
   assertHomeroomActorReady(actor);
   if (!canCorrectDisposition(actor, assignments, classId, date)) {
-    throw new Error(SUPERVISOR_REQUIRED);
+    throw new Error(DISPOSITION_FORBIDDEN);
   }
 }
 

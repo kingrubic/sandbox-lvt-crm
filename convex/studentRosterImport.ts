@@ -98,9 +98,10 @@ export const getResult = query({
   handler: async (ctx, args) => {
     const upload = await loadRosterUploadOrThrow(ctx, args.uploadId);
     await assertRosterUploadActor(ctx, upload);
-    const rows = (await ctx.db.query("studentRosterImportRows").collect()).filter(
-      (row) => row.uploadId === args.uploadId,
-    );
+    const rows = await ctx.db
+      .query("studentRosterImportRows")
+      .withIndex("by_upload", (q) => q.eq("uploadId", args.uploadId))
+      .collect();
     return {
       upload,
       rows: rows.map((row) => ({
@@ -230,9 +231,10 @@ export const storeValidationInternal = internalMutation({
     if (upload.status === "committed" || upload.status === "committing") {
       throw new Error("IMPORT_UPLOAD_ALREADY_COMMITTED");
     }
-    const existing = (await ctx.db.query("studentRosterImportRows").collect()).filter(
-      (row) => row.uploadId === args.uploadId,
-    );
+    const existing = await ctx.db
+      .query("studentRosterImportRows")
+      .withIndex("by_upload", (q) => q.eq("uploadId", args.uploadId))
+      .collect();
     for (const row of existing) await ctx.db.delete(row._id);
     const now = Date.now();
     for (const row of args.rows) {
@@ -261,9 +263,10 @@ export const commitValidatedInternal = internalMutation({
     if (upload.status === "committed") return { uploadId: args.uploadId, alreadyCommitted: true };
     if (upload.status === "committing") throw new Error("IMPORT_UPLOAD_IN_PROGRESS");
     if (upload.status !== "validated") throw new Error("IMPORT_VALIDATION_FAILED");
-    const stored = (await ctx.db.query("studentRosterImportRows").collect()).filter(
-      (row) => row.uploadId === args.uploadId,
-    );
+    const stored = await ctx.db
+      .query("studentRosterImportRows")
+      .withIndex("by_upload", (q) => q.eq("uploadId", args.uploadId))
+      .collect();
     const sheetRows = stored.map((row) => JSON.parse(row.payload));
     const students = (await ctx.db.query("students").collect()).filter((row) => row.status === "active");
     const enrollments = await ctx.db.query("classEnrollments").collect();

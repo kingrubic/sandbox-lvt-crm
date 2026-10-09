@@ -29,6 +29,15 @@ function DevicesIcon() {
   );
 }
 
+function GuideIcon() {
+  return (
+    <MenuGlyph>
+      <path d="M12 6.5C9 4.5 5.5 4.5 3 5.5v14c2.5-1 6-1 9 1 3-2 6.5-2 9-1v-14c-2.5-1-6-1-9 1Z" />
+      <path d="M12 6.5v14" />
+    </MenuGlyph>
+  );
+}
+
 function LogoutIcon() {
   return (
     <MenuGlyph>
@@ -121,6 +130,19 @@ export default function AccountMenu({ onChoose, onSignOut }) {
               <span>Quản lý thiết bị đăng nhập</span>
               <ChevronIcon />
             </button>
+            <a
+              className="account-menu-row"
+              role="menuitem"
+              href="/huong-dan-su-dung.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Hướng dẫn sử dụng (mở trong tab mới)"
+              onClick={() => setOpen(false)}
+            >
+              <span className="account-menu-chip" aria-hidden="true"><GuideIcon /></span>
+              <span>Hướng dẫn sử dụng</span>
+              <ChevronIcon />
+            </a>
           </div>
 
           <button

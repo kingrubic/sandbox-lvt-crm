@@ -1,6 +1,7 @@
 import { currentUserOrThrow, resolveUserMenuAccess } from "./lib";
 import {
   assertCanBulkImportRoster,
+  assertCanListAttendanceImportClasses,
   assertCanReadClass,
   assertCanSupervisorImport,
   assertCanWriteHomeroomCatalog,
@@ -12,6 +13,7 @@ import {
 import { vietnamDateFromUtcMs } from "./homeroomTime";
 import type { MutationCtx } from "./_generated/server";
 import type { DbCtx } from "./lib";
+import { getClassById, getYearById } from "./homeroomData";
 
 export async function homeroomActorFromUser(
   ctx: DbCtx,
@@ -41,20 +43,46 @@ export async function homeroomCatalogWriterOrThrow(ctx: DbCtx) {
   return { user, actor };
 }
 
+function toAssignment(row: {
+  classId: string;
+  schoolYearId: string;
+  userId: string;
+  assignmentType: string;
+  scopeKind: string;
+  effectiveFrom: string;
+  effectiveTo?: string;
+  active: boolean;
+}): HomeroomAssignment {
+  return {
+    classId: row.classId,
+    schoolYearId: row.schoolYearId,
+    userId: row.userId,
+    assignmentType: row.assignmentType,
+    scopeKind: row.scopeKind,
+    effectiveFrom: row.effectiveFrom,
+    effectiveTo: row.effectiveTo,
+    active: row.active,
+  };
+}
+
+/** Assignments are a small table (≈ one row per class per GVCN change); the year index keeps it bounded. */
 export async function loadAssignments(ctx: DbCtx, schoolYearId?: string): Promise<HomeroomAssignment[]> {
-  const rows = await ctx.db.query("homeroomAssignments").collect();
-  return rows
-    .filter((row) => !schoolYearId || row.schoolYearId === schoolYearId)
-    .map((row) => ({
-      classId: row.classId,
-      schoolYearId: row.schoolYearId,
-      userId: row.userId,
-      assignmentType: row.assignmentType,
-      scopeKind: row.scopeKind,
-      effectiveFrom: row.effectiveFrom,
-      effectiveTo: row.effectiveTo,
-      active: row.active,
-    }));
+  const rows = schoolYearId
+    ? await ctx.db
+        .query("homeroomAssignments")
+        .withIndex("by_year_user", (q) => q.eq("schoolYearId", schoolYearId))
+        .collect()
+    : await ctx.db.query("homeroomAssignments").collect();
+  return rows.map(toAssignment);
+}
+
+/** Assignments of one user only — used for teacher-scoped checks. */
+export async function loadUserAssignments(ctx: DbCtx, userId: string): Promise<HomeroomAssignment[]> {
+  const rows = await ctx.db
+    .query("homeroomAssignments")
+    .withIndex("by_user_active", (q) => q.eq("userId", userId).eq("active", true))
+    .collect();
+  return rows.map(toAssignment);
 }
 
 export async function assertClassReadable(
@@ -63,24 +91,9 @@ export async function assertClassReadable(
   classId: string,
   date = vietnamDateFromUtcMs(Date.now()),
 ) {
-  const klass = await ctx.db.get(classId as never);
-  if (!klass || (klass as { status?: string }).status === undefined) {
-    const rows = await ctx.db.query("homeroomClasses").collect();
-    const found = rows.find((row) => String(row._id) === String(classId));
-    if (!found) throw new Error("CLASS_NOT_FOUND");
-    const assignments = await loadAssignments(ctx, found.schoolYearId);
-    assertCanReadClass(actor, assignments, String(found._id), date);
-    return found;
-  }
-  const found = klass as {
-    _id: string;
-    schoolYearId: string;
-    code: string;
-    name: string;
-    gradeLevel: number;
-    status: string;
-  };
-  const assignments = await loadAssignments(ctx, found.schoolYearId);
+  const found = await getClassById(ctx, classId);
+  if (!found) throw new Error("CLASS_NOT_FOUND");
+  const assignments = await loadUserAssignments(ctx, actor.userId);
   assertCanReadClass(actor, assignments, String(found._id), date);
   return found;
 }
@@ -103,13 +116,19 @@ export async function assertClassSupervisor(
   classId: string,
   date: string,
 ) {
-  const rows = await ctx.db.query("homeroomClasses").collect();
-  const found = rows.find((row) => String(row._id) === String(classId));
+  const found = await getClassById(ctx, classId);
   if (!found) throw new Error("CLASS_NOT_FOUND");
   assertClassNotArchived(found);
-  const assignments = await loadAssignments(ctx, found.schoolYearId);
-  assertCanSupervisorImport(actor, assignments, String(found._id), date);
+  assertCanSupervisorImport(actor, [], String(found._id), date);
   return found;
+}
+
+/** Whole-school camera import: Giám thị or Admin/Mod, for an existing school year. */
+export async function assertAttendanceImporter(ctx: DbCtx, actor: HomeroomActor, schoolYearId: string) {
+  assertCanListAttendanceImportClasses(actor);
+  const year = await getYearById(ctx, schoolYearId);
+  if (!year) throw new Error("SCHOOL_YEAR_NOT_FOUND");
+  return year;
 }
 
 export async function writeAudit(

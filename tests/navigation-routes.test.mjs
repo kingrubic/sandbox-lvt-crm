@@ -27,6 +27,8 @@ test('mỗi menu CRM có một đường dẫn con duy nhất', () => {
   assert.equal(pathnameForMenu('roles'), '/thiet-lap-nhom-quyen');
   assert.equal(pathnameForMenu('positions'), '/thiet-lap-chuc-vu');
   assert.equal(pathnameForMenu('document-types'), '/thiet-lap-loai-van-ban');
+  assert.equal(pathnameForMenu('school-years'), '/thiet-lap-nam-hoc');
+  assert.deepEqual(routeForPathname('/thiet-lap-nam-hoc'), { menu: 'school-years', reportSection: undefined });
 });
 
 test('đường dẫn con mở đúng menu và chuẩn hóa dấu gạch cuối', () => {
@@ -90,6 +92,18 @@ test('Thông báo vẫn có đường dẫn nhưng không nằm trên sidebar', 
   assert.equal(isSidebarPrimaryMenu('notifications'), false);
   assert.equal(isSidebarPrimaryMenu('work'), true);
   assert.equal(isSidebarPrimaryMenu('reports'), true);
+});
+
+test('Trao đổi vẫn có đường dẫn nhưng không nằm trên sidebar (header)', () => {
+  assert.equal(pathnameForMenu('chat'), '/trao-doi');
+  assert.deepEqual(routeForPathname('/trao-doi'), {
+    menu: 'chat',
+    reportSection: undefined,
+    chatPath: '/trao-doi',
+    chatKind: '',
+    chatEntityId: '',
+  });
+  assert.equal(isSidebarPrimaryMenu('chat'), false);
 });
 
 test('Ghi nhận lỗi có đường dẫn riêng trên sidebar', () => {

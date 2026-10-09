@@ -6,8 +6,8 @@ function statusChip(status) {
   const key = status || 'no_data';
   return React.createElement(
     'span',
-    { className: `homeroom-status ${key}` },
-    React.createElement('span', { 'aria-hidden': 'true' }, '●'),
+    { className: `hr-chip hr-chip--${key}` },
+    React.createElement('span', { className: 'hr-chip-dot', 'aria-hidden': 'true' }),
     attendanceStatusLabel(key),
   );
 }
@@ -15,7 +15,7 @@ function statusChip(status) {
 export function AttendanceReportsTable({ days }) {
   return React.createElement(
     'table',
-    { className: 'homeroom-table' },
+    { className: 'hr-table' },
     React.createElement(
       'thead',
       null,

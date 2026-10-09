@@ -26,6 +26,16 @@ export function convexErrorText(error) {
   return parts.filter(Boolean).join('\n') || 'UNKNOWN_ERROR';
 }
 
+/** Tên hiển thị của các loại dữ liệu chặn việc xoá năm học (khớp SCHOOL_YEAR_USAGE_TABLES ở convex/homeroomCatalog.ts). */
+export const SCHOOL_YEAR_USAGE_LABELS = {
+  homeroomClasses: 'lớp chủ nhiệm',
+  classEnrollments: 'học sinh được xếp lớp',
+  homeroomAssignments: 'phân công giáo viên chủ nhiệm',
+  studentAttendanceDays: 'dữ liệu điểm danh',
+  attendanceImportUploads: 'file điểm danh đã tải lên',
+  studentRosterImportUploads: 'file danh sách học sinh đã tải lên',
+};
+
 export function messageFor(error) {
   const raw = convexErrorText(error);
   if (/ArgumentValidationError|extraneous field|extra field/i.test(raw)) {
@@ -38,6 +48,30 @@ export function messageFor(error) {
   }
   if (/does not match the schema/i.test(raw)) {
     return 'Dữ liệu không khớp schema máy chủ. Vui lòng liên hệ quản trị viên để triển khai lại Convex.';
+  }
+  const missingColumns = raw.match(/ATTENDANCE_TEMPLATE_COLUMNS_MISSING(?::([A-Za-z,]+))?/);
+  if (missingColumns) {
+    const labels = {
+      classCode: 'Lớp học',
+      studentName: 'Tên học sinh',
+      dateOfBirth: 'Ngày sinh',
+      sourceStatus: 'Trạng thái điểm danh',
+      observedAt: 'Thời gian điểm danh',
+    };
+    const names = (missingColumns[1] || '').split(',').filter(Boolean).map((key) => labels[key] || key);
+    return names.length
+      ? `File điểm danh thiếu cột: ${names.join(', ')}.`
+      : 'File điểm danh thiếu cột bắt buộc. Vui lòng dùng file mẫu của hệ thống.';
+  }
+  const yearInUse = raw.match(/SCHOOL_YEAR_DELETE_IN_USE(?::([A-Za-z,]+))?/);
+  if (yearInUse) {
+    const names = (yearInUse[1] || '')
+      .split(',')
+      .filter(Boolean)
+      .map((key) => SCHOOL_YEAR_USAGE_LABELS[key] || key);
+    return names.length
+      ? `Không thể xoá năm học vì đã có ${names.join(', ')}. Chỉ xoá được năm học chưa có dữ liệu.`
+      : 'Không thể xoá năm học vì đã có dữ liệu lớp, học sinh hoặc điểm danh. Chỉ xoá được năm học chưa có dữ liệu.';
   }
   const messages = {
     USER_NOT_ACTIVE: 'Tài khoản không còn hoạt động. Vui lòng liên hệ quản trị viên.',
@@ -87,7 +121,7 @@ export function messageFor(error) {
     DOCUMENT_TYPE_NOT_FOUND: 'Không tìm thấy loại văn bản.',
     DOCUMENT_TYPE_NAME_TAKEN: 'Đã có loại văn bản trùng tên, vui lòng đặt tên khác.',
     DOCUMENT_TYPE_IN_USE: 'Không thể xóa vì vẫn còn file đang dùng loại văn bản này.',
-    IMPORT_FILE_TOO_LARGE: 'File import vượt quá giới hạn 2 MB.',
+    IMPORT_FILE_TOO_LARGE: 'File vượt quá dung lượng cho phép (2 MB với danh sách, 4 MB với file điểm danh).',
     INVALID_IMPORT_FILE: 'Chỉ chấp nhận file Excel (.xlsx).',
     INVALID_IMPORT_HEADERS: 'File không đúng mẫu. Vui lòng dùng file nhập liệu mẫu của hệ thống.',
     IMPORT_FILE_EMPTY: 'File import trống.',
@@ -168,12 +202,39 @@ export function messageFor(error) {
     INVALID_EVALUATION_TEXT: 'Nội dung đánh giá bắt buộc và tối đa 5.000 ký tự.',
     INVALID_EVALUATION_PERIOD: 'Kỳ đánh giá không hợp lệ.',
     HOMEROOM_SCOPE_FORBIDDEN: 'Bạn không có lớp đang chủ nhiệm cho thao tác này.',
-    SUPERVISOR_REQUIRED: 'Chỉ Giám thị hoặc quản trị nghiệp vụ mới được nhập/công bố điểm danh camera hoặc phân loại vắng.',
+    SUPERVISOR_REQUIRED: 'Chỉ Giám thị hoặc Admin/Mod mới được nhập và công bố điểm danh.',
+    DISPOSITION_FORBIDDEN: 'Chỉ GVCN của lớp trong ngày đó hoặc Admin/Mod mới được phân loại vắng.',
+    DISPOSITION_NOT_ABSENT: 'Chỉ phân loại được học sinh có trạng thái Vắng từ file điểm danh.',
+    DISPOSITION_BATCH_TOO_LARGE: 'Mỗi lần chỉ phân loại tối đa 100 học sinh.',
+    INVALID_DISPOSITION_NOTE: 'Ghi chú phân loại tối đa 500 ký tự.',
+    CONTACT_EDIT_FORBIDDEN: 'Bạn chỉ được sửa liên hệ của học sinh thuộc lớp đang chủ nhiệm.',
+    INVALID_PHONE: 'Số điện thoại không hợp lệ.',
+    INVALID_TEXT: 'Nội dung quá dài hoặc không hợp lệ.',
+    INVALID_STUDENT_CODE: 'Mã học sinh không hợp lệ. Chỉ dùng chữ, số, _ hoặc -.',
+    GUARDIAN_LIMIT: 'Mỗi học sinh có tối đa 6 người giám hộ.',
+    GUARDIAN_NOT_FOUND: 'Không tìm thấy người giám hộ.',
+    HOMEROOM_TEACHER_ALREADY_ASSIGNED: 'Giáo viên này đang chủ nhiệm một lớp khác trong cùng thời gian.',
+    WITHDRAW_BEFORE_START: 'Ngày thôi học không được trước ngày bắt đầu học ở lớp hiện tại.',
+    INVALID_REASON: 'Lý do tối đa 300 ký tự.',
+    REPORT_RANGE_TOO_LONG: 'Khoảng thời gian báo cáo quá dài. Vui lòng chọn ngắn hơn.',
+    INVALID_DATE_RANGE: 'Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.',
+    CALENDAR_DATE_OUTSIDE_YEAR: 'Ngày nằm ngoài thời gian của năm học.',
+    INVALID_CALENDAR_NOTE: 'Ghi chú lịch tối đa 120 ký tự.',
+    HOLIDAY_RANGE_TOO_LONG: 'Mỗi đợt nghỉ tối đa 92 ngày. Hãy chia thành nhiều đợt.',
+    ATTENDANCE_TEMPLATE_HEADER_NOT_FOUND:
+      'Không tìm thấy dòng tiêu đề. File cần có các cột: Lớp học, Tên học sinh, Ngày sinh, Trạng thái điểm danh, Thời gian điểm danh.',
+    IMPORT_TOO_MANY_ROWS: 'File có quá nhiều dòng. Vui lòng kiểm tra lại file điểm danh.',
+    ATTENDANCE_DATE_OUTSIDE_YEAR: 'Ngày điểm danh nằm ngoài thời gian của năm học.',
+    ATTENDANCE_DATE_IN_FUTURE: 'Không thể nhập điểm danh cho ngày trong tương lai.',
+    INVALID_REPLACE_MODE: 'Cách xử lý dữ liệu đã có không hợp lệ.',
     HOMEROOM_MENU_HIDDEN: 'Bạn không có quyền mở menu Lớp chủ nhiệm.',
     SCHOOL_YEAR_NOT_FOUND: 'Không tìm thấy năm học.',
     SCHOOL_YEAR_NAME_TAKEN: 'Tên năm học đã tồn tại.',
     SCHOOL_YEAR_OVERLAP: 'Không thể có hai năm học đang hoạt động chồng ngày.',
     SCHOOL_YEAR_LOCKED: 'Năm học đã khóa, không thể sửa thông tin thường.',
+    SCHOOL_YEAR_DELETE_DEFAULT:
+      'Không thể xoá năm học đang là mặc định của Lớp chủ nhiệm. Hãy đặt năm học khác làm mặc định trước.',
+    SCHOOL_YEAR_DELETE_LOCKED: 'Năm học đã khóa, không thể xoá.',
     CLASS_NOT_FOUND: 'Không tìm thấy lớp.',
     CLASS_ARCHIVED: 'Lớp đã lưu trữ. Không thể phân công, nhập danh sách hoặc nhập điểm danh.',
     CLASS_CODE_TAKEN: 'Mã lớp đã tồn tại trong năm học này.',
@@ -188,7 +249,7 @@ export function messageFor(error) {
     STUDENT_NOT_FOUND: 'Không tìm thấy học sinh.',
     STUDENT_CODE_EXISTS: 'Mã học sinh đã tồn tại.',
     ATTENDANCE_DAY_NOT_FOUND: 'Không tìm thấy buổi điểm danh.',
-    ATTENDANCE_REPLACE_MODE_REQUIRED: 'Ngày này đã có file công bố. Hãy chọn bổ sung, thay quan sát camera, hoặc hủy.',
+    ATTENDANCE_REPLACE_MODE_REQUIRED: 'Ngày này đã có điểm danh được công bố. Hãy chọn Bổ sung, Ghi đè dữ liệu camera hoặc Bỏ qua lớp đã có dữ liệu.',
     ATTENDANCE_ALREADY_PUBLISHED: 'Ngày điểm danh này đã được công bố.',
     IMPORT_ROWS_UNRESOLVED: 'Còn dòng lỗi chưa xử lý. Không thể công bố.',
     CORRECTION_REASON_REQUIRED: 'Cần nhập lý do hoặc ghi chú khi phân loại hoặc đổi phân loại vắng.',

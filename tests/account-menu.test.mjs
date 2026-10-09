@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-test('header account menu is Facebook-style and lists the four account actions', () => {
+test('header account menu is Facebook-style and lists account actions', () => {
   const main = readFileSync(new URL('../src/main.jsx', import.meta.url), 'utf8');
   const menu = readFileSync(new URL('../src/profile/AccountMenu.jsx', import.meta.url), 'utf8');
   const css = readFileSync(new URL('../src/profile/accountMenu.css', import.meta.url), 'utf8');
@@ -22,6 +22,22 @@ test('header account menu is Facebook-style and lists the four account actions',
   assert.match(menu, /onSignOut\(\)/);
   assert.match(css, /border-radius: 50%/);
   assert.match(css, /\.account-menu-logout/);
+});
+
+test('guide is a safe new-tab link after devices and before logout', () => {
+  const menu = readFileSync(new URL('../src/profile/AccountMenu.jsx', import.meta.url), 'utf8');
+  const link = menu.match(/<a\s[^>]*href="\/huong-dan-su-dung\.html"[^>]*>[\s\S]*?<\/a>/)?.[0];
+  assert.ok(link, 'native guide anchor must exist');
+  assert.match(link, /role="menuitem"/);
+  assert.match(link, /target="_blank"/);
+  assert.match(link, /rel="noopener noreferrer"/);
+  assert.match(link, /onClick=\{\(\) => setOpen\(false\)\}/);
+  assert.match(link, /Hướng dẫn sử dụng/);
+  assert.ok(menu.indexOf('Quản lý thiết bị đăng nhập') < menu.indexOf(link));
+  assert.ok(menu.indexOf(link) < menu.indexOf('className="account-menu-row account-menu-logout"'));
+  const guide = readFileSync(new URL('../public/huong-dan-su-dung.html', import.meta.url), 'utf8');
+  assert.match(guide, /<title>Cẩm nang CRM · THCS Lê Văn Tám/);
+  assert.equal((guide.match(/class="topic"/g) || []).length, 61);
 });
 
 test('account pages are centered, single-column, and use colorful field icons', () => {
