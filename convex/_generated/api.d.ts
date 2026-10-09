@@ -24,6 +24,7 @@ import type * as chatMessagePolicy from "../chatMessagePolicy.js";
 import type * as chatNotifications from "../chatNotifications.js";
 import type * as classOrder from "../classOrder.js";
 import type * as departments from "../departments.js";
+import type * as designLibrary from "../designLibrary.js";
 import type * as documentTypePolicy from "../documentTypePolicy.js";
 import type * as documentTypes from "../documentTypes.js";
 import type * as driveUploadStages from "../driveUploadStages.js";
@@ -112,6 +113,7 @@ declare const fullApi: ApiFromModules<{
   chatNotifications: typeof chatNotifications;
   classOrder: typeof classOrder;
   departments: typeof departments;
+  designLibrary: typeof designLibrary;
   documentTypePolicy: typeof documentTypePolicy;
   documentTypes: typeof documentTypes;
   driveUploadStages: typeof driveUploadStages;
