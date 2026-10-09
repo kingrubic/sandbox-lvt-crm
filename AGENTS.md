@@ -47,6 +47,10 @@ Prod đang có khách (Trường THCS Lê Văn Tám) sử dụng. **Mọi thay �
 - Hostname proxy cũ `lvt-convex.vscgroup.io.vn` / `lvt-convex-site.vscgroup.io.vn` đã ngừng (trả 530).
 - Thư mục sandbox và prod chứa file nhạy cảm chưa track (`.env.local*`, `.convex-cloud-keys.csv`, `client_secret_*.json`, keystore, file xlsx dữ liệu học sinh). Không đọc, in hoặc commit chúng.
 
+## Giao diện
+
+Mọi thay đổi giao diện (web, Android, iOS) theo [`DESIGN.md`](DESIGN.md). Rule Cursor: `.cursor/rules/design.mdc`. Prototype gốc (Thư viện giao diện) chỉ admin xem tại `/thu-vien-giao-dien`.
+
 ## What is committed vs local-only
 
 | Artifact | Commit? | Why |
