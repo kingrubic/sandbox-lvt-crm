@@ -1,26 +1,5 @@
 #!/bin/zsh
-set -euo pipefail
-
-if (( $# == 0 )); then
-  echo "usage: $0 <command> [args...]" >&2
-  exit 64
-fi
-
-export CONVEX_SELF_HOSTED_URL="http://127.0.0.1:3210"
-if ! admin_key="$(
-  security find-generic-password \
-    -s lvt-convex-local-admin-key \
-    -a lvt-crm \
-    -w
-)"; then
-  echo "failed to read lvt-convex-local-admin-key from Keychain" >&2
-  exit 78
-fi
-if [[ -z "$admin_key" ]]; then
-  echo "lvt-convex-local-admin-key is empty" >&2
-  exit 78
-fi
-export CONVEX_SELF_HOSTED_ADMIN_KEY="$admin_key"
-export CONVEX_DEPLOYMENT=""
-
-exec "$@"
+# Retired at the Convex Cloud cutover (2026-09-14). 127.0.0.1:3210 now serves another project,
+# so this wrapper refuses to run instead of pointing the Convex CLI there.
+echo "lvt-convex-self-hosted-env.sh is retired: use ./scripts/lvt-convex-cloud-env.sh <dev|prod> <command>" >&2
+exit 78

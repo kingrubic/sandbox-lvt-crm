@@ -242,9 +242,9 @@ npx convex env set SITE_URL http://localhost:5173
 ### Đẩy functions + seed + frontend
 
 ```bash
-# Push functions (self-hosted). -y bỏ confirm.
-npx convex deploy -y
-# hoặc: npm run convex:deploy / npm run convex:dev
+# Convex Cloud: key đọc từ ~/projects/LVT-CRM/.convex-cloud-keys.csv (dòng LVT-CRM), không in ra.
+npm run convex:dev -- --once        # dev:decisive-puma-318 (sandbox)
+LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953 npm run convex:deploy -- -y   # prod, cần tree sạch
 
 npx convex run internal.seed.seed
 
@@ -370,8 +370,7 @@ UI: **Thiết lập người dùng** — nút *Tải file nhập liệu mẫu* +
 npm run check          # scripts/check-files.mjs
 npm run build
 git diff --check
-npx convex deploy -y   # cần CONVEX_SELF_HOSTED_*
-# alias: npm run convex:deploy
+LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953 npm run convex:deploy -- -y   # prod, tree sạch
 ```
 
 `npm run typecheck` = `convex codegen --typecheck enable` (cần credentials).
@@ -382,8 +381,8 @@ npx convex deploy -y   # cần CONVEX_SELF_HOSTED_*
 | `npm run build` / `preview` | Build / xem `dist/` |
 | `npm run check` | Kiểm tra file bắt buộc |
 | `npm run typecheck` | Codegen + typecheck Convex |
-| `npm run convex:dev` | `convex dev` |
-| `npm run convex:deploy` | `convex deploy` |
+| `npm run convex:dev` | `convex dev` vào Convex Cloud dev (`decisive-puma-318`) |
+| `npm run convex:deploy` | `convex deploy` vào prod (`confident-guanaco-953`); bắt buộc `LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953` và tree sạch |
 
 ## Deploy (self-hosted hiện tại)
 

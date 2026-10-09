@@ -20,7 +20,7 @@
 - Any Android / iOS UIKit change must bump the Profile version (`versionName` / `MARKETING_VERSION`) and build number. See `.cursor/rules/native-app-version.mdc`.
 - Tests: Node test runner under `tests/*.test.mjs`.
 - Production frontend: `https://lvt.vscgroup.io.vn`.
-- Self-hosted Convex deployment commands must use the repository wrapper scripts; never expose or inline admin keys.
+- Convex runs on Convex Cloud (dev `decisive-puma-318` = sandbox, prod `confident-guanaco-953` = customers). Deploy/codegen only through `scripts/lvt-convex-cloud-env.sh` (the npm scripts); never expose or inline deploy/admin keys. The old self-hosted wrapper is retired because `127.0.0.1:3210` now belongs to another project.
 - Cursor agents also load `.cursor/rules/*.mdc` (core + import always-on; work/auth rules by glob). Keep those rules in sync when changing invariants.
 
 ## Engineering discipline
@@ -104,7 +104,8 @@
 - Treat `convex/_generated/` as generated output; do not hand-edit it.
 - Schema/function changes must typecheck and, when deployment/codegen is explicitly requested, use repository scripts:
   - `npm run typecheck:convex-codegen`
-  - `npm run convex:deploy`
+  - `npm run convex:dev -- --once` (dev)
+  - `LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953 npm run convex:deploy -- -y` (prod; clean worktree of the reviewed commit only)
 - Never run a Convex deploy merely to make generated files change unless deployment is in scope.
 
 ## Required verification
