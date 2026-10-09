@@ -4,6 +4,7 @@
 
 - Work only inside this repository. Never scan `/Users/vsc_agent`, the user home, sibling workspaces, or unrelated projects.
 - Start with `git status --short`. Preserve unrelated dirty and untracked files.
+- Prod has live customers: make every change in the sandbox checkout `~/projects/sandbox-lvt-crm` first; promote to `~/projects/LVT-CRM` only after the owner approves. Environments, release flow, deploy commands and backups: `AGENTS.md` → *Môi trường, quy trình phát hành và vận hành*.
 - Never modify or commit `ios-uikit-lvt.zip`, archives, `.derivedData`, runtime caches, logs, secrets, credentials, or local environment files.
 - Do not read macOS Keychain, `.env*`, token stores, OAuth data, private backups, or files outside this repository unless the owner explicitly asks for a narrowly scoped operational task.
 - Do not commit, push, deploy, restart services, delete external data, or change production configuration unless explicitly requested.
