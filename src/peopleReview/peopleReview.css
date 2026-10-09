@@ -126,7 +126,7 @@
   border-radius: 999px;
   background: #eef4fb;
   color: var(--pr-navy);
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -167,9 +167,9 @@
   padding: 5px 9px;
   border: 1px solid rgba(255, 255, 255, .3);
   border-radius: 999px;
-  color: #caf1e8;
+  color: var(--lvt-muted);
   background: rgba(255, 255, 255, .08);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -184,7 +184,7 @@
 .pr-hero p {
   max-width: 650px;
   margin: 0;
-  color: #d5e8ed;
+  color: var(--lvt-muted);
   font-size: 12px;
   line-height: 1.55;
 }
@@ -215,7 +215,7 @@
 
 .pr-hero-stamp span {
   color: #4a6e7b;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .08em;
 }
@@ -324,7 +324,7 @@
   padding: 0.28rem 0.55rem;
   border-color: var(--pr-line);
   background: #fff;
-  font-size: 0.72rem;
+  font-size: 13px;
 }
 
 .pr-mini-button.primary {
@@ -459,8 +459,9 @@
 .pr-eval-block select {
   padding: 0.55rem 0.65rem;
   border: 1px solid var(--pr-line);
-  border-radius: 10px;
+  border-radius: 8px;
   font: inherit;
+  font-size: 14px;
 }
 
 .pr-fault-list,

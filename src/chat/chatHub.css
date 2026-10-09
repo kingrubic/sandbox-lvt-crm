@@ -118,6 +118,8 @@
   border: 1px solid var(--lvt-line);
   border-radius: 999px;
   background: var(--lvt-page);
+  font: inherit;
+  font-size: 14px;
 }
 
 .chat-filters {
@@ -223,7 +225,7 @@
   justify-items: end;
   gap: 6px;
   color: var(--lvt-muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .chat-unread {
@@ -233,7 +235,7 @@
   border-radius: 999px;
   background: var(--lvt-teal);
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   line-height: 18px;
   text-align: center;
@@ -282,7 +284,7 @@
   border-radius: 999px;
   background: #fff;
   color: var(--lvt-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -401,7 +403,7 @@
 .chat-member-options span,
 .chat-member-list span { display: grid; min-width: 0; }
 .chat-member-options small,
-.chat-member-list small { color: var(--lvt-muted); font-size: 11px; }
+.chat-member-list small { color: var(--lvt-muted); font-size: 12px; }
 .chat-member-list button {
   margin-left: auto;
   border: 0;

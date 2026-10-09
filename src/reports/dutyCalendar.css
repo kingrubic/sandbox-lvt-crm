@@ -49,9 +49,9 @@
   padding: 5px 9px;
   border: 1px solid rgba(255, 255, 255, .28);
   border-radius: 999px;
-  color: #c9f6e9;
+  color: var(--lvt-muted);
   background: rgba(255, 255, 255, .08);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -66,7 +66,7 @@
 .report-hero p {
   max-width: 650px;
   margin: 0;
-  color: #d7e8f6;
+  color: var(--lvt-muted);
   font-size: 13px;
   line-height: 1.55;
 }
@@ -96,7 +96,7 @@
 
 .report-hero-mark small {
   color: #36727b;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .08em;
 }
@@ -146,7 +146,7 @@
   justify-content: space-between;
   padding: 0 6px;
   color: #61738b;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -159,14 +159,14 @@
   height: 24px;
   border-radius: 8px;
   color: #fff;
-  background: var(--report-coral);
-  font-size: 11px;
+  background: var(--lvt-coral-strong, #c0472f);
+  font-size: 12px;
 }
 
 .report-people-panel > p {
   margin: 8px 6px 14px;
-  color: #8491a3;
-  font-size: 11px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -197,7 +197,7 @@
   padding: 6px 9px;
   color: #536a83;
   background: #edf3f6;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -211,7 +211,7 @@
   border-radius: 7px;
   color: #176c5e;
   background: #dff3ed;
-  font-size: 8px;
+  font-size: 12px;
 }
 
 .report-people-group-list {
@@ -255,7 +255,7 @@
   border-radius: 13px 13px 13px 4px;
   color: #fff;
   background: linear-gradient(145deg, #295a94, #19a78b);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: .03em;
 }
@@ -278,12 +278,12 @@
 }
 
 .report-person small {
-  color: #8592a4;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .report-person i {
-  color: #9ba8b8;
+  color: var(--lvt-muted);
   font-size: 19px;
   font-style: normal;
 }
@@ -348,15 +348,15 @@
 }
 
 .report-panel-toggle small {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 }
 
 .report-calendar-title span {
   display: block;
   margin-bottom: 3px;
-  color: #718197;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -393,7 +393,7 @@
   border-right: 1px solid #dfe7ef;
   color: #607087;
   background: transparent;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 750;
 }
 
@@ -439,8 +439,8 @@
 }
 
 .report-summary-row span {
-  color: #75849a;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -492,11 +492,11 @@
   min-height: 58px;
   padding: 10px 12px;
   border-bottom: 1px solid var(--report-line);
-  color: #76869b;
+  color: var(--lvt-muted);
 }
 
 .report-week-day > header span {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 850;
   text-transform: uppercase;
 }
@@ -533,8 +533,8 @@
 
 .report-day-empty {
   padding: 18px 4px;
-  color: #b6c0ca;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   text-align: center;
 }
 
@@ -596,7 +596,7 @@
   display: -webkit-box;
   min-width: 0;
   overflow: hidden;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.3;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -606,7 +606,7 @@
 .report-event-location {
   overflow: hidden;
   opacity: .76;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 750;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -629,7 +629,7 @@
   display: block;
   min-width: 0;
   overflow: hidden;
-  font-size: 9px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -649,8 +649,8 @@
 .report-month-weekdays span {
   padding: 10px;
   border-right: 1px solid var(--report-line);
-  color: #75859a;
-  font-size: 9px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 850;
   letter-spacing: .05em;
   text-align: center;
@@ -708,8 +708,8 @@
 
 .report-more-events {
   padding-left: 4px;
-  color: #657994;
-  font-size: 8px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -755,8 +755,8 @@
 
 .report-mini-weekdays span {
   padding: 3px 0;
-  color: #98a3b2;
-  font-size: 7px;
+  color: var(--lvt-muted);
+  font-size: 12px;
   font-weight: 850;
   text-align: center;
 }
@@ -771,7 +771,7 @@
   border-radius: 7px;
   color: #64758b;
   background: transparent;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .report-mini-day:disabled {
@@ -800,12 +800,12 @@
   right: -1px;
   display: grid;
   place-items: center;
-  width: 11px;
-  height: 11px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   color: #fff;
-  background: var(--report-coral);
-  font-size: 6px;
+  background: var(--lvt-coral-strong, #c0472f);
+  font-size: 9px;
   font-style: normal;
 }
 
@@ -837,8 +837,8 @@
 }
 
 .report-empty-overlay small {
-  color: #96a1b0;
-  font-size: 10px;
+  color: var(--lvt-muted);
+  font-size: 12px;
 }
 
 .report-event-detail {
@@ -876,7 +876,7 @@
   border-radius: 999px;
   color: #765716;
   background: #fff0be;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .06em;
   text-transform: uppercase;
@@ -944,8 +944,8 @@
 
 .report-event-detail dt {
   margin-bottom: 3px;
-  color: #8895a5;
-  font-size: 7px;
+  color: var(--lvt-muted);
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -954,7 +954,7 @@
 .report-event-detail dd {
   margin: 0;
   color: #42536a;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.35;
 }
 
@@ -999,7 +999,7 @@
 .report-detail-attendance small {
   flex: 1 1 100%;
   color: #8a6a2a;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .report-detail-people {
@@ -1056,7 +1056,7 @@
   min-height: 420px;
   border: 1px solid var(--report-line);
   border-radius: 16px;
-  color: #718197;
+  color: var(--lvt-muted);
   background: #fff;
 }
 
@@ -1071,7 +1071,7 @@
 
 .report-loading p {
   margin-top: -130px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 @keyframes report-rise {
@@ -1118,7 +1118,7 @@
   .report-summary-row { grid-template-columns: repeat(3, 1fr); padding: 10px 12px; }
   .report-summary-row > div { display: grid; gap: 1px; }
   .report-summary-row strong { font-size: 18px; }
-  .report-summary-row span { font-size: 8px; }
+  .report-summary-row span { font-size: 12px; }
   .report-calendar-toolbar { padding: 15px 13px; }
   .report-calendar-title h3 { font-size: 17px; }
   .report-toolbar-actions { display: grid; justify-content: stretch; }

@@ -91,7 +91,7 @@
   border-radius: 0 3px 3px 0;
   background: var(--lvt-gold);
 }
-.sy-hero-default span { color: rgba(255, 255, 255, .7); font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.sy-hero-default span { color: rgba(255, 255, 255, .7); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .sy-hero-default strong { color: #fff; font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
 .sy-hero-default small { color: rgba(255, 255, 255, .78); font-size: 12.5px; font-weight: 600; }
 .sy-hero-default.is-missing strong { color: var(--lvt-gold); font-size: 20px; }
@@ -126,7 +126,7 @@
 }
 .sy-rail-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .sy-rail-head h3 { display: flex; align-items: center; gap: 8px; font-size: 14px; }
-.sy-rail-head h3 span { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; color: var(--lvt-navy); background: #e8eef3; font-size: 11.5px; }
+.sy-rail-head h3 span { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; color: var(--lvt-navy); background: #e8eef3; font-size: 12px; }
 .sy-add {
   display: inline-flex;
   align-items: center;
@@ -172,7 +172,7 @@
   gap: 4px;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 800;
   letter-spacing: .02em;
@@ -245,7 +245,7 @@
 .sy-stats > div.is-extra::before { background: var(--lvt-teal); }
 .sy-stats dt { color: #5b6f80; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .sy-stats dd { margin: 0; color: var(--lvt-navy); font-size: 26px; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
-.sy-stats small { color: var(--lvt-muted); font-size: 11.5px; font-weight: 600; }
+.sy-stats small { color: var(--lvt-muted); font-size: 12px; font-weight: 600; }
 .sy-locked { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 10px; color: #7a4b07; background: #fff8e8; font-size: 13px; font-weight: 650; }
 
 /* Empty */
@@ -294,7 +294,7 @@
   padding: 3px 0 4px;
   color: #fff;
   background: linear-gradient(180deg, #d9922a, var(--sy-holiday));
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: .06em;
   text-align: center;
@@ -302,21 +302,21 @@
   border-bottom: 2px dotted rgba(255, 255, 255, .55);
 }
 .sy-run-date strong { padding-top: 2px; color: var(--lvt-navy); font-size: 24px; font-weight: 800; line-height: 1.05; letter-spacing: -.03em; }
-.sy-run-weekday { padding-bottom: 5px; color: #7d8d9b; font-size: 10px; font-weight: 750; white-space: nowrap; }
+.sy-run-weekday { padding-bottom: 5px; color: var(--lvt-muted); font-size: 12px; font-weight: 750; white-space: nowrap; }
 .sy-run-body { display: grid; gap: 2px; min-width: 0; }
 .sy-run-body > strong { overflow: hidden; color: var(--lvt-navy); font-size: 14px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
 .sy-run-body > span { color: #5b6f80; font-size: 12px; font-weight: 600; }
 .sy-run-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 3px; }
-.sy-run-tags em { padding: 1px 7px; border-radius: 999px; color: #7a4b07; background: var(--sy-holiday-bg); font-size: 10.5px; font-style: normal; font-weight: 800; }
+.sy-run-tags em { padding: 1px 7px; border-radius: 999px; color: #7a4b07; background: var(--sy-holiday-bg); font-size: 12px; font-style: normal; font-weight: 800; }
 .sy-run-tags em.is-next { color: #fff; background: var(--lvt-gold); }
-.sy-run-tags em.is-past { color: #6b7c8d; background: #eef2f5; }
+.sy-run-tags em.is-past { color: var(--lvt-muted); background: #eef2f5; }
 .sy-run-actions { display: flex; gap: 2px; opacity: .55; transition: opacity .15s ease; }
 .sy-run:hover .sy-run-actions, .sy-run:focus-within .sy-run-actions { opacity: 1; }
 
 /* Make-up days */
 .sy-extra { display: grid; gap: 8px; padding-top: 14px; border-top: 1px dashed #e1e8ee; }
 .sy-extra h4 { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
-.sy-extra h4 span { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; color: var(--sy-extra); background: var(--sy-extra-bg); font-size: 11px; }
+.sy-extra h4 span { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; color: var(--sy-extra); background: var(--sy-extra-bg); font-size: 12px; }
 .sy-extra ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .sy-extra button {
   display: grid;
@@ -329,7 +329,7 @@
   text-align: left;
 }
 .sy-extra button strong { font-size: 12.5px; }
-.sy-extra button span { color: #3f6f64; font-size: 11.5px; font-weight: 600; }
+.sy-extra button span { color: #3f6f64; font-size: 13px; font-weight: 600; }
 
 /* ---------- Whole-year calendar ---------- */
 .sy-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; color: #4f667a; font-size: 12px; font-weight: 650; }
@@ -341,11 +341,11 @@
 .sy-months { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 14px; }
 .sy-month { display: grid; align-content: start; gap: 8px; padding: 12px; border: 1px solid #edf1f4; border-radius: 14px; background: #fcfdfd; }
 .sy-month h4 { display: flex; align-items: baseline; gap: 6px; font-size: 13.5px; font-weight: 800; }
-.sy-month h4 span { color: #8a9aa8; font-size: 11.5px; font-weight: 700; }
-.sy-month h4 em { margin-left: auto; padding: 1px 7px; border-radius: 999px; color: #7a4b07; background: var(--sy-holiday-bg); font-size: 10px; font-style: normal; font-weight: 800; }
+.sy-month h4 span { color: var(--lvt-muted); font-size: 12px; font-weight: 700; }
+.sy-month h4 em { margin-left: auto; padding: 1px 7px; border-radius: 999px; color: #7a4b07; background: var(--sy-holiday-bg); font-size: 12px; font-style: normal; font-weight: 800; }
 .sy-month-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
-.sy-month-head { padding-bottom: 2px; color: #8a9aa8; font-size: 9.5px; font-weight: 800; letter-spacing: .04em; text-align: center; }
-.sy-month-head:nth-child(n+6) { color: #b0bcc6; }
+.sy-month-head { padding-bottom: 2px; color: var(--lvt-muted); font-size: 12px; font-weight: 800; letter-spacing: .04em; text-align: center; }
+.sy-month-head:nth-child(n+6) { color: var(--lvt-muted); }
 .sy-day {
   aspect-ratio: 1;
   display: grid;
@@ -356,16 +356,16 @@
   border-radius: 7px;
   color: var(--lvt-ink);
   background: #fff;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
 }
 .sy-view .sy-day:disabled { cursor: default; opacity: 1; }
 .sy-day.is-school { border-color: #e6edf2; }
-.sy-day.is-weekend { color: #a3b1bc; background: repeating-linear-gradient(135deg, #f7f9fa 0 4px, #eef2f5 4px 8px); }
+.sy-day.is-weekend { color: var(--lvt-muted); background: repeating-linear-gradient(135deg, #f7f9fa 0 4px, #eef2f5 4px 8px); }
 .sy-day.is-holiday { color: #fff; border-color: var(--sy-holiday); background: var(--lvt-gold); font-weight: 800; }
 .sy-day.is-extra { color: var(--sy-extra); border-color: var(--lvt-teal); background: var(--sy-extra-bg); box-shadow: inset 0 0 0 1px var(--lvt-teal); font-weight: 800; }
-.sy-day.is-outside { color: #cfd8df; background: transparent; }
+.sy-day.is-outside { color: var(--lvt-muted); background: transparent; }
 .sy-day.is-today { box-shadow: 0 0 0 2px var(--lvt-navy); }
 .sy-day:not(:disabled):hover { transform: scale(1.14); box-shadow: 0 6px 14px -8px rgba(20, 53, 95, .6); z-index: 1; }
 .sy-day.is-school:not(:disabled):hover { background: var(--sy-holiday-bg); border-color: var(--sy-holiday-line); }
@@ -387,7 +387,7 @@
 .sy-preview { display: grid; gap: 8px; padding: 12px 14px; border-radius: 12px; background: #fffaf0; border: 1px solid var(--sy-holiday-line); }
 .sy-preview strong { color: #7a4b07; font-size: 13px; }
 .sy-preview ul { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
-.sy-preview li { padding: 2px 8px; border-radius: 7px; color: #7a4b07; background: #fff; border: 1px solid var(--sy-holiday-line); font-size: 11.5px; font-weight: 700; }
+.sy-preview li { padding: 2px 8px; border-radius: 7px; color: #7a4b07; background: #fff; border: 1px solid var(--sy-holiday-line); font-size: 12px; font-weight: 700; }
 .sy-form-preview { display: flex; align-items: center; gap: 7px; color: #4f667a; font-size: 13px; }
 .sy-form-preview strong { color: var(--lvt-navy); }
 .sy-day-kind { display: grid; gap: 3px; padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.45; }
@@ -412,10 +412,10 @@
 .sy-suggest-check input { flex: none; width: 18px; height: 18px; margin-top: 2px; accent-color: var(--sy-holiday); }
 .sy-suggest-check span { display: grid; gap: 1px; min-width: 0; }
 .sy-suggest-check strong { color: var(--lvt-navy); font-size: 13.5px; }
-.sy-suggest-check small { color: var(--lvt-muted); font-size: 11.5px; font-weight: 600; }
-.sy-suggest-dates { display: flex; align-items: center; gap: 6px; color: #8a9aa8; }
-.hr-modal .sy-suggest-dates input { min-height: 36px; width: 148px; padding: 0 8px; font-size: 13px; }
-.sy-suggest-status em { padding: 2px 8px; border-radius: 999px; color: #6b7c8d; background: #eef2f5; font-size: 11px; font-style: normal; font-weight: 800; white-space: nowrap; }
+.sy-suggest-check small { color: var(--lvt-muted); font-size: 12px; font-weight: 600; }
+.sy-suggest-dates { display: flex; align-items: center; gap: 6px; color: var(--lvt-muted); }
+.hr-modal .sy-suggest-dates input { min-height: 36px; width: 148px; padding: 0 8px; font-size: 14px; }
+.sy-suggest-status em { padding: 2px 8px; border-radius: 999px; color: var(--lvt-muted); background: #eef2f5; font-size: 12px; font-style: normal; font-weight: 800; white-space: nowrap; }
 .sy-suggest-status em.is-done { color: var(--sy-extra); background: var(--sy-extra-bg); }
 .sy-suggest-status em.is-count { color: #7a4b07; background: var(--sy-holiday-bg); }
 
