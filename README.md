@@ -1,21 +1,21 @@
 # LVT CRM
 
-CRM nội bộ cho Trường THCS Lê Văn Tám. Stack: **Vite + React 19**, backend **Convex self-hosted** (local Docker) với **Convex Auth (Password provider)** — đăng nhập email + mật khẩu, hồ sơ do admin cấp.
+CRM nội bộ cho Trường THCS Lê Văn Tám. Stack: **Vite + React 19**, backend **Convex Cloud** với **Convex Auth (Password provider)** — đăng nhập email + mật khẩu, hồ sơ do admin cấp.
 
 **URL production:** https://lvt.vscgroup.io.vn
 **Chính sách bảo mật (công khai, Việt + Anh):** https://lvt.vscgroup.io.vn/privacy
 **Ứng dụng:** CRM Lê Văn Tám — Android `lvt.crm`, iOS `vn.lvt.crm.uikit`
-Frontend production chạy static server qua LaunchAgent; Convex self-hosted chạy Docker với persistent volume, chỉ bind localhost. Public backend/auth proxy: `https://lvt-convex.vscgroup.io.vn` và `https://lvt-convex-site.vscgroup.io.vn`; hai hostname này đi qua Cloudflare Tunnel.
+Frontend production chạy static server qua LaunchAgent trên Mac mini, public qua Cloudflare Tunnel. Backend là Convex Cloud: prod `confident-guanaco-953`, sandbox `decisive-puma-318`. Bản Convex self-hosted cũ (Docker, `127.0.0.1:3210`) đã ngừng từ 2026-09-14.
+
+> **Sandbox, prod, quy trình phát hành, lệnh deploy, backup:** xem mục *Môi trường, quy trình phát hành và vận hành* trong [`AGENTS.md`](AGENTS.md). Mọi thay đổi làm ở sandbox trước, owner duyệt rồi mới lên prod.
 
 Vận hành production:
 
-- Build: `npm run build:production`
+- Build + deploy web prod: `npm run build:production` (chạy trong `~/projects/LVT-CRM` là deploy luôn)
 - Chạy local production: `npm run start`
 - **Hướng dẫn AI session:** Cursor đọc `.cursor/rules/*.mdc`; Claude Code đọc `CLAUDE.md`; chi tiết sản phẩm/import user trong `README.md`.
-- Auto-start Colima + Convex: LaunchAgent `ai.lvt.crm.convex` chạy `./scripts/lvt-convex-ensure.sh` (RunAtLoad + KeepAlive). Log: `~/Library/Logs/lvt-crm-convex-ensure.log`.
-- Backup Convex gồm file storage: `./scripts/lvt-convex-backup.sh`
-- Backup tự động hằng đêm lúc 00:30, lưu ngoài repo dưới `/Users/vsc_agent/clawd/backups/lvt-crm-convex/nightly/`.
-- Admin key chỉ đọc từ macOS Keychain bởi script deploy/backup; không lưu trong `.env.local`, source hoặc bundle.
+- Backup Convex prod (gồm file storage) tự động lúc 00:30 bằng `~/ops/scripts/lvt-crm-convex-backup.sh`, lưu `~/projects/LVT-CRM/.runtime/backups/convex/cloud-*.zip`, giữ 7 ngày.
+- Deploy key Convex Cloud chỉ đọc từ `~/projects/LVT-CRM/.convex-cloud-keys.csv` (untracked) qua `scripts/lvt-convex-cloud-env.sh`; không lưu trong source, bundle hay log.
 - File công văn (Drive mới **và** Convex Storage cũ) không bao giờ đưa link cho trình duyệt. Frontend gửi Convex Auth token đến `/api/files/:documentId`; server kiểm tra quyền, lấy từ **cache server 24 giờ** (hoặc tải Drive/storage một lần rồi cache), rồi mới stream. Upload Drive prewarm cache (best-effort).
 - Drive OAuth do `gog` quản lý ngoài repo. Folder ID được đọc từ macOS Keychain với service `lvt-crm-drive-folder-id`; không commit OAuth token/credential hoặc bật “Anyone with the link”.
 - Quên mật khẩu (web / Android / API iOS): `users.requestPasswordReset` gửi mật khẩu tạm qua Gmail API từ `thcslevantambinhthanh@gmail.com`. Cấu hình Convex env `GMAIL_*` (xem `.env.example`); lấy refresh token một lần bằng `node scripts/gmail-oauth-setup.mjs`. Không commit `client_secret*.json`.
@@ -384,18 +384,20 @@ LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953 npm run convex:deploy -- -y   # pr
 | `npm run convex:dev` | `convex dev` vào Convex Cloud dev (`decisive-puma-318`) |
 | `npm run convex:deploy` | `convex deploy` vào prod (`confident-guanaco-953`); bắt buộc `LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953` và tree sạch |
 
-## Deploy (self-hosted hiện tại)
+## Deploy (Convex Cloud)
 
-1. Docker Convex up; `.env.local` có URL + admin key.
-2. `JWT_PRIVATE_KEY`, `JWKS`, `SITE_URL` đã set trên deployment.
-3. `npx convex deploy -y`
-4. `npx convex run internal.seed.seed`
-5. Frontend: `npm run dev` (tunnel/domain) hoặc serve `dist/` sau `npm run build`.
+Chi tiết và thứ tự sandbox → prod: xem [`AGENTS.md`](AGENTS.md).
+
+1. `JWT_PRIVATE_KEY`, `JWKS`, `SITE_URL` đã set trên deployment.
+2. Sandbox: `npm run convex:dev -- --once`, rồi `npm run build` và restart `ai.lvt.crm.sandbox-web`.
+3. Prod (sau khi owner duyệt, từ worktree sạch): `LVT_CONVEX_CONFIRM_PROD=confident-guanaco-953 npm run convex:deploy -- -y`, rồi `npm run build:production` trong `~/projects/LVT-CRM`.
+4. Seed (chỉ khi cần, đúng deployment): `npx convex run internal.seed.seed` qua `scripts/lvt-convex-cloud-env.sh`.
 6. Host `lvt.vscgroup.io.vn`: client dùng `window.location.origin` làm Convex URL (xem `src/main.jsx`).
 
-## Backup local
+## Backup
 
-- Volume Docker `infra/convex-local` (`data`) = DB. Sao lưu trước khi reset stack.
+- Prod: zip hằng đêm 00:30 (giữ 7 ngày) — xem [`AGENTS.md`](AGENTS.md). Backup thủ công: `npx convex export --include-file-storage` qua `scripts/lvt-convex-cloud-env.sh`.
+- `infra/convex-local` chỉ còn là cấu hình Docker self-hosted cũ.
 - Không commit dump có PII/hash.
 
 ## Chuyển sang Convex Pro
