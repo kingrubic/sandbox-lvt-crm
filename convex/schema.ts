@@ -227,12 +227,64 @@ export default defineSchema({
     /** Free-text guests; empty/omitted on older rows. Not a push/email recipient. */
     otherParticipants: v.optional(v.string()),
     active: v.boolean(),
+    /**
+     * "school" = văn thư (admin/mod) row on the shared sheet, goes through weekly
+     * BGH approval. "team" = team-lead row for their members, live at once and
+     * never on the shared sheet. Missing on rows written before approval existed.
+     */
+    scope: v.optional(v.union(v.literal("school"), v.literal("team"))),
+    /** Set once a school row follows approval; rows without it count as approved. */
+    approvalTracked: v.optional(v.boolean()),
+    /** Approved copy teachers see while the working fields wait for BGH. */
+    published: v.optional(
+      v.object({
+        startDate: v.string(),
+        endDate: v.string(),
+        startTime: v.string(),
+        endTime: v.string(),
+        allDay: v.boolean(),
+        title: v.optional(v.string()),
+        content: v.string(),
+        locationIds: v.array(v.string()),
+        locationText: v.optional(v.string()),
+        departmentIds: v.array(v.string()),
+        participantUserIds: v.array(v.string()),
+        otherParticipants: v.optional(v.string()),
+        updatedAt: v.number(),
+        publishedAt: v.number(),
+      }),
+    ),
+    publishedStartDate: v.optional(v.string()),
+    publishedEndDate: v.optional(v.string()),
     createdBy: v.string(),
     updatedBy: v.optional(v.string()),
     ...timestamps,
   })
     .index("by_active_end", ["active", "endDate"])
-    .index("by_start", ["startDate"]),
+    .index("by_start", ["startDate"])
+    .index("by_published_start", ["publishedStartDate"])
+    .index("by_published_end", ["publishedEndDate"]),
+  /** Weekly BGH approval state for the shared Lịch công tác (Monday `weekStart`). */
+  dutyWeeks: defineTable({
+    weekStart: v.string(),
+    status: v.union(
+      v.literal("draft"),
+      v.literal("submitted"),
+      v.literal("returned"),
+      v.literal("approved"),
+    ),
+    submittedBy: v.optional(v.string()),
+    submittedAt: v.optional(v.number()),
+    returnedBy: v.optional(v.string()),
+    returnedAt: v.optional(v.number()),
+    returnNote: v.optional(v.string()),
+    approvedBy: v.optional(v.string()),
+    approvedAt: v.optional(v.number()),
+    updatedBy: v.string(),
+    updatedAt: v.number(),
+  })
+    .index("by_week", ["weekStart"])
+    .index("by_status", ["status"]),
   dutyAttendances: defineTable({
     dutyId: v.string(),
     userId: v.string(),

@@ -2,6 +2,7 @@
 
 import { isSameDepartmentSubordinate, isOperationalManagerRole, resolveUserMenuAccess, activePositionLevel } from "./lib";
 import { canAccessDutyChat } from "./dutyMessagePolicy";
+import { projectPublicDuty } from "./dutyApproval";
 import { canAccessWorkChat } from "./workMessagePolicy";
 
 type UserRow = {
@@ -33,6 +34,8 @@ export async function listDutyChatRecipientIds(
 ) {
   const authorUserId = String(args.authorUserId || "");
   const recipientIds: string[] = [];
+  // Teachers only reach a thread through the approved copy of the duty.
+  const publicDuty = projectPublicDuty(args.duty);
   for (const candidate of args.users) {
     if (candidate.status !== "active" || String(candidate._id) === authorUserId) continue;
     const menuAccess = await resolveUserMenuAccess(ctx, asAccessUser(candidate));
@@ -52,7 +55,7 @@ export async function listDutyChatRecipientIds(
         actorRole: String(candidate.role || ""),
         actorAccess: access,
         actorDepartmentId: candidate.departmentId,
-        duty: args.duty,
+        duty: isOperationalManagerRole(String(candidate.role || "")) ? args.duty : publicDuty,
         subordinateUsers,
       })
     ) {

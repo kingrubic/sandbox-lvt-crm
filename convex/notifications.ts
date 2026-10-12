@@ -29,7 +29,8 @@ import { chatEventToFeedItem, mergeChatFeedItems } from "./chatNotifications";
 import { canAccessDutyChat } from "./dutyMessagePolicy";
 import { canAccessWorkChat } from "./workMessagePolicy";
 import { createMilestones, mergeMilestoneItems, unionMilestoneHours } from "./notificationSettings";
-import { dutyNotificationEndFloor, loadActiveDutiesFromEndDate } from "./dutyRange";
+import { dutyNotificationEndFloor, loadPublicDutiesFromEndDate } from "./dutyRange";
+import { projectPublicDuty } from "./dutyApproval";
 
 const HOUR_MS = 60 * 60 * 1000;
 const VN_OFFSET_MS = 7 * HOUR_MS;
@@ -43,6 +44,72 @@ type NotificationSource = {
   dueAt: number;
   priority?: "high" | "normal";
 };
+
+function weekRangeLabel(weekStart: string) {
+  const [year, month, day] = weekStart.split("-").map(Number);
+  const saturday = new Date(Date.UTC(year, month - 1, day + 5));
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${pad(day)}/${pad(month)} – ${pad(saturday.getUTCDate())}/${pad(saturday.getUTCMonth() + 1)}`;
+}
+
+const DUTY_WEEK_APPROVED_NOTICE_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Weekly Lịch công tác approval: BGH sees weeks waiting for them; văn thư sees
+ * weeks sent back or approved in the last 7 days.
+ */
+async function dutyWeekNotificationItems(ctx: any, user: any, level: number, now: number) {
+  const base = { kind: "duty" as const, milestoneHours: 0 };
+  if (!isOperationalManagerRole(user.role)) {
+    if (level < 4) return [];
+    const waiting = await ctx.db
+      .query("dutyWeeks")
+      .withIndex("by_status", (q: any) => q.eq("status", "submitted"))
+      .collect();
+    return waiting.map((row: any) => ({
+      ...base,
+      key: `duty:duty_week_review:${row.weekStart}:${row.submittedAt}`,
+      sourceType: "duty_week_review" as const,
+      sourceId: String(row.weekStart),
+      title: `Lịch công tác tuần ${weekRangeLabel(row.weekStart)} chờ duyệt`,
+      description: "Văn thư đã nộp lịch tuần, cần Ban Giám hiệu duyệt.",
+      dueAt: Number(row.submittedAt) || now,
+      milestoneLabel: "Cần duyệt",
+      availableAt: Number(row.submittedAt) || now,
+    }));
+  }
+  const [returned, approved] = await Promise.all([
+    ctx.db.query("dutyWeeks").withIndex("by_status", (q: any) => q.eq("status", "returned")).collect(),
+    ctx.db.query("dutyWeeks").withIndex("by_status", (q: any) => q.eq("status", "approved")).collect(),
+  ]);
+  return [
+    ...returned.map((row: any) => ({
+      ...base,
+      key: `duty:duty_week_returned:${row.weekStart}:${row.returnedAt}`,
+      sourceType: "duty_week_returned" as const,
+      sourceId: String(row.weekStart),
+      title: `Lịch công tác tuần ${weekRangeLabel(row.weekStart)} bị trả lại`,
+      description: String(row.returnNote || "Ban Giám hiệu yêu cầu sửa lại."),
+      dueAt: Number(row.returnedAt) || now,
+      milestoneLabel: "Bị trả lại",
+      availableAt: Number(row.returnedAt) || now,
+      priority: "high" as const,
+    })),
+    ...approved
+      .filter((row: any) => Number(row.approvedAt) >= now - DUTY_WEEK_APPROVED_NOTICE_MS)
+      .map((row: any) => ({
+        ...base,
+        key: `duty:duty_week_approved:${row.weekStart}:${row.approvedAt}`,
+        sourceType: "duty_week_approved" as const,
+        sourceId: String(row.weekStart),
+        title: `Lịch công tác tuần ${weekRangeLabel(row.weekStart)} đã được duyệt`,
+        description: "Giáo viên đã thấy lịch tuần này.",
+        dueAt: Number(row.approvedAt),
+        milestoneLabel: "Đã duyệt",
+        availableAt: Number(row.approvedAt),
+      })),
+  ];
+}
 
 function dutyDueAt(duty: { endDate: string; endTime: string }) {
   const [year, month, day] = duty.endDate.split("-").map(Number);
@@ -121,7 +188,8 @@ async function notificationItems(ctx: any, requestedNow?: number) {
     enabledPersonal.some((row: any) => row.kind === "work");
 
   const [duties, documents, workItems, personalTasks, positions, departments, users, workMessages, dutyMessages, storedChatEvents] = await Promise.all([
-    needDuties ? loadActiveDutiesFromEndDate(ctx, dutyEndFloor) : Promise.resolve([]),
+    // Reminders follow the approved schedule only.
+    needDuties ? loadPublicDutiesFromEndDate(ctx, dutyEndFloor) : Promise.resolve([]),
     needWork ? ctx.db.query("officeDocuments").collect() : Promise.resolve([]),
     needWork ? ctx.db.query("workItems").collect() : Promise.resolve([]),
     needWork ? ctx.db.query("personalTasks").collect() : Promise.resolve([]),
@@ -368,7 +436,7 @@ async function notificationItems(ctx: any, requestedNow?: number) {
           dueAt: dutyDueAt(duty),
           milestoneHours: 0,
           milestoneLabel: "Mới phân công",
-          availableAt: duty.createdAt,
+          availableAt: Number(duty.publishedAt) || duty.createdAt,
         }))
     : [];
   const newWorkAssignments = canUseWork
@@ -452,6 +520,10 @@ async function notificationItems(ctx: any, requestedNow?: number) {
       milestoneLabel: "Cần duyệt",
       availableAt: now,
     }));
+  // Approval steps are workflow, not deadline reminders: they ignore the duty reminder switch.
+  const dutyWeekItems = canSeeDutiesModule
+    ? await dutyWeekNotificationItems(ctx, user, level, now)
+    : [];
   const usersById = new Map(users.map((row: any) => [String(row._id), row]));
   const displayUserName = (id: string) => {
     const row = usersById.get(String(id)) as { name?: string; email?: string } | undefined;
@@ -493,7 +565,8 @@ async function notificationItems(ctx: any, requestedNow?: number) {
     ];
     const extraDuties = await Promise.all(missingDutyIds.map((dutyId) => ctx.db.get(dutyId)));
     for (const duty of extraDuties) {
-      if (duty) dutyById.set(String(duty._id), duty);
+      const visible = isOperationalManagerRole(user.role) ? duty : projectPublicDuty(duty);
+      if (visible) dutyById.set(String(visible._id), visible);
     }
   }
   const computedChatItems = selectVisibleChatNotifications(
@@ -600,7 +673,7 @@ async function notificationItems(ctx: any, requestedNow?: number) {
     })
     .map((row: any) => chatEventToFeedItem(row));
   const chatItems = mergeChatFeedItems([storedChatItems, computedChatItems], now);
-  const milestones = [...newDutyAssignments, ...newWorkAssignments, ...pendingApprovalItems, ...chatItems, ...scheduledMilestones]
+  const milestones = [...newDutyAssignments, ...newWorkAssignments, ...pendingApprovalItems, ...dutyWeekItems, ...chatItems, ...scheduledMilestones]
     .sort((a, b) => b.availableAt - a.availableAt || a.title.localeCompare(b.title, "vi"));
   const [reads, dismissals] = await Promise.all([
     ctx.db

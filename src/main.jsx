@@ -9,6 +9,7 @@ import './styles.css';
 import WorkReportsView from './reports/WorkReportsView';
 import DutyReportsView from './reports/DutyReportsView';
 import SharedDutyScheduleView from './duties/SharedDutyScheduleView';
+import { isDutyWeekNotification } from './duties/dutyWeekApproval.js';
 import DutyWorkspaceTabs from './duties/DutyWorkspaceTabs';
 import { WorkUserView } from './work/WorkViews';
 import DocumentTypeSettings from './settings/DocumentTypeSettings';
@@ -179,6 +180,7 @@ function AppShell({ session }) {
   );
   const [focusTarget, setFocusTarget] = useState(null);
   const dutyRoute = parseDutyPath(dutyPath) || { view: 'personal', dutyId: undefined };
+  const dutyListViewRef = useRef(dutyRoute.view === 'shared' ? 'shared' : 'personal');
 
   useEffect(() => {
     if (active !== 'duties' || !dutyPath) return;
@@ -299,7 +301,10 @@ function AppShell({ session }) {
     setMobileOpen(false);
   };
 
-  const chooseDutyView = (view, extra = {}) => {
+  const chooseDutyView = (requestedView, extra = {}) => {
+    // Closing the editor returns to whichever sheet opened it (cá nhân or chung).
+    const view = requestedView === 'back' ? dutyListViewRef.current : requestedView;
+    if (view === 'personal' || view === 'shared') dutyListViewRef.current = view;
     setActive('duties');
     const pathname = dutiesPathname({ view, dutyId: extra.dutyId });
     setDutyPath(pathname);
@@ -361,6 +366,10 @@ function AppShell({ session }) {
       openChat: false,
       token: Date.now(),
     });
+    if (isDutyWeekNotification(item)) {
+      chooseDutyView('shared');
+      return;
+    }
     choose(menu);
   };
 
@@ -504,7 +513,15 @@ function AppShell({ session }) {
           <NotificationsView data={notificationFeed} onOpenItem={openFromNotification} />
         ) : active === 'duties' ? (
           dutyRoute.view === 'shared' ? (
-            <SharedDutyScheduleView currentUserId={user._id} onChooseView={chooseDutyView} />
+            <SharedDutyScheduleView
+              currentUserId={user._id}
+              onChooseView={chooseDutyView}
+              focusWeek={
+                isDutyWeekNotification(activeFocusTarget)
+                  ? { weekStart: activeFocusTarget.sourceId, token: activeFocusTarget.token }
+                  : null
+              }
+            />
           ) : canManageOperations ? (
             <DutiesAdminView
               currentUserId={user._id}
@@ -718,7 +735,7 @@ function DutiesAdminView({
     setPreviewOpen(false);
     setEditConfirm(null);
     setForm(emptyDutyForm());
-    onDutyNavigate?.('personal');
+    onDutyNavigate?.('back');
   };
 
   const openCreateEditor = () => {
@@ -759,11 +776,8 @@ function DutiesAdminView({
       return;
     }
     setPreviewOpen(false);
-    if (!dutyFormHasParticipants(form)) {
-      setFeedback({ type: 'error', text: 'Vui lòng chọn phòng ban, cá nhân tham gia, hoặc điền thành phần khác.' });
-      return;
-    }
-    const ok = await run('save', () => create(payload), 'Đã thêm công tác.');
+    // Văn thư may leave Thành phần empty and add it before sending the week to BGH.
+    const ok = await run('save', () => create(payload), 'Đã thêm công tác vào lịch tuần. Nhớ nộp Ban Giám hiệu duyệt ở Lịch công tác chung.');
     if (ok) closeEditor();
   };
 
@@ -771,10 +785,6 @@ function DutiesAdminView({
     event.preventDefault();
     if (editing) {
       setEditConfirm('save');
-      return;
-    }
-    if (!dutyFormHasParticipants(form)) {
-      setFeedback({ type: 'error', text: 'Vui lòng chọn phòng ban, cá nhân tham gia, hoặc điền thành phần khác.' });
       return;
     }
     setPreviewOpen(true);
@@ -796,7 +806,7 @@ function DutiesAdminView({
       {editorOpen ? (
         <div className="duty-editor-page-bar">
           <button type="button" className="work-ghost-button" onClick={closeEditor}>
-            ← Quay lại lịch cá nhân
+            ← Quay lại lịch công tác
           </button>
         </div>
       ) : (
@@ -968,7 +978,7 @@ function DutiesUserView({
     setPreviewOpen(false);
     setEditConfirm(null);
     setForm(emptyDutyForm());
-    onDutyNavigate?.('personal');
+    onDutyNavigate?.('back');
   };
 
   const openCreateEditor = () => {
@@ -1011,7 +1021,7 @@ function DutiesUserView({
       return;
     }
     setPreviewOpen(false);
-    if (!dutyFormHasParticipants(form, { includeDepartments })) {
+    if (!includeDepartments && !dutyFormHasParticipants(form, { includeDepartments })) {
       setFeedback({ type: 'error', text: 'Vui lòng chọn phòng ban, cá nhân tham gia, hoặc điền thành phần khác.' });
       return;
     }
@@ -1025,7 +1035,7 @@ function DutiesUserView({
       setEditConfirm('save');
       return;
     }
-    if (!dutyFormHasParticipants(form, { includeDepartments: Boolean(options?.isOps) })) {
+    if (!options?.isOps && !dutyFormHasParticipants(form, { includeDepartments: false })) {
       setFeedback({ type: 'error', text: 'Vui lòng chọn phòng ban, cá nhân tham gia, hoặc điền thành phần khác.' });
       return;
     }
@@ -1040,7 +1050,7 @@ function DutiesUserView({
       {editorOpen ? (
         <div className="duty-editor-page-bar">
           <button type="button" className="work-ghost-button" onClick={closeEditor}>
-            ← Quay lại lịch cá nhân
+            ← Quay lại lịch công tác
           </button>
         </div>
       ) : (

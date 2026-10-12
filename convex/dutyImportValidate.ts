@@ -286,7 +286,7 @@ export function validateDutyImportRows(
       participantNames.push(user.name || email);
     }
 
-    if (!departmentIds.length && !participantUserIds.length && !otherParticipants) {
+    if (!context.actor.isOps && !departmentIds.length && !participantUserIds.length && !otherParticipants) {
       pushError(rowNumber, DUTY_IMPORT_MESSAGES.participantsRequired);
       rowHasError = true;
     }

@@ -260,8 +260,15 @@ test('schedule views keep the narrow queries and add a browser stamp cache', () 
     dutiesSource.indexOf('export const sharedScheduleRevision'),
     dutiesSource.indexOf('export const create'),
   );
-  assert.match(sharedRevision, /loadActiveDutiesOverlapping/);
-  assert.match(sharedRevision, /sharedScheduleStamp\(duties, user, access, isAdmin\)/);
+  assert.match(sharedRevision, /loadSharedScheduleSlice/);
+  assert.match(sharedRevision, /sharedScheduleStamp\(slice, user, access, isAdmin\)/);
+  const slice = dutiesSource.slice(
+    dutiesSource.indexOf('async function loadSharedScheduleSlice'),
+    dutiesSource.indexOf('function sharedScheduleStamp'),
+  );
+  assert.match(slice, /loadActiveDutiesOverlapping/);
+  assert.match(slice, /loadPublicDutiesOverlapping/);
+  assert.doesNotMatch(slice, /\.collect\(\)/);
   assert.match(dutiesSource, /function sharedScheduleStamp/);
   assert.doesNotMatch(sharedRevision, /loadDocsByIds/);
   assert.doesNotMatch(sharedRevision, /loadScheduleSubordinates/);
@@ -271,7 +278,7 @@ test('schedule views keep the narrow queries and add a browser stamp cache', () 
     reportsSource.indexOf('export const dutyCalendarRevision'),
     reportsSource.indexOf('export const workCalendar'),
   );
-  assert.match(personalRevision, /loadActiveDutiesOverlapping/);
+  assert.match(personalRevision, /loadCalendarDuties/);
   assert.match(personalRevision, /loadAttendancesForDuties/);
   assert.match(personalRevision, /buildDutyCalendarRevision/);
   assert.doesNotMatch(personalRevision, /loadActiveUsers/);

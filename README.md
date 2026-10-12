@@ -296,7 +296,7 @@ UI: trang **Công tác** — nút *Import Excel* cạnh *Tạo công tác* (`src
 - Chỉ file **`.xlsx`**, tối đa **2 MB**, tối đa **200** dòng. Không CSV.
 - All-or-nothing: một dòng lỗi → không commit; báo lỗi theo dòng.
 - Chỉ khi **mọi dòng hợp lệ** mới hiện xem trước → xác nhận mới tạo công tác.
-- Mỗi dòng tạo một `duties` (không unique lịch). Push thông báo từng dòng giống tạo tay.
+- Mỗi dòng tạo một `duties` (không unique lịch). Công tác của văn thư (admin/mod) vào lịch tuần chờ BGH duyệt; công tác của tổ trưởng push ngay giống tạo tay.
 
 **Cột file mẫu (không dấu)**
 
@@ -304,7 +304,7 @@ UI: trang **Công tác** — nút *Import Excel* cạnh *Tạo công tác* (`src
 
 - Ngày: `YYYY-MM-DD` hoặc `dd/mm/yyyy`.
 - `ca_ngay`: `1`/`0`, `có`/`không`, `true`/`false`; trống = không cả ngày. Khi cả ngày: ngày kết thúc = ngày bắt đầu, giờ mặc định `08:00`–`17:00`.
-- `ma_phong_ban` / `email_tham_gia` / `thanh_phan_khac`: mã phòng và email nhiều giá trị cách nhau dấu phẩy; được để trống từng cột; **phải có ít nhất một** phòng, email, hoặc thành phần khác (tối đa 500 ký tự). Thành phần khác không nhận thông báo nhưng vẫn hiện trên Lịch công tác chung.
+- `ma_phong_ban` / `email_tham_gia` / `thanh_phan_khac`: mã phòng và email nhiều giá trị cách nhau dấu phẩy; được để trống từng cột. Văn thư (admin/mod) được để trống cả ba và bổ sung thành phần sau; tổ trưởng **phải có ít nhất một** email hoặc thành phần khác (tối đa 500 ký tự). Thành phần khác không nhận thông báo nhưng vẫn hiện trên Lịch công tác chung.
 
 **Flow server-first**
 
@@ -313,6 +313,24 @@ UI: trang **Công tác** — nút *Import Excel* cạnh *Tạo công tác* (`src
 3. `dutyImport.commit({ uploadId })` — đọc lại cùng file, validate lần nữa, claim một lần, insert atomic. **Không tin rows từ client.**
 
 **Code chính:** `convex/dutyImport.ts`, `dutyImportParse.ts`, `dutyImportValidate.ts`, `dutyImportSheet.ts`; test `tests/duty-import.test.mjs`.
+
+### Duyệt Lịch công tác chung theo tuần
+
+Quy trình trường yêu cầu (10/2026): văn thư soạn → nộp → BGH duyệt → giáo viên mới thấy.
+
+- **Văn thư** = admin/mod. Soạn lịch tuần (thứ Hai–thứ Bảy) trên trang *Lịch công tác chung*; được nhập 4 cột trước, **Thành phần không bắt buộc**, bổ sung sau. Bấm **Nộp BGH duyệt**.
+- **BGH** = tài khoản đang hoạt động, **không** phải admin/mod, chức vụ cấp **4–5**. **Một** người duyệt là đủ. Duyệt **cả tuần** một lần, hoặc **Trả lại** kèm lý do (bắt buộc, ≤ 500 ký tự).
+- **Giáo viên** (mọi người khác) chỉ thấy bản đã duyệt: trang chung, lịch cá nhân (web + app), điểm danh, trao đổi, nhắc việc, chuông. Tuần chưa duyệt hiện "Lịch tuần này chưa được duyệt".
+- **Sửa sau khi duyệt** (sửa, thêm, xóa, đổi tuần) phải nộp duyệt lại; trong lúc chờ, giáo viên vẫn thấy bản cũ. Văn thư có thể **Hủy thay đổi** để quay về bản đã duyệt. Sửa khi tuần đang *Chờ duyệt* sẽ rút bản nộp về Nháp.
+- **Công tác tổ trưởng/tổ phó (cấp 2–3) giao cho tổ**: không qua duyệt, hiện ngay cho thành viên, **không** lên trang chung.
+
+Kỹ thuật:
+
+- `duties.scope` (`school` | `team`), `approvalTracked`, `published` (bản đã duyệt) + `publishedStartDate/EndDate`. Dòng cũ không có `approvalTracked` được coi là đã duyệt; lần sửa/xóa đầu tiên chụp bản đang hiện vào `published`.
+- Bảng `dutyWeeks` giữ trạng thái tuần (`submitted` / `returned` / `approved` / `draft`). Trạng thái hiển thị (Nháp, Chờ duyệt, Bị trả lại, Đã duyệt, Đã duyệt · có thay đổi) tính từ dữ liệu trong `convex/dutyApproval.ts`.
+- Mutation: `dutyWeeks.submit`, `approve({ weekStart, submittedAt })`, `returnWeek`, `discardChanges`. `submittedAt` ghim đúng bản BGH đã xem; sửa sau đó làm `approve` báo `DUTY_WEEK_CHANGED`.
+- Mọi đường đọc của giáo viên đi qua `projectPublicDuty` / `loadPublicDutiesFromEndDate`.
+- Sau khi deploy lần đầu chạy một lần `dutyWeeks:backfillScope` (internal) để gán `scope` cho dòng cũ.
 
 ### Import user hàng loạt (SYS-011 · chỉ Administrator)
 

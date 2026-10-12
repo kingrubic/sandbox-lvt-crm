@@ -47,7 +47,11 @@ export default function DutyScheduleTable({
             return (
               <tr
                 key={`${row.dayIso}-${row.eventId || 'empty'}-${index}`}
-                className={selectable ? 'lct-row-selectable' : undefined}
+                className={[
+                  selectable ? 'lct-row-selectable' : '',
+                  row.approvalChange ? 'lct-row-pending' : '',
+                ].filter(Boolean).join(' ') || undefined}
+                title={row.approvalChange === 'added' ? 'Công tác mới, chưa duyệt' : row.approvalChange ? 'Đã sửa, chưa duyệt' : undefined}
                 onClick={selectable ? () => onSelectEvent(row) : undefined}
               >
                 {row.showDay ? (
@@ -96,7 +100,22 @@ export default function DutyScheduleTable({
                   </div>
                 </td>
                 <td>{row.location}</td>
-                <td>{row.participants}</td>
+                <td>
+                  {row.participants || !editable ? (
+                    row.participants
+                  ) : (
+                    <button
+                      type="button"
+                      className="lct-add-participants"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onEditContent(row);
+                      }}
+                    >
+                      + Thêm thành phần
+                    </button>
+                  )}
+                </td>
               </tr>
             );
           })}

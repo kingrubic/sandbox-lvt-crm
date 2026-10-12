@@ -5,6 +5,8 @@
  * window. Duties that start after windowEnd are discarded in memory.
  */
 
+import { projectPublicDuty, type DutyPublished } from "./dutyApproval.ts";
+
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const VN_OFFSET_MS = 7 * 60 * 60 * 1000;
 
@@ -72,6 +74,11 @@ export type DutyWindowRow = {
   departmentIds: string[];
   participantUserIds: string[];
   otherParticipants?: string;
+  scope?: "school" | "team";
+  approvalTracked?: boolean;
+  published?: DutyPublished;
+  publishedStartDate?: string;
+  publishedEndDate?: string;
   createdBy?: string;
   createdAt: number;
   updatedAt: number;
@@ -112,6 +119,69 @@ export async function loadActiveDutiesOverlapping(
   return loadActiveDutiesFromEndDate(ctx, startDate, endDate);
 }
 
+/**
+ * Approved copies only: what a teacher may see. Reads live rows plus rows whose
+ * delete still waits for BGH (inactive, published copy kept).
+ */
+export async function loadPublicDutiesFromEndDate(
+  ctx: { db: { query: (table: "duties") => any } },
+  endDateFloor: string,
+  startDateCeiling?: string,
+) {
+  const [live, publishedRows] = await Promise.all([
+    ctx.db
+      .query("duties")
+      .withIndex("by_active_end", (q: any) => q.eq("active", true).gte("endDate", endDateFloor))
+      .collect() as Promise<DutyWindowRow[]>,
+    ctx.db
+      .query("duties")
+      .withIndex("by_published_end", (q: any) => q.gte("publishedEndDate", endDateFloor))
+      .collect() as Promise<DutyWindowRow[]>,
+  ]);
+  const byId = new Map<string, DutyWindowRow>();
+  for (const row of [...live, ...publishedRows]) byId.set(String(row._id), row);
+  const projected = [];
+  for (const row of byId.values()) {
+    const view = projectPublicDuty(row);
+    if (!view) continue;
+    if (view.endDate < endDateFloor) continue;
+    if (startDateCeiling !== undefined && view.startDate > startDateCeiling) continue;
+    projected.push(view);
+  }
+  return projected;
+}
+
+export async function loadPublicDutiesOverlapping(
+  ctx: { db: { query: (table: "duties") => any } },
+  startDate: string,
+  endDate: string,
+) {
+  return loadPublicDutiesFromEndDate(ctx, startDate, endDate);
+}
+
+/** Raw rows (working or approved copy) that start inside [firstDay, lastDay]. */
+export async function loadDutiesStartingBetween(
+  ctx: { db: { query: (table: "duties") => any } },
+  firstDay: string,
+  lastDay: string,
+) {
+  const [working, publishedRows] = await Promise.all([
+    ctx.db
+      .query("duties")
+      .withIndex("by_start", (q: any) => q.gte("startDate", firstDay).lte("startDate", lastDay))
+      .collect() as Promise<DutyWindowRow[]>,
+    ctx.db
+      .query("duties")
+      .withIndex("by_published_start", (q: any) =>
+        q.gte("publishedStartDate", firstDay).lte("publishedStartDate", lastDay),
+      )
+      .collect() as Promise<DutyWindowRow[]>,
+  ]);
+  const byId = new Map<string, DutyWindowRow>();
+  for (const row of [...working, ...publishedRows]) byId.set(String(row._id), row);
+  return [...byId.values()];
+}
+
 export type DutyRevisionPart = {
   id: string;
   updatedAt?: number;
@@ -146,7 +216,7 @@ export function dutyWindowRevision(parts: DutyRevisionPart[]) {
 
 /** Shared and personal schedule stamps. Attendance rows are personal-only. */
 export function dutyScheduleRevision(input: {
-  duties: Array<{ _id: string; updatedAt?: number }>;
+  duties: Array<{ _id: string; updatedAt?: number; published?: { publishedAt?: number } }>;
   attendances?: Array<{ dutyId: string; userId: string; status?: string; updatedAt?: number }>;
   meta?: string;
 }) {
@@ -154,6 +224,7 @@ export function dutyScheduleRevision(input: {
     ...input.duties.map((duty) => ({
       id: `duty:${String(duty._id)}`,
       updatedAt: duty.updatedAt,
+      tag: String(duty.published?.publishedAt || ""),
     })),
     ...(input.attendances || []).map((row) => ({
       id: `att:${String(row.dutyId)}:${String(row.userId)}`,

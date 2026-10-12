@@ -15,10 +15,12 @@ import {
 } from "./lib";
 import { canCreateAssignments, dutyListTitle, dutyLocationLabel } from "./assignmentPolicy";
 import { dutyTiming, requireDutiesAccess } from "./duties";
+import { dutyHasPendingChange, projectPublicDuty } from "./dutyApproval";
 import {
   dutyListDateWindow,
   dutyScheduleRevision,
   loadActiveDutiesOverlapping,
+  loadPublicDutiesOverlapping,
   loadDocsByIds,
   parseDutyDateRange,
 } from "./dutyRange";
@@ -201,6 +203,15 @@ function buildDutyCalendarRevision(input: {
   });
 }
 
+/**
+ * Văn thư (admin/mod) see working rows, flagged when BGH has not approved them.
+ * Everyone else only sees approved copies.
+ */
+async function loadCalendarDuties(ctx: { db: any }, isAdmin: boolean, startDate: string, endDate: string) {
+  if (isAdmin) return loadActiveDutiesOverlapping(ctx, startDate, endDate);
+  return loadPublicDutiesOverlapping(ctx, startDate, endDate);
+}
+
 async function resolveVisibleDutyUser(
   ctx: { db: any },
   actor: { _id: string; departmentId?: string; positionId?: string },
@@ -240,7 +251,7 @@ export const dutyCalendar = query({
 
     const [seedUsers, dutiesInWindow, attendanceConfirmationEnabled] = await Promise.all([
       canViewAll ? loadActiveUsers(ctx) : loadActiveDepartmentUsers(ctx, actor.departmentId),
-      loadActiveDutiesOverlapping(ctx, startDate, endDate),
+      loadCalendarDuties(ctx, isAdmin, startDate, endDate),
       getBooleanSystemSetting(
         ctx,
         DUTY_ATTENDANCE_CONFIRMATION_SETTING_KEY,
@@ -422,9 +433,10 @@ export const dutyCalendar = query({
             ? "individual"
             : "department",
           attendanceStatus: selectedAttendance(String(duty._id), String(selectedUser._id)),
+          awaitingApproval: isAdmin && dutyHasPendingChange(duty),
           canManage: isAdmin || String(duty.createdBy || "") === String(actor._id),
           canMarkSelectedUser,
-          canMarkAttendance: canMarkSelectedUser && timing.isOngoing,
+          canMarkAttendance: canMarkSelectedUser && timing.isOngoing && Boolean(projectPublicDuty(duty)),
           timing: {
             isOngoing: timing.isOngoing,
             isUpcoming: timing.isUpcoming,
@@ -485,7 +497,7 @@ export const dutyCalendarRevision = query({
     const { user: actor, access, isAdmin } = await requireDutiesAccess(ctx);
     const selectedUser = await resolveVisibleDutyUser(ctx, actor, access, isAdmin, args.userId);
     const [dutiesInWindow, attendanceConfirmationEnabled] = await Promise.all([
-      loadActiveDutiesOverlapping(ctx, startDate, endDate),
+      loadCalendarDuties(ctx, isAdmin, startDate, endDate),
       getBooleanSystemSetting(
         ctx,
         DUTY_ATTENDANCE_CONFIRMATION_SETTING_KEY,

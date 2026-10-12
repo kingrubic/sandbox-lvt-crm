@@ -46,7 +46,7 @@ export default function DutyEditModal({ duty, onClose, onSaved = null }) {
   const persistDuty = async () => {
     if (pending === 'save' || !duty?._id) return;
     const payload = dutyPayloadFromForm(form, { includeDepartments });
-    if (!dutyFormHasParticipants(form, { includeDepartments })) {
+    if (!includeDepartments && !dutyFormHasParticipants(form, { includeDepartments })) {
       setFeedback({ type: 'error', text: 'Vui lòng chọn phòng ban, cá nhân tham gia, hoặc điền thành phần khác.' });
       return;
     }
@@ -66,7 +66,7 @@ export default function DutyEditModal({ duty, onClose, onSaved = null }) {
 
   const submit = (event) => {
     event.preventDefault();
-    if (!dutyFormHasParticipants(form, { includeDepartments })) {
+    if (!includeDepartments && !dutyFormHasParticipants(form, { includeDepartments })) {
       setFeedback({ type: 'error', text: 'Vui lòng chọn phòng ban, cá nhân tham gia, hoặc điền thành phần khác.' });
       return;
     }

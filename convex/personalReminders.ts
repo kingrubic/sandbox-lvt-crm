@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import type { Id } from "./_generated/dataModel";
+import { projectPublicDuty } from "./dutyApproval";
 import {
   currentUserOrThrow,
   isOperationalManagerRole,
@@ -54,7 +55,7 @@ async function existingReminder(
 }
 
 async function assertDutyReminder(ctx: any, user: any, sourceId: string, enabling: boolean) {
-  const duty = await ctx.db.get(sourceId as Id<"duties">);
+  const duty = projectPublicDuty(await ctx.db.get(sourceId as Id<"duties">));
   const isParticipant = Boolean(duty && isDutyParticipant(user, duty));
   if (!enabling && isParticipant) return;
   const isOverdue = Boolean(duty && Date.now() > parseLocalMs(duty.endDate, duty.endTime));

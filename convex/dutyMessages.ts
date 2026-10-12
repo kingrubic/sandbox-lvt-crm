@@ -14,6 +14,7 @@ import { deactivateChatNotificationEvents, insertChatNotificationEvents } from "
 import { requireDutiesAccess } from "./duties";
 import { isOperationalManagerRole, isSameDepartmentSubordinate, resolveUserMenuAccess } from "./lib";
 import { canAccessDutyChat, prepareDutyMessageBody } from "./dutyMessagePolicy";
+import { projectPublicDuty } from "./dutyApproval";
 import { sanitizeWorkMessageHtml, workChatAuthorInitials } from "./workMessagePolicy";
 import { listDutyChatRecipientIds } from "./chatAudience";
 import { applyChatRecall, publishChatMessage } from "./chatInbox";
@@ -29,7 +30,9 @@ async function loadDuty(ctx: any, dutyId: string) {
 
 async function authorizeDutyChat(ctx: any, dutyId: string) {
   const { user, access, isAdmin } = await requireDutiesAccess(ctx);
-  const duty = await loadDuty(ctx, String(dutyId || ""));
+  const raw = await loadDuty(ctx, String(dutyId || ""));
+  // Chat on a row BGH has not approved stays with văn thư.
+  const duty = isAdmin ? raw : projectPublicDuty(raw);
   const users = await ctx.db.query("users").collect();
   const positions = await ctx.db.query("positions").collect();
   const subordinateUsers = isAdmin

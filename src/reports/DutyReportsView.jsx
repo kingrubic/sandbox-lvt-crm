@@ -228,6 +228,9 @@ function EventDetail({
         </span>
       ) : null}
       <h3>{event.title || event.content}</h3>
+      {event.awaitingApproval ? (
+        <p className="report-detail-approval">Chưa được Ban Giám hiệu duyệt. Giáo viên chưa thấy thay đổi này.</p>
+      ) : null}
       <dl>
         <div><dt>Nhân sự</dt><dd>{personName}</dd></div>
         <div><dt>Thời gian</dt><dd>{eventTime(event)}</dd></div>

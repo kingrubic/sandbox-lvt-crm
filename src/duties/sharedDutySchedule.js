@@ -186,6 +186,7 @@ export function buildSharedScheduleRows(mode, anchorIso, events) {
         canManage: false,
         canChat: false,
         edited: false,
+        approvalChange: null,
       });
       continue;
     }
@@ -203,6 +204,7 @@ export function buildSharedScheduleRows(mode, anchorIso, events) {
         canManage: Boolean(event.canManage),
         canChat: event.canChat !== false,
         edited: isEditedDuty(event),
+        approvalChange: event.approvalChange || null,
       });
     });
   }

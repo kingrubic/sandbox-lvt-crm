@@ -73,7 +73,9 @@ test('shared schedule and duty calendar read duties by the end-date index', () =
     reportsSource.indexOf('export const dutyCalendar'),
     reportsSource.indexOf('export const workCalendar'),
   );
-  assert.match(dutyCalendarSource, /loadActiveDutiesOverlapping/);
+  assert.match(dutyCalendarSource, /loadCalendarDuties/);
+  assert.match(reportsSource, /loadPublicDutiesOverlapping/);
+  assert.match(rangeSource, /by_published_end/);
   assert.match(dutyCalendarSource, /dutyListDateWindow/);
   assert.match(dutyCalendarSource, /loadAttendancesForDuties/);
   assert.match(reportsSource, /withIndex\("by_duty"/);
@@ -95,7 +97,7 @@ test('list mode always sends a date window and the bell does not poll every minu
   assert.match(mainSource, /duties\.listAdmin, editorOpen \? \{\} : 'skip'/);
   assert.match(mainSource, /duties\.listMine, editorOpen \? \{\} : 'skip'/);
   assert.match(notificationsSource, /by_created/);
-  assert.match(notificationsSource, /loadActiveDutiesFromEndDate/);
+  assert.match(notificationsSource, /loadPublicDutiesFromEndDate/);
   assert.match(notificationsSource, /CHAT_NOTIFICATION_TTL_MS/);
   assert.doesNotMatch(notificationsSource, /query\("workMessages"\)\.collect\(\)/);
   assert.doesNotMatch(notificationsSource, /query\("dutyMessages"\)\.collect\(\)/);

@@ -117,7 +117,9 @@ export function evaluateDutyRefs(
       return "NOT_A_SUBORDINATE";
     }
   }
+  // Văn thư may publish the 4-column sheet first and add Thành phần later.
   if (
+    !actor.isOps &&
     !input.departmentIds.length &&
     !input.participantUserIds.length &&
     !String(input.otherParticipants || "").trim()

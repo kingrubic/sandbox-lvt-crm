@@ -172,14 +172,24 @@ test('ca_ngay dùng ngày bắt đầu và giờ mặc định 08:00-17:00', () 
   assert.equal(result.preview[0].endTime, '17:00');
 });
 
-test('thiếu người tham gia thì all-or-nothing', () => {
+test('tổ trưởng thiếu người tham gia thì all-or-nothing', () => {
   const result = validateDutyImportRows(
     [baseRow({ ma_phong_ban: '', email_tham_gia: '', thanh_phan_khac: '' })],
-    { actor: opsActor, departments, users },
+    { actor: leadActor, departments, users },
   );
   assert.equal(result.ok, false);
   assert.equal(result.preview.length, 0);
   assert.equal(result.errors.some((item) => item.message === DUTY_IMPORT_MESSAGES.participantsRequired), true);
+});
+
+test('văn thư nhập lịch 4 cột trước, chưa cần thành phần', () => {
+  const result = validateDutyImportRows(
+    [baseRow({ ma_phong_ban: '', email_tham_gia: '', thanh_phan_khac: '' })],
+    { actor: opsActor, departments, users },
+  );
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.preview[0].departmentIds, []);
+  assert.deepEqual(result.preview[0].participantUserIds, []);
 });
 
 test('chỉ thành phần khác vẫn hợp lệ', () => {
@@ -287,6 +297,13 @@ test('evaluateDutyRefs giữ rule tạo tay', () => {
   );
   assert.equal(
     evaluateDutyRefs({ departmentIds: [], participantUserIds: [] }, opsActor, {
+      departments,
+      users,
+    }),
+    null,
+  );
+  assert.equal(
+    evaluateDutyRefs({ departmentIds: [], participantUserIds: [] }, leadActor, {
       departments,
       users,
     }),
