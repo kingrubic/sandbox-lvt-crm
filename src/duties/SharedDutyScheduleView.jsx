@@ -3,6 +3,8 @@ import { anyApi } from 'convex/server';
 import DutyWorkspaceTabs from './DutyWorkspaceTabs';
 import DutyEditModal from './DutyEditModal';
 import DutyScheduleTable from './DutyScheduleTable';
+import DutyWeekApprovalBar from './DutyWeekApprovalBar';
+import { dutyWeekPill, formatWeekRange, shouldShowUnapprovedNotice } from './dutyWeekApproval.js';
 import {
   buildSharedScheduleRows,
   shiftScheduleAnchor,
@@ -11,9 +13,15 @@ import {
 import { useCachedDutySchedule } from './useCachedDutySchedule.js';
 import './sharedDutySchedule.css';
 
-export default function SharedDutyScheduleView({ onChooseView, currentUserId = '' }) {
+export default function SharedDutyScheduleView({ onChooseView, currentUserId = '', focusWeek = null }) {
   const [mode, setMode] = useState('week');
-  const [anchorIso, setAnchorIso] = useState(() => toIsoDate(new Date()));
+  const [anchorIso, setAnchorIso] = useState(() => focusWeek?.weekStart || toIsoDate(new Date()));
+
+  useEffect(() => {
+    if (!focusWeek?.weekStart) return;
+    setMode('week');
+    setAnchorIso(focusWeek.weekStart);
+  }, [focusWeek?.token, focusWeek?.weekStart]);
   const [editingEvent, setEditingEvent] = useState(null);
   const rangePreview = useMemo(() => buildSharedScheduleRows(mode, anchorIso, []).range, [mode, anchorIso]);
   const data = useCachedDutySchedule({
@@ -30,6 +38,9 @@ export default function SharedDutyScheduleView({ onChooseView, currentUserId = '
     },
   });
   const events = data?.events || [];
+  const viewer = data?.viewer || 'public';
+  const weeks = data?.weeks || [];
+  const currentWeek = mode === 'week' ? weeks.find((week) => week.weekStart === rangePreview.startIso) : null;
   const built = useMemo(
     () => buildSharedScheduleRows(mode, anchorIso, events),
     [mode, anchorIso, events],
@@ -78,18 +89,55 @@ export default function SharedDutyScheduleView({ onChooseView, currentUserId = '
             </button>
           </div>
         </div>
-        <button
-          type="button"
-          className="work-primary-button lct-download"
-          disabled={data === undefined}
-          onClick={() => void downloading()}
-        >
-          Tải PDF
-        </button>
+        <div className="lct-download">
+          {data?.canSubmit ? (
+            <button type="button" className="work-ghost-button" onClick={() => onChooseView('create')}>
+              + Tạo công tác
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="work-primary-button"
+            disabled={data === undefined}
+            onClick={() => void downloading()}
+          >
+            Tải PDF
+          </button>
+        </div>
       </div>
+
+      {data !== undefined && currentWeek ? (
+        <DutyWeekApprovalBar week={currentWeek} canSubmit={Boolean(data.canSubmit)} canReview={Boolean(data.canReview)} />
+      ) : null}
+
+      {data !== undefined && mode === 'month' && viewer !== 'public' && weeks.length ? (
+        <ul className="lct-month-weeks" aria-label="Trạng thái duyệt từng tuần">
+          {weeks.map((week) => (
+            <li key={week.weekStart} className={`is-${week.status}`}>
+              <span>Tuần {formatWeekRange(week.weekStart)}</span>
+              <span className="lct-week-pill">{dutyWeekPill(week.status)}</span>
+              <button
+                type="button"
+                className="work-ghost-button"
+                onClick={() => {
+                  setMode('week');
+                  setAnchorIso(week.weekStart);
+                }}
+              >
+                Xem tuần
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
 
       {data === undefined ? (
         <p className="lct-loading">Đang dựng lịch công tác chung…</p>
+      ) : shouldShowUnapprovedNotice({ viewer, mode, eventCount: events.length }) ? (
+        <div className="lct-unapproved-notice" role="status">
+          <strong>Lịch tuần này chưa được duyệt</strong>
+          <span>Nhà trường sẽ công bố lịch công tác sau khi Ban Giám hiệu duyệt.</span>
+        </div>
       ) : (
         <DutyScheduleTable
           title={built.range.title}

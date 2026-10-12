@@ -144,6 +144,15 @@ Additional rules:
 - Popup Trao đổi on Công tác/Công việc and the hub read the same message tables. Bell items `work_chat` / `duty_chat` / `group_chat` open the hub thread. `chatHubSync` is a one-time backfill cursor for threads that existed before the hub; new messages update the inbox directly.
 - Group owner adds/removes/renames/dissolves. Members may leave (owner leave transfers to the earliest remaining member, or dissolves if nobody remains). Recall window stays 15 minutes.
 
+## Lịch công tác chung weekly approval
+
+Canonical detail: `README.md` → **Duyệt Lịch công tác chung theo tuần**.
+
+- Văn thư = admin/mod writes the school sheet; Thành phần is optional for them only. BGH = active, non-admin/mod, position level 4–5; one approval covers the whole Monday-based week.
+- Teachers only ever read the approved copy (`projectPublicDuty`, `loadPublicDutiesFromEndDate`): shared sheet, personal lists (web/native), attendance, chat, reminders, bell. Never return working fields of an unapproved school duty to them.
+- Any create/edit/delete of a school duty needs re-approval; teachers keep seeing the old approved copy meanwhile. Editing a submitted week pulls it back to draft; `approve` must match the `submittedAt` the reviewer saw.
+- Team-lead (level 2/3) duties are `scope: "team"`: live at once for their members, not on the shared sheet, never part of approval.
+
 ## Bulk user import invariants (SYS-011)
 
 Canonical product detail lives in `README.md` → **Import user hàng loạt**. Do not weaken these rules without owner confirmation:

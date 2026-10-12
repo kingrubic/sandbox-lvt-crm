@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { anyApi } from 'convex/server';
 import { openNotification } from './openNotification.js';
+import { isDutyWeekNotification } from '../duties/dutyWeekApproval.js';
 
 function formatDueAt(value) {
   if (!value) return '—';
@@ -35,7 +36,7 @@ function NotificationItem({ item, onOpen, onDismiss, canDelete, pending }) {
           <span className="notification-meta">
             <strong>{item.milestoneLabel}</strong>
             <small>
-              {item.sourceType === 'work_chat' || item.sourceType === 'duty_chat' || item.sourceType === 'group_chat'
+              {item.sourceType === 'work_chat' || item.sourceType === 'duty_chat' || item.sourceType === 'group_chat' || isDutyWeekNotification(item)
                 ? `Lúc ${formatDueAt(item.dueAt)}`
                 : `Hạn ${formatDueAt(item.dueAt)}`}
             </small>

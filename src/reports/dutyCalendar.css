@@ -1134,3 +1134,13 @@
     animation: none;
   }
 }
+
+.report-detail-approval {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--lvt-warning-bg);
+  color: var(--lvt-warning-text);
+  font-size: 13px;
+  font-weight: 650;
+}
