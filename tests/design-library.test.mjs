@@ -61,3 +61,36 @@ test('design library errors stay distinct for expired session and non-admin', ()
   assert.match(designLibraryErrorMessage(403), /Chỉ Administrator/);
   assert.match(designLibraryErrorMessage(500), /Không tải được/);
 });
+
+test('design-system page shows every token with the value from :root', async () => {
+  const { COLOR_TOKENS, STATUS_PAIRS, DESIGN_SECTIONS } = await import('../src/settings/designSystem.js');
+  const styles = await read('src/styles.css');
+  const root = styles.slice(0, styles.indexOf('}'));
+  for (const color of COLOR_TOKENS) {
+    const match = root.match(new RegExp(`${color.token}:\\s*(#[0-9a-f]{6})`, 'i'));
+    assert.ok(match, `${color.token} must exist in :root`);
+    assert.equal(match[1].toLowerCase(), color.value, `${color.token} value drifted from styles.css`);
+  }
+  for (const pair of STATUS_PAIRS) {
+    assert.match(root, new RegExp(`${pair.text}:`));
+    assert.match(root, new RegExp(`${pair.bg}:`));
+  }
+  const design = await read('DESIGN.md');
+  const headings = [...design.matchAll(/^## (\d+)\. /gm)].map((match) => Number(match[1]));
+  assert.deepEqual(DESIGN_SECTIONS.map((section) => section.number), headings);
+});
+
+test('samples are inert and the fake-data prototype loads only after acknowledgement', async () => {
+  const { canOpenPrototypeArchive } = await import('../src/settings/designSystem.js');
+  assert.equal(canOpenPrototypeArchive(true), true);
+  assert.equal(canOpenPrototypeArchive(false), false);
+  assert.equal(canOpenPrototypeArchive('true'), false);
+  const view = await read('src/settings/DesignLibraryView.jsx');
+  assert.match(view, /className="ds-sample-body" inert>/);
+  assert.match(view, /Tài liệu quy chuẩn giao diện, không phải chức năng của hệ thống/);
+  const open = view.slice(view.indexOf('const open = async'), view.indexOf('const close ='));
+  assert.match(open, /if \(!canOpenPrototypeArchive\(acknowledged\)\) return;[\s\S]*fetch\(DESIGN_LIBRARY_URL/);
+  assert.equal((view.match(/fetch\(DESIGN_LIBRARY_URL/g) || []).length, 1, 'the prototype is fetched in one place only');
+  assert.match(view, /disabled=\{!canOpenPrototypeArchive\(acknowledged\)\}/);
+  assert.match(view, /DỮ LIỆU GIẢ · KHÔNG PHẢI CHỨC NĂNG THẬT/);
+});
